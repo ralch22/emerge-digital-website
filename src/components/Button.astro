@@ -5,6 +5,7 @@ interface Props {
   size?: 'md' | 'lg';
   arrow?: boolean;
   as?: 'a' | 'button';
+  surface?: 'dark' | 'light';
   type?: 'button' | 'submit' | 'reset';
   class?: string;
 }
@@ -15,6 +16,7 @@ const {
   size = 'md',
   arrow = true,
   as,
+  surface = 'dark',
   type = 'button',
   class: className = '',
   ...rest
@@ -35,11 +37,15 @@ const sizeCls =
       : 'px-5 py-2.5 text-sm';
 
 const variants = {
-  primary:
-    'bg-gradient-accent text-ink hover:-translate-y-0.5 hover:shadow-glow',
+  primary: 'bg-gradient-accent text-ink hover:-translate-y-0.5 hover:shadow-glow',
   secondary:
-    'border border-white/20 bg-transparent text-white hover:border-teal hover:text-teal',
-  ghost: 'text-white/80 hover:text-teal',
+    surface === 'light'
+      ? 'border border-slate/20 bg-transparent text-slate hover:border-teal hover:text-teal'
+      : 'border border-white/20 bg-transparent text-white hover:border-teal hover:text-teal',
+  ghost:
+    surface === 'light'
+      ? 'text-slate/80 hover:text-teal'
+      : 'text-white/80 hover:text-teal',
 } as const;
 ---
 

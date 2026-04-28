@@ -1,0 +1,72 @@
+---
+import Section from '../Section.astro';
+import Container from '../Container.astro';
+import Eyebrow from '../Eyebrow.astro';
+import Card from '../Card.astro';
+import Button from '../Button.astro';
+
+const cards = [
+  {
+    eyebrow: 'The Local Prime',
+    title: 'Emerge Digital',
+    tagline: 'Dubai Mainland. Commercial owner. Accountable in-country.',
+    body:
+      'Emerge Digital is the independently registered Dubai Mainland entity that owns the client relationship, structures the engagement, signs the contract, manages the account, and carries full commercial and compliance responsibility. One throat to choke. One MEA-licensed counterparty. Zero ambiguity for procurement.',
+    accent: true,
+  },
+  {
+    eyebrow: 'The Regional Powerhouse',
+    title: 'e-CENS / Nuummite Consulting',
+    tagline: '23 years. 7 offices. CX & analytics leadership.',
+    body:
+      'e-CENS is one of the leading digital analytics, customer experience, and growth consultancies in the Middle East and one of only four Global Google Marketing Platform Partners worldwide. They bring a deep, GCC-native delivery bench across analytics, MarTech, CX strategy, and commerce — already operating across Dubai, Riyadh, Cairo, and beyond.',
+    accent: false,
+  },
+  {
+    eyebrow: 'The Global Engineering Engine',
+    title: 'FPT Corporation',
+    tagline: 'US$2B+ revenue. 80,000+ engineers. Worldwide.',
+    body:
+      "FPT Corporation is one of the world's most trusted technology powerhouses, with a global engineering footprint spanning Asia, Europe, and the Americas. Through the JV, FPT brings enterprise-grade application modernization, cloud, AI engineering, and managed services capacity to MEA programs — at the scale only a true global SI can offer.",
+    accent: false,
+  },
+];
+---
+
+<Section tone="dark" id="joint-venture">
+  <Container>
+    <div class="max-w-3xl">
+      <Eyebrow>The Joint Venture</Eyebrow>
+      <h2 class="mt-4 text-display-lg">One commercial engine. Three sources of unfair advantage.</h2>
+    </div>
+
+    <div class="mt-14 grid gap-6 lg:grid-cols-3">
+      {
+        cards.map((c) => (
+          <Card
+            tone="dark"
+            eyebrow={c.eyebrow}
+            title={c.title}
+            class={c.accent ? 'jv-accent' : ''}
+          >
+            <p class="font-mono text-xs uppercase tracking-wider text-teal">{c.tagline}</p>
+            <p class="mt-4 text-platinum/85">{c.body}</p>
+          </Card>
+        ))
+      }
+    </div>
+
+    <div class="mt-12">
+      <Button variant="ghost" href="/about/">Read the JV story</Button>
+    </div>
+  </Container>
+</Section>
+
+<style>
+  .jv-accent {
+    border-color: rgba(0, 194, 199, 0.45);
+    box-shadow:
+      0 0 0 1px rgba(0, 194, 199, 0.25),
+      0 20px 60px -20px rgba(0, 194, 199, 0.25);
+  }
+</style>

@@ -1,0 +1,66 @@
+---
+import Section from '../Section.astro';
+import Container from '../Container.astro';
+import Eyebrow from '../Eyebrow.astro';
+import Card from '../Card.astro';
+import Button from '../Button.astro';
+
+const stories = [
+  {
+    eyebrow: 'BFSI · Customer Data Orchestration · MarTech',
+    title: 'Tier-1 GCC Bank',
+    body:
+      'Unified 14 fragmented customer data sources into a single CDP, enabling real-time personalization across digital and contact-center channels.',
+    metric: '+38% lift in cross-sell conversion · 6 months',
+  },
+  {
+    eyebrow: 'Government · CX Strategy · Citizen Experience',
+    title: 'National Government Entity, KSA',
+    body:
+      'Designed and rolled out an end-to-end citizen experience operating model across 4 service portals, measured against the national CSAT benchmark.',
+    metric: '+22-point CSAT increase',
+  },
+  {
+    eyebrow: 'Retail · Commerce Platform · Analytics Governance',
+    title: 'Regional Retail Group, UAE',
+    body:
+      'Re-platformed a multi-brand commerce stack and rebuilt the analytics governance layer across 6 brands.',
+    metric: '+47% YoY digital revenue · 3.2x attribution accuracy',
+  },
+];
+---
+
+<Section tone="light">
+  <Container>
+    <div class="max-w-3xl">
+      <Eyebrow tone="cool">Proof</Eyebrow>
+      <h2 class="mt-4 text-display-lg text-slate">
+        What enterprise outcomes look like in practice.
+      </h2>
+      <p class="mt-6 text-lead text-slate/80">
+        A selection of the programs we and our JV partners have delivered for Government,
+        BFSI, and Retail leaders across the MEA region. (Client names are anonymized where
+        engagement terms require it.)
+      </p>
+    </div>
+
+    <div class="mt-14 grid gap-6 lg:grid-cols-3">
+      {
+        stories.map((s) => (
+          <Card tone="light" eyebrow={s.eyebrow} title={s.title} class="flex h-full flex-col">
+            <p class="text-slate/80">{s.body}</p>
+            <p class="mt-6 border-t border-platinum pt-6 font-semibold text-teal">
+              {s.metric}
+            </p>
+          </Card>
+        ))
+      }
+    </div>
+
+    <div class="mt-12">
+      <Button variant="secondary" surface="light" href="/success-stories/" size="lg">
+        See all success stories
+      </Button>
+    </div>
+  </Container>
+</Section>

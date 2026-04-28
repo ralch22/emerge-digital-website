@@ -1,0 +1,50 @@
+---
+import Section from '../Section.astro';
+import Container from '../Container.astro';
+import Button from '../Button.astro';
+---
+
+<Section tone="gradient" class="relative isolate overflow-hidden">
+  <div aria-hidden="true" class="cta-aurora pointer-events-none absolute inset-0"></div>
+  <Container class="relative">
+    <div class="mx-auto max-w-3xl text-center">
+      <h2 class="text-display-lg text-white">Ready to talk Vision 2030?</h2>
+      <p class="mt-6 text-lead text-platinum/85">
+        Book a 30-minute Readiness Briefing with our founder. We'll map your priorities to
+        the 2026–2027 procurement window, walk you through the local-prime model, and show
+        you which JV capabilities best fit your program.
+      </p>
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
+        <Button href="/contact/" size="lg">Book a Vision 2030 Readiness Briefing</Button>
+        <Button variant="ghost" href="/contact/?intent=brief" size="lg">Or send us a brief</Button>
+      </div>
+    </div>
+  </Container>
+</Section>
+
+<style>
+  .cta-aurora {
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 100%, rgba(0, 194, 199, 0.25), transparent 65%),
+      radial-gradient(ellipse 40% 50% at 20% 0%, rgba(61, 220, 227, 0.12), transparent 60%);
+    filter: blur(60px);
+    animation: cta-drift 18s ease-in-out infinite;
+    will-change: transform, opacity;
+  }
+  @keyframes cta-drift {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+      opacity: 0.85;
+    }
+    50% {
+      transform: translate3d(-2%, 4%, 0);
+      opacity: 1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cta-aurora {
+      animation: none;
+    }
+  }
+</style>

@@ -1,54 +1,27 @@
 ---
-/**
- * Placeholder homepage — Claude Code will replace this with the real
- * hero and homepage sections in Prompt 02. Until then, this confirms
- * the scaffold runs and the design tokens are wired correctly.
- */
 import BaseLayout from '@layouts/BaseLayout.astro';
+import HeroHome from '../components/sections/HeroHome.astro';
+import VisionWindow from '../components/sections/VisionWindow.astro';
+import JointVenture from '../components/sections/JointVenture.astro';
+import ServicesOverview from '../components/sections/ServicesOverview.astro';
+import WhyLocalPrime from '../components/sections/WhyLocalPrime.astro';
+import Partnerships from '../components/sections/Partnerships.astro';
+import ProofTiles from '../components/sections/ProofTiles.astro';
+import CrawlWalkRun from '../components/sections/CrawlWalkRun.astro';
+import CtaFinal from '../components/sections/CtaFinal.astro';
 ---
 
-<BaseLayout title="Emerge Digital — Local Prime. Global Power. Enterprise Outcomes.">
-  <section class="relative overflow-hidden surface-hero">
-    <div class="mx-auto max-w-section px-6 py-section-sm md:py-section">
-      <p class="text-eyebrow uppercase text-teal">
-        Local Prime · Dubai Mainland · MEA-Wide Delivery
-      </p>
-      <h1 class="mt-6 max-w-4xl text-display-xl font-display text-white">
-        Local Prime. Global Power. Enterprise Outcomes.
-      </h1>
-      <p class="mt-6 max-w-2xl text-lead text-platinum/85">
-        Emerge Digital is the agile Dubai Mainland prime for enterprise Customer Experience, Data, AI, and digital transformation programs across the MEA region — backed by the combined scale of e-CENS (Nuummite Consulting) and FPT Corporation.
-      </p>
-      <div class="mt-10 flex flex-wrap items-center gap-4">
-        <a
-          href="/contact/"
-          class="rounded-pill bg-gradient-accent px-7 py-3.5 text-sm font-semibold text-ink transition hover:shadow-glow"
-        >
-          Book a Vision 2030 Readiness Briefing →
-        </a>
-        <a href="/services/" class="text-sm font-semibold text-white hover:text-teal">
-          Explore the JV Capability Stack →
-        </a>
-      </div>
-
-      <p class="mt-16 text-eyebrow uppercase text-cool">
-        A Strategic Joint Venture With
-      </p>
-      <div class="mt-4 flex flex-wrap items-center gap-8 text-platinum/70">
-        <span class="font-semibold">e-CENS (Nuummite Consulting)</span>
-        <span class="text-cool">·</span>
-        <span class="font-semibold">FPT Corporation</span>
-        <span class="text-cool">·</span>
-        <span class="font-semibold">Google Marketing Platform Partner</span>
-      </div>
-    </div>
-  </section>
-
-  <section class="bg-offwhite text-slate">
-    <div class="mx-auto max-w-section px-6 py-section-sm md:py-section">
-      <p class="text-cool">
-        Scaffold confirmed. This placeholder will be replaced when you run <code class="rounded bg-platinum px-1.5 py-0.5 text-sm">docs/prompts/02-homepage.md</code> in Claude Code.
-      </p>
-    </div>
-  </section>
+<BaseLayout
+  title="Emerge Digital — Local Prime. Global Power. Enterprise Outcomes."
+  description="The agile Dubai Mainland prime for enterprise Customer Experience, Data, AI, and digital transformation programs across the MEA region — backed by the combined scale of e-CENS (Nuummite Consulting) and FPT Corporation."
+>
+  <HeroHome />
+  <VisionWindow />
+  <JointVenture />
+  <ServicesOverview />
+  <WhyLocalPrime />
+  <Partnerships />
+  <ProofTiles />
+  <CrawlWalkRun />
+  <CtaFinal />
 </BaseLayout>

@@ -1,0 +1,62 @@
+---
+import Section from '../Section.astro';
+import Container from '../Container.astro';
+import Eyebrow from '../Eyebrow.astro';
+import Button from '../Button.astro';
+import TrustStrip from '../TrustStrip.astro';
+---
+
+<Section tone="gradient" class="relative isolate overflow-hidden">
+  <div aria-hidden="true" class="hero-aurora pointer-events-none absolute inset-0"></div>
+  <Container class="relative">
+    <div class="max-w-4xl">
+      <Eyebrow tone="teal">Local Prime · Dubai Mainland · MEA-Wide Delivery</Eyebrow>
+      <h1 class="mt-6 text-display-xl text-white">
+        Local Prime. Global Power. <span class="bg-gradient-accent bg-clip-text text-transparent">Enterprise Outcomes.</span>
+      </h1>
+      <p class="mt-8 max-w-prose text-lead text-platinum/85">
+        Emerge Digital is the agile Dubai Mainland prime for enterprise Customer
+        Experience, Data, AI, and digital transformation programs across the MEA region —
+        backed by the combined scale of e-CENS (Nuummite Consulting) and FPT Corporation.
+      </p>
+      <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
+        <Button href="/contact/" size="lg">Book a Vision 2030 Readiness Briefing</Button>
+        <Button variant="ghost" href="/services/" size="lg">Explore the JV Capability Stack</Button>
+      </div>
+    </div>
+
+    <div class="mt-20 border-t border-white/8 pt-10">
+      <TrustStrip
+        prefix="A Strategic Joint Venture With"
+        items={['e-CENS (Nuummite Consulting)', 'FPT Corporation', 'Google Marketing Platform Partner']}
+      />
+    </div>
+  </Container>
+</Section>
+
+<style>
+  .hero-aurora {
+    background:
+      radial-gradient(ellipse 60% 50% at 75% 25%, rgba(0, 194, 199, 0.22), transparent 65%),
+      radial-gradient(ellipse 50% 40% at 15% 85%, rgba(61, 220, 227, 0.14), transparent 60%);
+    filter: blur(50px);
+    animation: aurora-drift 22s ease-in-out infinite;
+    will-change: transform, opacity;
+  }
+  @keyframes aurora-drift {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+      opacity: 0.85;
+    }
+    50% {
+      transform: translate3d(2%, -3%, 0) scale(1.06);
+      opacity: 1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-aurora {
+      animation: none;
+    }
+  }
+</style>

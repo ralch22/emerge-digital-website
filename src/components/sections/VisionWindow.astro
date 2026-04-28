@@ -1,0 +1,46 @@
+---
+import Section from '../Section.astro';
+import Container from '../Container.astro';
+import Eyebrow from '../Eyebrow.astro';
+import Stat from '../Stat.astro';
+
+const stats = [
+  { value: '23 yrs', label: 'Regional consulting heritage via e-CENS' },
+  { value: '7', label: 'MEA offices across UAE, KSA, Egypt and beyond' },
+  { value: '4', label: 'Global Google Marketing Platform Partners — e-CENS is one' },
+  { value: '80,000+', label: 'Engineers in the FPT global delivery network' },
+];
+---
+
+<Section tone="dark">
+  <Container>
+    <div class="grid gap-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-24">
+      <div>
+        <Eyebrow>The 2026–2027 Window</Eyebrow>
+        <h2 class="mt-4 text-display-lg">
+          The next 18 months will define the next decade of MEA digital transformation.
+        </h2>
+      </div>
+      <div class="space-y-6 text-platinum/85">
+        <p class="text-lead">
+          Government, BFSI, and Retail leaders across the UAE, KSA, and Egypt are entering
+          the most concentrated procurement window in the region's history. Vision 2030,
+          the UAE's We the UAE 2031 agenda, and Egypt's Vision 2030 are converging into a
+          single inflection point — and the consultancies that win will be the ones that
+          combine in-country accountability with proven global delivery muscle.
+        </p>
+        <p>
+          Emerge Digital was built for exactly this moment. We are the Dubai Mainland prime
+          that owns your contract, structures your program, and stands accountable in your
+          jurisdiction — while our JV partners e-CENS and FPT Corporation bring 23 years of
+          regional CX, data, and analytics leadership and 80,000+ engineers of global
+          delivery capacity behind every engagement.
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-20 grid grid-cols-2 gap-x-8 gap-y-12 border-t border-white/8 pt-12 md:grid-cols-4">
+      {stats.map((s) => <Stat value={s.value} label={s.label} />)}
+    </div>
+  </Container>
+</Section>
