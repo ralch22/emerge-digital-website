@@ -1,0 +1,19 @@
+---
+interface Props {
+  tone?: 'dark' | 'light' | 'gradient';
+  id?: string;
+  class?: string;
+}
+
+const { tone = 'dark', id, class: className = '' } = Astro.props;
+
+const tones = {
+  dark: 'bg-ink text-platinum',
+  light: 'bg-offwhite text-slate',
+  gradient: 'surface-hero text-platinum',
+} as const;
+---
+
+<section id={id} class:list={['py-section-sm md:py-section', tones[tone], className]}>
+  <slot />
+</section>

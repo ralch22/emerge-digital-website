@@ -1,0 +1,52 @@
+---
+import Eyebrow from './Eyebrow.astro';
+
+interface Props {
+  tone?: 'dark' | 'light';
+  padded?: boolean;
+  eyebrow?: string;
+  title?: string;
+  class?: string;
+}
+
+const {
+  tone = 'dark',
+  padded = true,
+  eyebrow,
+  title,
+  class: className = '',
+} = Astro.props;
+
+const tones = {
+  dark: 'bg-navy/40 border border-white/10 text-platinum',
+  light: 'bg-white border border-platinum text-slate',
+} as const;
+---
+
+<article
+  class:list={[
+    'rounded-card shadow-elevated',
+    tones[tone],
+    padded && 'p-8',
+    className,
+  ]}
+>
+  {
+    (eyebrow || title) && (
+      <header class="mb-5">
+        {eyebrow && <Eyebrow tone="teal">{eyebrow}</Eyebrow>}
+        {title && (
+          <h3
+            class:list={[
+              'mt-3 text-display-md',
+              tone === 'light' ? 'text-slate' : 'text-white',
+            ]}
+          >
+            {title}
+          </h3>
+        )}
+      </header>
+    )
+  }
+  <slot />
+</article>

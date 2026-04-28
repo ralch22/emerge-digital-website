@@ -1,0 +1,21 @@
+---
+interface Props {
+  tone?: 'teal' | 'cool' | 'white';
+  as?: 'p' | 'span' | 'div';
+  class?: string;
+}
+
+const { tone = 'teal', as = 'p', class: className = '' } = Astro.props;
+
+const tones = {
+  teal: 'text-teal',
+  cool: 'text-cool',
+  white: 'text-white/80',
+} as const;
+
+const Tag = as;
+---
+
+<Tag class:list={['text-eyebrow uppercase font-semibold', tones[tone], className]}>
+  <slot />
+</Tag>

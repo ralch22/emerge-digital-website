@@ -1,0 +1,22 @@
+---
+interface Props {
+  value: string;
+  label: string;
+  accent?: boolean;
+  class?: string;
+}
+
+const { value, label, accent = true, class: className = '' } = Astro.props;
+---
+
+<div class:list={[className]}>
+  <p
+    class:list={[
+      'font-display text-display-xl tabular-nums',
+      accent ? 'text-teal' : 'text-white',
+    ]}
+  >
+    {value}
+  </p>
+  <p class="mt-2 text-eyebrow uppercase text-cool">{label}</p>
+</div>

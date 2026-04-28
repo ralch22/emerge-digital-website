@@ -1,0 +1,54 @@
+---
+interface Props {
+  variant?: 'primary' | 'secondary' | 'ghost';
+  href?: string;
+  size?: 'md' | 'lg';
+  arrow?: boolean;
+  as?: 'a' | 'button';
+  type?: 'button' | 'submit' | 'reset';
+  class?: string;
+}
+
+const {
+  variant = 'primary',
+  href,
+  size = 'md',
+  arrow = true,
+  as,
+  type = 'button',
+  class: className = '',
+  ...rest
+} = Astro.props;
+
+const Tag = as ?? (href ? 'a' : 'button');
+
+const base =
+  'inline-flex items-center justify-center gap-1 rounded-pill font-semibold tracking-tight transition duration-200 ease-out';
+
+const sizeCls =
+  variant === 'ghost'
+    ? size === 'lg'
+      ? 'text-base'
+      : 'text-sm'
+    : size === 'lg'
+      ? 'px-8 py-4 text-base'
+      : 'px-5 py-2.5 text-sm';
+
+const variants = {
+  primary:
+    'bg-gradient-accent text-ink hover:-translate-y-0.5 hover:shadow-glow',
+  secondary:
+    'border border-white/20 bg-transparent text-white hover:border-teal hover:text-teal',
+  ghost: 'text-white/80 hover:text-teal',
+} as const;
+---
+
+<Tag
+  class:list={[base, sizeCls, variants[variant], className]}
+  href={href}
+  type={Tag === 'button' ? type : undefined}
+  {...rest}
+>
+  <slot />
+  {arrow && <span aria-hidden="true">→</span>}
+</Tag>
