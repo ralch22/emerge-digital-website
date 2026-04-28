@@ -1,0 +1,90 @@
+/* ----------------------------------------------------------
+   Emerge Digital — Global styles
+   Brand tokens (CSS vars) + Tailwind base/components/utilities
+   ---------------------------------------------------------- */
+
+/* Fonts (variable, performant) */
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/jetbrains-mono';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Brand tokens as CSS variables — for use in inline SVGs,
+   raw CSS, and anywhere Tailwind classes can't reach. */
+:root {
+  --color-navy: #0A1F3D;
+  --color-ink: #06122A;
+  --color-teal: #00C2C7;
+  --color-cyan: #3DDCE3;
+  --color-platinum: #E8EEF5;
+  --color-offwhite: #F7F9FC;
+  --color-slate: #1F2A3C;
+  --color-cool: #6B7A90;
+
+  --gradient-hero: linear-gradient(135deg, #06122A 0%, #0A1F3D 60%, rgba(0, 194, 199, 0.08) 100%);
+  --gradient-accent: linear-gradient(90deg, #00C2C7 0%, #3DDCE3 100%);
+  --gradient-data: linear-gradient(180deg, #0A1F3D 0%, #00C2C7 100%);
+
+  --radius-card: 1.5rem;
+  --shadow-elevated: 0 20px 60px -20px rgba(6, 18, 42, 0.45);
+  --shadow-glow: 0 0 0 1px rgba(0, 194, 199, 0.4), 0 8px 32px rgba(0, 194, 199, 0.18);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-ink text-platinum font-sans;
+    font-feature-settings: 'ss01', 'cv11';
+  }
+
+  /* Default heading rhythm — components can override */
+  h1, h2, h3, h4 {
+    @apply font-display tracking-tight text-white;
+  }
+
+  /* Generous default selection */
+  ::selection {
+    background-color: rgba(0, 194, 199, 0.3);
+    color: #fff;
+  }
+
+  /* Focus ring — visible, on-brand */
+  :focus-visible {
+    outline: 2px solid var(--color-teal);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Smooth anchor scroll */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Reusable utility for the signature hero gradient backdrop.
+     Use sparingly — primary use is BaseLayout / Hero. */
+  .surface-hero {
+    background: var(--gradient-hero);
+  }
+}
