@@ -8,6 +8,7 @@ interface Service {
   title: string;
   body: string;
   platforms?: string[];
+  icon: string;
 }
 
 interface Pillar {
@@ -16,6 +17,8 @@ interface Pillar {
   headline: string;
   lead: string;
   note?: string;
+  accentColor: string;
+  icon: string;
   services: Service[];
 }
 
@@ -24,22 +27,47 @@ const pillars: Pillar[] = [
     id: 'cx',
     eyebrow: 'Customer Experience · CX Division',
     headline: 'Customer Experience',
-    lead: 'The pillar Rami leads personally. Where we believe the next decade of competitive advantage is won — and where Emerge Digital has the deepest conviction.',
+    lead: 'The pillar Rami leads personally. Where the next decade of competitive advantage is won — and where Emerge Digital has the deepest conviction.',
     note: 'Led by Rami, Founder',
+    accentColor: 'from-teal/20 to-teal/5',
+    icon: `<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="8" r="4"/>
+      <path d="M3 20c0-5 3.5-7 8-7s8 2 8 7"/>
+      <path d="M16 3l2.5 2.5L22 2"/>
+    </svg>`,
     services: [
       {
         title: 'CX Strategy & Design',
         body: 'CX vision setting, journey design, service blueprints, voice-of-customer frameworks, and CX operating models. We build the strategy layer before a single technology is deployed.',
+        icon: `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="9" r="3"/>
+          <circle cx="9" cy="9" r="7.5"/>
+          <line x1="9" y1="1.5" x2="9" y2="4"/>
+          <line x1="9" y1="14" x2="9" y2="16.5"/>
+          <line x1="1.5" y1="9" x2="4" y2="9"/>
+          <line x1="14" y1="9" x2="16.5" y2="9"/>
+        </svg>`,
       },
       {
         title: 'MarTech & Customer Data Orchestration (CDP)',
         body: 'CDP selection and implementation across Salesforce Data Cloud, Adobe Real-Time CDP, Tealium, mParticle, and Treasure Data. Identity resolution, real-time activation, consent and preference management.',
         platforms: ['Salesforce', 'Adobe', 'Tealium', 'mParticle'],
+        icon: `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="3.5" cy="5" r="2"/>
+          <circle cx="14.5" cy="5" r="2"/>
+          <circle cx="9" cy="14" r="2"/>
+          <path d="M5.5 5h7M11.5 6.5l-2.5 5.5M6.5 6.5L9 12"/>
+        </svg>`,
       },
       {
         title: 'Commerce & Platform Development',
         body: 'Headless and composable commerce architectures. Salesforce Commerce Cloud, Adobe Commerce, Shopify Plus enterprise builds. Marketplace strategy and digital retail operations.',
         platforms: ['Salesforce', 'Adobe Commerce', 'Shopify Plus'],
+        icon: `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 3h2l2.4 9h7.2L16 6H5.5"/>
+          <circle cx="7.5" cy="15" r="1.2"/>
+          <circle cx="13.5" cy="15" r="1.2"/>
+        </svg>`,
       },
     ],
   },
@@ -48,21 +76,38 @@ const pillars: Pillar[] = [
     eyebrow: 'Data & Analytics',
     headline: 'Data & Analytics',
     lead: 'Where our 23 years of regional analytics heritage shows up. From tag governance to predictive models — the data foundation that makes every other capability work.',
+    accentColor: 'from-cyan/20 to-cyan/5',
+    icon: `<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 16l5-5 4 4 5-8 4 3"/>
+      <rect x="3" y="3" width="16" height="16" rx="2"/>
+    </svg>`,
     services: [
       {
         title: 'Digital Analytics & Data Science',
-        body: 'GA4 and GTM programs, BigQuery and Snowflake architectures, marketing mix modelling, attribution, predictive analytics, and customer lifetime value modelling. Built for MEA data volumes and GCC PDPL requirements.',
+        body: 'GA4 and GTM programs, BigQuery and Snowflake architectures, marketing mix modelling, attribution, predictive analytics, and CLV modelling. Built for MEA data volumes and GCC PDPL requirements.',
         platforms: ['GA4', 'BigQuery', 'Snowflake', 'Looker'],
+        icon: `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 13l4-5 3.5 3.5 4-6 4 2.5"/>
+          <path d="M2 16h14"/>
+        </svg>`,
       },
       {
         title: 'Data & Tag Governance',
         body: 'Tag management strategy, server-side tagging, consent frameworks (GCC PDPL, GDPR, CCPA), data lineage, and data quality programs. We build governance layers that hold up under regulatory scrutiny.',
         platforms: ['GTM Server-Side', 'OneTrust', 'Cookiebot'],
+        icon: `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 2l6 2.5v5C15 13 12 16 9 17 6 16 3 13 3 9.5v-5L9 2z"/>
+          <path d="M6.5 9l2 2 3-3"/>
+        </svg>`,
       },
       {
         title: 'Media & AdTech Excellence',
         body: 'Google Marketing Platform implementations — DV360, SA360, CM360 — leveraging our standing as one of only four Global GMP Partners worldwide. Trade-desk strategies, retail media networks, and MarTech–AdTech integration.',
         platforms: ['DV360', 'SA360', 'CM360', 'Meta', 'Snap'],
+        icon: `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9h2l2-5 3 10 2-6 1.5 3H15"/>
+          <circle cx="15.5" cy="9" r="1.5" fill="currentColor" stroke="none"/>
+        </svg>`,
       },
     ],
   },
@@ -71,18 +116,36 @@ const pillars: Pillar[] = [
     eyebrow: 'AI & Generative Solutions',
     headline: 'AI & Generative Solutions',
     lead: 'Built into every engagement, not bolted on. We apply AI where it generates measurable commercial or operational outcomes — not as a positioning statement.',
+    accentColor: 'from-teal-glow/20 to-teal-glow/5',
+    icon: `<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="3"/>
+      <path d="M11 2v3M11 17v3M2 11h3M17 11h3M4.9 4.9l2.1 2.1M14.9 14.9l2.2 2.2M4.9 17.1l2.1-2.1M14.9 7.1l2.2-2.2"/>
+    </svg>`,
     services: [
       {
         title: 'Enterprise GenAI',
         body: 'Use-case discovery, RAG architectures, LLM evaluation frameworks, and copilot development for customer service, marketing operations, and internal productivity. Arabic and English LLM support.',
+        icon: `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="14" height="10" rx="2"/>
+          <path d="M6 8h6M6 11h4"/>
+          <path d="M12 14l2 3"/>
+        </svg>`,
       },
       {
         title: 'AI for CX & Personalisation',
         body: 'AI-driven segmentation, real-time next-best-action engines, generative content systems, and conversational AI in Arabic and English. Deployed into CDP and CRM activation layers.',
+        icon: `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 2l1.5 4.5L15 8l-4.5 1.5L9 14l-1.5-4.5L3 8l4.5-1.5z"/>
+          <path d="M14.5 12.5l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z" fill="currentColor" stroke="none" opacity="0.7"/>
+        </svg>`,
       },
       {
         title: 'AI Governance & Trust',
         body: 'Responsible AI frameworks, model risk management, GCC-aligned policy design, and hallucination and bias control. The governance layer that gives enterprise boards confidence to deploy.',
+        icon: `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 1.5l6 2.5v5.5c0 3.5-2.5 6.5-6 7.5-3.5-1-6-4-6-7.5V4z"/>
+          <path d="M6 9l2 2 4-4"/>
+        </svg>`,
       },
     ],
   },
@@ -91,19 +154,39 @@ const pillars: Pillar[] = [
     eyebrow: 'Digital Transformation',
     headline: 'Digital Transformation',
     lead: 'The 80,000-engineer global network behind enterprise-scale modernisation. From legacy-to-cloud migrations to managed services that run at production scale.',
+    accentColor: 'from-teal/15 to-cyan/5',
+    icon: `<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 14H4a4 4 0 0 1 0-8 5 5 0 0 1 9.7-1.5A4.5 4.5 0 0 1 18 9"/>
+      <path d="M12 14l3 3 3-3M15 11v6"/>
+    </svg>`,
     services: [
       {
         title: 'Enterprise Application Modernisation',
         body: 'Legacy mainframe and ERP modernisation, microservices migrations, cloud-native rebuilds, and API-led architectures. Sequenced for zero-disruption to live operations.',
+        icon: `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9a6 6 0 0 1 6-6 6 6 0 0 1 5.2 3"/>
+          <path d="M15 9a6 6 0 0 1-6 6 6 6 0 0 1-5.2-3"/>
+          <path d="M14 6l1.2-3 3 1.2"/>
+          <path d="M4 12l-1.2 3-3-1.2"/>
+        </svg>`,
       },
       {
         title: 'Cloud & Platform Engineering',
         body: 'Hyperscaler migrations and builds on AWS, Azure, and GCP. Platform engineering, DevSecOps, FinOps, and regional data residency programs aligned to GCC regulatory requirements.',
         platforms: ['AWS', 'Azure', 'GCP'],
+        icon: `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 12H3a4 4 0 0 1 0-8 5 5 0 0 1 9.3-1A4 4 0 0 1 15 8.5"/>
+          <rect x="7" y="11" width="8" height="5" rx="1.5"/>
+          <path d="M9 11V9M13 11V9"/>
+        </svg>`,
       },
       {
         title: 'Managed Services & Run',
-        body: '24/7 operations across MarTech, analytics, and application estates. AIOps-enabled service delivery, evergreen modernisation, and run-state governance — delivered under the local-prime accountability model.',
+        body: '24/7 operations across MarTech, analytics, and application estates. AIOps-enabled service delivery, evergreen modernisation, and run-state governance — under the local-prime accountability model.',
+        icon: `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="9" r="2.5"/>
+          <path d="M9 2v2M9 14v2M2 9h2M14 9h2M4 4l1.5 1.5M12.5 12.5L14 14M4 14l1.5-1.5M12.5 5.5L14 4"/>
+        </svg>`,
       },
     ],
   },
@@ -115,22 +198,25 @@ const pillars: Pillar[] = [
   description="From CX strategy to enterprise modernisation — Emerge Digital's full capability stack across Customer Experience, Data & Analytics, AI, and Digital Transformation. All under one Dubai Mainland contract."
 >
   <!-- ── Hero ─────────────────────────────────────────────── -->
-  <section class="relative overflow-hidden bg-gradient-hero py-section-sm md:py-section">
-    <div class="pointer-events-none absolute inset-0 bg-grid bg-grid-fade" aria-hidden="true"></div>
-    <div class="aurora pointer-events-none absolute inset-0 opacity-60" aria-hidden="true"></div>
+  <section class="relative isolate overflow-hidden bg-gradient-hero py-section-sm md:py-section">
+    <!-- Decorative layers -->
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 bg-grid bg-grid-fade"></div>
+    <div aria-hidden="true" class="aurora-strong pointer-events-none absolute inset-0 opacity-70" style="animation: aurora-drift 24s ease-in-out infinite;"></div>
+    <div aria-hidden="true" class="noise pointer-events-none absolute inset-0"></div>
+    <div aria-hidden="true" class="beam-scan pointer-events-none absolute inset-0"></div>
 
-    <Container>
+    <Container class="relative">
       <div class="max-w-3xl">
-        <div class="chip-eyebrow mb-6">
+        <div class="chip-eyebrow-teal mb-6" data-reveal>
           <span class="pulse-dot" aria-hidden="true"></span>
           The Full Capability Stack
         </div>
-        <h1 class="text-display-xl text-white">
+        <h1 class="text-display-xl text-white" data-reveal data-reveal-delay="1">
           From CX strategy to<br />
           <span class="text-gradient-accent">enterprise modernisation</span> —<br />
           under one local prime.
         </h1>
-        <p class="mt-6 max-w-2xl text-lead text-platinum/75">
+        <p class="mt-6 max-w-2xl text-lead text-platinum/75" data-reveal data-reveal-delay="2">
           Emerge Digital structures and delivers programs across four capability pillars. Our
           founder personally leads the CX Division. The remaining pillars are delivered through our
           23-year regional bench and global engineering network — all under a single Dubai Mainland
@@ -138,17 +224,27 @@ const pillars: Pillar[] = [
         </p>
       </div>
 
-      <!-- Pillar nav -->
-      <nav class="mt-12 flex flex-wrap gap-3" aria-label="Jump to capability pillar">
+      <!-- Pillar nav pills -->
+      <nav class="mt-12 flex flex-wrap gap-3" aria-label="Jump to capability pillar" data-reveal data-reveal-delay="3">
         {pillars.map((p) => (
           <a
             href={`#${p.id}`}
-            class="rounded-pill border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-platinum/70 transition hover:border-teal/40 hover:text-teal"
+            class="rounded-pill border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-platinum/70 backdrop-blur transition-all duration-300 hover:border-teal/40 hover:bg-teal/[0.08] hover:text-teal"
           >
             {p.headline}
           </a>
         ))}
       </nav>
+
+      <!-- Trust badges -->
+      <div class="mt-10 flex flex-wrap gap-x-8 gap-y-3" data-reveal data-reveal-delay="4">
+        {['Dubai Mainland · ESR & UBO Compliant', 'GCC PDPL Aligned', '23 years regional heritage', '1 of 4 Global GMP Partners'].map((t) => (
+          <div class="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-eyebrow text-platinum/40">
+            <div class="h-1 w-1 rounded-full bg-teal/50"></div>
+            {t}
+          </div>
+        ))}
+      </div>
     </Container>
   </section>
 
@@ -156,42 +252,65 @@ const pillars: Pillar[] = [
   {pillars.map((pillar, i) => (
     <section
       id={pillar.id}
-      class:list={['border-t border-white/8 py-section-sm md:py-section', i % 2 === 0 ? 'bg-ink' : 'bg-navy']}
+      class:list={[
+        'relative isolate overflow-hidden border-t border-white/[0.06] py-section-sm md:py-section',
+        i % 2 === 0 ? 'bg-ink' : 'bg-navy',
+      ]}
     >
-      <Container>
-        <div class="mb-12 grid gap-8 lg:grid-cols-[1fr_2fr]">
-          <!-- Label column -->
-          <div class="lg:pt-1">
-            <Eyebrow class="mb-3" data-reveal>{pillar.eyebrow}</Eyebrow>
+      <!-- Subtle radial glow per section -->
+      <div
+        aria-hidden="true"
+        class="pointer-events-none absolute inset-0"
+        style={`background: radial-gradient(ellipse 50% 40% at ${i % 2 === 0 ? '80%' : '20%'} 50%, rgba(0,194,199,0.05), transparent 70%); filter: blur(60px);`}
+      ></div>
+
+      <Container class="relative">
+        <!-- Pillar header -->
+        <div class="mb-14 grid gap-10 lg:grid-cols-[auto_1fr] lg:items-start">
+          <!-- Icon + labels -->
+          <div class="flex flex-col gap-4 lg:pt-1 lg:w-72">
+            <div class="icon-wrap icon-wrap-lg" set:html={pillar.icon}></div>
+            <Eyebrow data-reveal>{pillar.eyebrow}</Eyebrow>
             <h2 class="text-display-lg text-white" data-reveal data-reveal-delay="1">{pillar.headline}</h2>
             {pillar.note && (
-              <span class="mt-4 inline-flex items-center gap-2 rounded-pill border border-teal/20 bg-teal/8 px-3 py-1.5 text-xs font-semibold text-teal" data-reveal data-reveal-delay="2">
-                <svg class="h-3 w-3" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
-                  <circle cx="6" cy="6" r="3"/>
-                </svg>
+              <span class="inline-flex w-fit items-center gap-2 rounded-pill border border-teal/25 bg-teal/[0.08] px-3 py-1.5 text-xs font-semibold text-teal" data-reveal data-reveal-delay="2">
+                <svg class="h-2.5 w-2.5 fill-teal" viewBox="0 0 8 8" aria-hidden="true"><circle cx="4" cy="4" r="4"/></svg>
                 {pillar.note}
               </span>
             )}
           </div>
-          <!-- Lead text -->
-          <p class="self-start text-lead text-platinum/70 lg:pt-1" data-reveal data-reveal-delay="2">{pillar.lead}</p>
+          <!-- Lead -->
+          <p class="self-center text-lead text-platinum/70 lg:pt-14" data-reveal data-reveal-delay="2">{pillar.lead}</p>
         </div>
 
         <!-- Service cards -->
         <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {pillar.services.map((svc, si) => (
-            <div class="card-surface flex flex-col gap-4 p-7" data-reveal data-reveal-delay={String(si + 1)}>
-              <h3 class="text-lg font-semibold leading-snug text-white">{svc.title}</h3>
-              <p class="flex-1 text-sm leading-relaxed text-platinum/65">{svc.body}</p>
-              {svc.platforms && (
-                <div class="flex flex-wrap gap-1.5 pt-2">
-                  {svc.platforms.map((plat) => (
-                    <span class="rounded border border-white/8 bg-white/[0.03] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-cool">
-                      {plat}
-                    </span>
-                  ))}
-                </div>
-              )}
+            <div
+              class="service-card-premium card-surface flex flex-col gap-0 overflow-hidden"
+              data-reveal
+              data-reveal-delay={String(si + 1)}
+            >
+              <!-- Top accent bar -->
+              <div class="absolute inset-x-0 top-0 h-[1.5px] origin-left scale-x-0 bg-gradient-accent transition-transform duration-500 ease-out-quint group-hover:scale-x-100 pointer-events-none" style="transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);"></div>
+
+              <div class="flex flex-col gap-4 p-7">
+                <!-- Icon -->
+                <div class="icon-wrap" set:html={svc.icon}></div>
+
+                <h3 class="text-lg font-semibold leading-snug text-white">{svc.title}</h3>
+                <p class="flex-1 text-sm leading-relaxed text-platinum/65">{svc.body}</p>
+
+                {svc.platforms && (
+                  <div class="flex flex-wrap gap-1.5 pt-1">
+                    {svc.platforms.map((plat) => (
+                      <span class="rounded border border-white/8 bg-white/[0.03] px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wide text-cool transition-colors duration-300 group-hover:border-teal/20 group-hover:text-platinum/80">
+                        {plat}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -200,40 +319,54 @@ const pillars: Pillar[] = [
   ))}
 
   <!-- ── Crawl–Walk–Run callout ────────────────────────────── -->
-  <section class="border-t border-white/8 bg-ink py-section-sm md:py-section">
-    <Container>
-      <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-ink py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 55% 40% at 50% 50%, rgba(0,194,199,0.06), transparent 70%); filter: blur(60px);"></div>
+
+    <Container class="relative">
+      <div class="grid gap-14 lg:grid-cols-2 lg:items-center">
         <div>
           <Eyebrow class="mb-4" data-reveal>How we engage</Eyebrow>
           <h2 class="text-display-lg text-white" data-reveal data-reveal-delay="1">
-            A risk-managed path from ambition to enterprise outcome.
+            A risk-managed path from ambition to
+            <span class="text-gradient-accent">enterprise outcome.</span>
           </h2>
-          <p class="mt-4 text-lead text-platinum/70" data-reveal data-reveal-delay="2">
+          <p class="mt-5 text-lead text-platinum/70" data-reveal data-reveal-delay="2">
             Every engagement, regardless of capability pillar, follows the Crawl–Walk–Run model.
             Low-risk entry. Defined gates. Founder-level oversight at every phase.
           </p>
-          <div class="mt-8 flex flex-wrap gap-4">
-            <Button href="/contact">Start with a Crawl-phase Diagnostic</Button>
-            <Button href="/#crawl-walk-run" variant="secondary">See the model</Button>
+          <div class="mt-8 flex flex-wrap gap-4" data-reveal data-reveal-delay="3">
+            <Button href="/contact/" class="btn-shimmer">Start with a Crawl-phase Diagnostic</Button>
+            <Button href="/#crawl-walk-run" variant="ghost">See the model</Button>
           </div>
         </div>
 
         <div class="space-y-4">
           {[
-            { phase: 'Crawl', duration: '4–8 weeks', body: 'A focused, fixed-scope diagnostic. Maturity assessment, opportunity sizing, business case, and a Vision 2030-aligned roadmap. Built so procurement can sign in days, not months.' },
-            { phase: 'Walk', duration: '3–6 months', body: 'A defined transformation phase against a prioritised opportunity. Clear gates, named KPIs, founder-level oversight throughout.' },
-            { phase: 'Run', duration: '12+ months', body: 'A long-term, multi-workstream program managed through the local prime, with managed services providing run-state operations and continuous modernisation.' },
+            { phase: 'Crawl', duration: '4–8 weeks', risk: 'Low risk', body: 'A focused, fixed-scope diagnostic. Maturity assessment, opportunity sizing, business case, and a Vision 2030-aligned roadmap. Built so procurement can sign in days, not months.' },
+            { phase: 'Walk',  duration: '3–6 months', risk: 'Defined gates', body: 'A defined transformation phase against a prioritised opportunity. Clear gates, named KPIs, founder-level oversight throughout.' },
+            { phase: 'Run',   duration: '12+ months', risk: 'Long-term program', body: 'A long-term, multi-workstream program managed through the local prime, with managed services providing run-state operations and continuous modernisation.' },
           ].map((step, idx) => (
-            <div class="flex gap-5 rounded-2xl border border-white/8 bg-white/[0.02] p-6" data-reveal data-reveal-delay={String(idx + 1)}>
-              <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-teal/10 text-teal">
-                <span class="font-mono text-xs font-bold">0{idx + 1}</span>
+            <div
+              class="group flex gap-5 rounded-card border border-white/8 p-6 transition-all duration-400 hover:border-teal/30 hover:-translate-y-0.5"
+              style="background: rgba(255,255,255,0.025); backdrop-filter: blur(12px);"
+              data-reveal
+              data-reveal-delay={String(idx + 1)}
+            >
+              <!-- Step badge -->
+              <div class="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-accent font-mono text-xs font-bold text-ink shadow-glow">
+                {String(idx + 1).padStart(2, '0')}
+                <div class="absolute inset-0 rounded-full bg-teal/20" style={`animation: ping-slow ${3 + idx * 0.5}s ease-in-out ${idx * 0.6}s infinite;`}></div>
               </div>
-              <div>
+              <div class="flex-1">
                 <div class="flex items-baseline gap-3">
-                  <h3 class="font-semibold text-white">{step.phase}</h3>
-                  <span class="text-xs text-cool">{step.duration}</span>
+                  <h3 class="font-semibold text-teal">{step.phase}</h3>
+                  <span class="rounded-pill border border-white/10 bg-white/5 px-2 py-0.5 font-mono text-[10px] text-cool">{step.duration}</span>
                 </div>
-                <p class="mt-1.5 text-sm leading-relaxed text-platinum/65">{step.body}</p>
+                <p class="mt-1.5 text-sm leading-relaxed text-platinum/65 transition-colors duration-300 group-hover:text-platinum/85">{step.body}</p>
+                <div class="mt-3 flex items-center gap-2">
+                  <div class="h-1.5 w-1.5 rounded-full bg-teal/60"></div>
+                  <span class="text-[10px] font-semibold uppercase tracking-eyebrow text-cool/60">{step.risk}</span>
+                </div>
               </div>
             </div>
           ))}
@@ -243,21 +376,64 @@ const pillars: Pillar[] = [
   </section>
 
   <!-- ── Don't see your need ───────────────────────────────── -->
-  <section class="border-t border-white/8 bg-navy py-section-sm md:py-section">
-    <Container>
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-navy py-section-sm md:py-section">
+    <!-- Aurora -->
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 70% 60% at 50% 110%, rgba(0,194,199,0.22), transparent 65%), radial-gradient(ellipse 45% 50% at 18% 0%, rgba(61,220,227,0.12), transparent 60%); filter: blur(60px);"></div>
+
+    <Container class="relative">
       <div class="mx-auto max-w-2xl text-center">
-        <Eyebrow class="mb-4" data-reveal>Let's talk</Eyebrow>
+        <p class="chip-eyebrow-teal mx-auto mb-6 w-fit" data-reveal>Let's talk</p>
         <h2 class="text-display-lg text-white" data-reveal data-reveal-delay="1">Don't see your need on this list?</h2>
-        <p class="mt-4 text-lead text-platinum/70" data-reveal data-reveal-delay="2">
+        <p class="mt-5 text-lead text-platinum/70" data-reveal data-reveal-delay="2">
           It probably still fits. The four pillars above are the structure we use — not a ceiling
           on what we can deliver. If you're facing an enterprise CX, data, AI, or transformation
           challenge in the MEA region, book a Readiness Briefing and let's map it together.
         </p>
-        <div class="mt-10 flex flex-wrap justify-center gap-4">
-          <Button href="/contact" size="lg">Book a Vision 2030 Readiness Briefing</Button>
-          <Button href="/case-studies" variant="secondary" size="lg">See the proof</Button>
+        <div class="mt-10 flex flex-wrap justify-center gap-4" data-reveal data-reveal-delay="3">
+          <Button href="/contact/" size="lg" class="btn-shimmer">Book a Vision 2030 Readiness Briefing</Button>
+          <Button href="/case-studies/" variant="ghost" size="lg">See the proof</Button>
+        </div>
+
+        <!-- Trust strip -->
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3" data-reveal data-reveal-delay="4">
+          {['Dubai Mainland · ESR & UBO Compliant', 'GCC PDPL Aligned', '23 years regional heritage'].map((t) => (
+            <div class="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-eyebrow text-platinum/40">
+              <div class="h-1 w-1 rounded-full bg-teal/50"></div>
+              {t}
+            </div>
+          ))}
         </div>
       </div>
     </Container>
   </section>
 </BaseLayout>
+
+<script>
+  // Mouse-tracked glow on service cards
+  document.querySelectorAll<HTMLElement>('.service-card-premium').forEach((card) => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty('--mx', `${((e.clientX - rect.left) / rect.width)  * 100}%`);
+      card.style.setProperty('--my', `${((e.clientY - rect.top)  / rect.height) * 100}%`);
+    });
+  });
+
+  // Reveal top accent bar on hover
+  document.querySelectorAll<HTMLElement>('.service-card-premium').forEach((card) => {
+    const bar = card.querySelector<HTMLElement>('.absolute.inset-x-0.top-0');
+    if (!bar) return;
+    card.addEventListener('mouseenter', () => bar.style.transform = 'scaleX(1)');
+    card.addEventListener('mouseleave', () => bar.style.transform = 'scaleX(0)');
+  });
+</script>
+
+<style>
+  @keyframes aurora-drift {
+    0%, 100% { transform: translate3d(0,0,0) scale(1); opacity: 0.85; }
+    50%       { transform: translate3d(2%,-3%,0) scale(1.06); opacity: 1; }
+  }
+  @keyframes ping-slow {
+    0%, 100% { transform: scale(1); opacity: 0.7; }
+    50%       { transform: scale(1.7); opacity: 0; }
+  }
+</style>

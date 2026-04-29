@@ -35,26 +35,50 @@ const principles = [
 const modelPillars = [
   {
     eyebrow: 'Commercial engine',
-    title: 'Emerge Digital — The Local Prime',
-    body: 'Emerge Digital is the independently registered Dubai Mainland entity that owns the client relationship, structures the engagement, signs the contract, and carries full commercial and compliance responsibility across the GCC. One throat to choke. One MEA-licensed counterparty. Zero ambiguity for procurement.',
+    title: 'The Local Prime',
+    body: 'Emerge Digital is the independently registered Dubai Mainland entity that owns the client relationship, structures the engagement, signs the contract, and carries full commercial and compliance responsibility across the GCC. One throat to choke. Zero ambiguity for procurement.',
+    icon: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10 2l7 3v6c0 4-3 7-7 8-4-1-7-4-7-8V5z"/>
+      <path d="M7 10l2 2 4-4"/>
+    </svg>`,
   },
   {
     eyebrow: '23 years of regional heritage',
-    title: 'The Regional Delivery Bench',
-    body: '23 years of leadership in digital analytics, customer experience, and growth across the Middle East. Standing as one of only four Global Google Marketing Platform Partners worldwide. A GCC-native bench across analytics, MarTech, CX strategy, and commerce — operating across Dubai, Riyadh, Cairo, and beyond.',
+    title: 'The Regional Bench',
+    body: '23 years of leadership in digital analytics, customer experience, and growth across the Middle East. Standing as one of only four Global Google Marketing Platform Partners worldwide. A GCC-native bench across analytics, MarTech, CX strategy, and commerce.',
+    icon: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="10" cy="10" r="8"/>
+      <path d="M2 10h16M10 2c-2.5 3-4 5.5-4 8s1.5 5 4 8M10 2c2.5 3 4 5.5 4 8s-1.5 5-4 8"/>
+    </svg>`,
   },
   {
     eyebrow: '80,000+ engineers worldwide',
-    title: 'The Global Engineering Network',
+    title: 'The Global Network',
     body: 'A global engineering footprint spanning Asia, Europe, and the Americas plugs in behind every engagement. Enterprise-grade application modernisation, cloud, AI engineering, and managed services capacity flow into MEA programs at the scale only a true global SI can offer.',
+    icon: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="5" cy="5" r="2.5"/>
+      <circle cx="15" cy="5" r="2.5"/>
+      <circle cx="5" cy="15" r="2.5"/>
+      <circle cx="15" cy="15" r="2.5"/>
+      <circle cx="10" cy="10" r="2" fill="rgba(0,194,199,0.3)" stroke="currentColor"/>
+      <path d="M7.5 5h5M5 7.5v5M7.5 15h5M15 7.5v5"/>
+      <path d="M7 7l6 6M13 7l-6 6" opacity="0.4"/>
+    </svg>`,
   },
 ];
 
+const stats = [
+  { value: 23,   suffix: '',    unit: 'yrs',  label: 'Regional consulting heritage' },
+  { value: 7,    suffix: '',    unit: '',      label: 'MEA offices across UAE, KSA, Egypt and beyond' },
+  { value: 4,    suffix: '',    unit: '',      label: 'Global Google Marketing Platform Partners worldwide' },
+  { value: 80,   suffix: 'K+', unit: '',      label: 'Engineers in our global delivery network' },
+];
+
 const compliance = [
-  { label: 'Jurisdiction', value: 'Dubai Mainland' },
-  { label: 'Compliance', value: 'ESR & UBO compliant' },
-  { label: 'Data handling', value: 'GCC PDPL aligned' },
-  { label: 'Certification', value: 'ISO-aligned delivery network' },
+  { label: 'Jurisdiction',   value: 'Dubai Mainland' },
+  { label: 'Compliance',     value: 'ESR & UBO Compliant' },
+  { label: 'Data handling',  value: 'GCC PDPL Aligned' },
+  { label: 'Certification',  value: 'ISO-aligned delivery' },
 ];
 ---
 
@@ -63,40 +87,61 @@ const compliance = [
   description="Emerge Digital is the Dubai Mainland local prime for enterprise CX, Data, AI, and digital transformation across MEA. Founded by Rami, backed by 23 years of regional heritage and 80,000+ engineers."
 >
   <!-- ── Hero ─────────────────────────────────────────────── -->
-  <section class="relative overflow-hidden bg-gradient-hero py-section-sm md:py-section">
-    <div class="pointer-events-none absolute inset-0 bg-grid bg-grid-fade" aria-hidden="true"></div>
-    <div class="aurora pointer-events-none absolute inset-0 opacity-60" aria-hidden="true"></div>
+  <section class="relative isolate overflow-hidden bg-gradient-hero py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 bg-grid bg-grid-fade"></div>
+    <div aria-hidden="true" class="aurora pointer-events-none absolute inset-0 opacity-75" style="animation: aurora-drift 26s ease-in-out infinite;"></div>
+    <div aria-hidden="true" class="noise pointer-events-none absolute inset-0"></div>
+    <div aria-hidden="true" class="beam-scan pointer-events-none absolute inset-0"></div>
 
-    <Container>
+    <Container class="relative">
       <div class="max-w-3xl">
-        <div class="chip-eyebrow mb-6">
+        <div class="chip-eyebrow-teal mb-6" data-reveal>
           <span class="pulse-dot" aria-hidden="true"></span>
           Our Story
         </div>
-        <h1 class="text-display-xl text-white">
+        <h1 class="text-display-xl text-white" data-reveal data-reveal-delay="1">
           Built in MEA.<br />
           <span class="text-gradient-accent">Engineered for the Vision 2030 decade.</span>
         </h1>
-        <p class="mt-6 max-w-2xl text-lead text-platinum/75">
+        <p class="mt-6 max-w-2xl text-lead text-platinum/75" data-reveal data-reveal-delay="2">
           Emerge Digital was founded as a Dubai Mainland entity to do one thing exceptionally well:
           serve as the agile local prime for enterprise CX, Data, AI, and digital transformation
           programs across the MEA region — channelling 23 years of regional heritage and a global
           engineering network of 80,000+ engineers through a single, accountable contracting partner.
         </p>
+
+        <!-- Quick-stat strip -->
+        <div class="mt-12 flex flex-wrap gap-x-10 gap-y-5" data-reveal data-reveal-delay="3">
+          {stats.map((s) => (
+            <div>
+              <p class="stat-value text-display-md">
+                <span
+                  class="counter-value"
+                  data-target={s.value}
+                  data-suffix={s.suffix}
+                >{s.value}{s.suffix}</span>
+                {s.unit && <span class="ml-0.5 text-display-sm text-teal/80">{s.unit}</span>}
+              </p>
+              <p class="mt-0.5 text-[11px] uppercase tracking-eyebrow text-platinum/45">{s.label}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </Container>
   </section>
 
   <!-- ── Founder's Letter ──────────────────────────────────── -->
-  <section class="bg-ink py-section-sm md:py-section">
-    <Container>
-      <div class="grid gap-16 lg:grid-cols-[1fr_360px]">
+  <section class="relative isolate overflow-hidden bg-ink py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 60% 50% at 85% 50%, rgba(0,194,199,0.06), transparent 70%); filter: blur(60px);"></div>
+
+    <Container class="relative">
+      <div class="grid gap-16 lg:grid-cols-[1fr_340px]">
         <!-- Letter -->
         <div>
           <Eyebrow class="mb-6" data-reveal>A note from our founder</Eyebrow>
           <h2 class="text-display-lg text-white" data-reveal data-reveal-delay="1">A note from Rami, Founder</h2>
 
-          <div class="mt-10 space-y-6 text-lead leading-relaxed text-platinum/75">
+          <div class="mt-10 space-y-6 text-lead leading-relaxed text-platinum/70">
             <p data-reveal data-reveal-delay="2">
               When I founded Emerge Digital, the brief was simple: enterprise buyers in our region
               were tired of choosing between offshore mega-consultancies that didn't really show up
@@ -110,14 +155,19 @@ const compliance = [
               Since then, we've delivered programs across the Gulf and Egypt under that thesis.
               Today Emerge stands on 23 years of regional heritage and a global engineering network
               of 80,000+ engineers — giving us the depth to match our in-country accountability.
-              I personally lead the CX Division — Customer Experience, MarTech, and Commerce —
-              because that's where I believe the next decade of competitive advantage will be won.
-              Everything else we do reinforces that thesis.
+              I personally lead the CX Division because that's where I believe the next decade of
+              competitive advantage will be won. Everything else we do reinforces that thesis.
             </p>
           </div>
 
+          <!-- Signature block -->
           <div class="mt-10 flex items-center gap-4" data-reveal data-reveal-delay="4">
-            <div class="h-12 w-12 rounded-full bg-gradient-accent"></div>
+            <div class="relative h-12 w-12 overflow-hidden rounded-full bg-gradient-accent shadow-glow">
+              <svg viewBox="0 0 48 48" class="absolute inset-0 h-full w-full" fill="none" aria-hidden="true">
+                <circle cx="24" cy="18" r="8" fill="rgba(255,255,255,0.2)"/>
+                <path d="M8 42c0-10 7-15 16-15s16 5 16 15" fill="rgba(255,255,255,0.15)"/>
+              </svg>
+            </div>
             <div>
               <p class="font-semibold text-white">Rami</p>
               <p class="text-sm text-cool">Founder, Emerge Digital</p>
@@ -126,19 +176,30 @@ const compliance = [
         </div>
 
         <!-- Stats panel -->
-        <div class="flex flex-col gap-4 self-start lg:pt-16">
-          {[
-            { value: '23', suffix: ' yrs', label: 'Regional consulting heritage' },
-            { value: '7', suffix: '', label: 'MEA offices across UAE, KSA, Egypt and beyond' },
-            { value: '4', suffix: '', label: 'Global Google Marketing Platform Partners worldwide — we are one' },
-            { value: '80K+', suffix: '', label: 'Engineers in our global delivery network' },
-          ].map((stat, i) => (
-            <div class="rounded-2xl border border-white/8 bg-white/[0.02] p-6" data-reveal data-reveal-delay={String(i + 1)}>
-              <p class="font-display text-display-lg tabular-nums leading-none text-gradient-accent">
-                {stat.value}<span class="text-display-md">{stat.suffix}</span>
-              </p>
-              <p class="mt-2 text-sm leading-relaxed text-cool">{stat.label}</p>
-            </div>
+        <div class="flex flex-col gap-4 self-start lg:pt-20">
+          {stats.map((stat, i) => (
+            <article
+              class="group relative overflow-hidden rounded-card border border-white/8 p-6 transition-all duration-400 hover:border-teal/30 hover:-translate-y-0.5"
+              style="background: rgba(255,255,255,0.025); backdrop-filter: blur(12px);"
+              data-reveal
+              data-reveal-delay={String(i + 1)}
+            >
+              <!-- Hover glow -->
+              <div class="pointer-events-none absolute inset-0 rounded-card opacity-0 transition-opacity duration-400 group-hover:opacity-100"
+                style="background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,194,199,0.1), transparent 80%);"
+              ></div>
+              <div class="relative z-10">
+                <p class="stat-value text-display-lg">
+                  <span
+                    class="counter-value"
+                    data-target={stat.value}
+                    data-suffix={stat.suffix}
+                  >{stat.value}{stat.suffix}</span>
+                  {stat.unit && <span class="ml-1 text-display-md text-teal/70">{stat.unit}</span>}
+                </p>
+                <p class="mt-2 text-sm leading-relaxed text-cool">{stat.label}</p>
+              </div>
+            </article>
           ))}
         </div>
       </div>
@@ -146,125 +207,220 @@ const compliance = [
   </section>
 
   <!-- ── The Operating Model ───────────────────────────────── -->
-  <section class="border-t border-white/8 bg-navy py-section-sm md:py-section">
-    <Container>
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-navy py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 60% 45% at 50% 100%, rgba(0,194,199,0.07), transparent 70%); filter: blur(60px);"></div>
+
+    <Container class="relative">
       <div class="mb-16 max-w-2xl">
         <Eyebrow class="mb-4" data-reveal>The Operating Model</Eyebrow>
         <h2 class="text-display-lg text-white" data-reveal data-reveal-delay="1">
-          One commercial engine. Three sources of unfair advantage.
+          One commercial engine.
+          <span class="text-gradient-accent">Three sources of unfair advantage.</span>
         </h2>
-        <p class="mt-4 text-lead text-platinum/70" data-reveal data-reveal-delay="2">
+        <p class="mt-5 text-lead text-platinum/70" data-reveal data-reveal-delay="2">
           The local-prime model is the structural reason clients choose Emerge Digital over a
           direct engagement with a global SI or a regional-only consultancy.
         </p>
       </div>
 
+      <!-- Pillar cards -->
       <div class="grid gap-6 md:grid-cols-3">
         {modelPillars.map((pillar, i) => (
-          <div class="card-surface flex flex-col gap-4 p-8" data-reveal data-reveal-delay={String(i + 1)}>
-            <span class="font-mono text-[11px] font-semibold uppercase tracking-widest text-teal/60">
-              0{i + 1}
-            </span>
-            <Eyebrow tone="cool" as="span">{pillar.eyebrow}</Eyebrow>
-            <h3 class="text-display-md text-white">{pillar.title}</h3>
-            <p class="flex-1 text-sm leading-relaxed text-platinum/65">{pillar.body}</p>
-          </div>
+          <article
+            class="service-card-premium group relative rounded-card border border-white/8 p-8 transition-all duration-400"
+            style="background: rgba(255,255,255,0.025); backdrop-filter: blur(12px);"
+            data-reveal
+            data-reveal-delay={String(i + 1)}
+          >
+            <!-- Top accent -->
+            <div class="absolute inset-x-0 top-0 h-[1.5px] rounded-t-card origin-left scale-x-0 bg-gradient-accent pointer-events-none" style="transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);"></div>
+
+            <div class="icon-wrap icon-wrap-lg mb-5" set:html={pillar.icon}></div>
+            <span class="font-mono text-[10px] font-semibold uppercase tracking-widest text-teal/55">0{i + 1}</span>
+            <Eyebrow tone="cool" as="span" class="mt-1 block text-[10px]">{pillar.eyebrow}</Eyebrow>
+            <h3 class="mt-3 text-display-md text-white transition-colors duration-300 group-hover:text-teal">{pillar.title}</h3>
+            <p class="mt-3 text-sm leading-relaxed text-platinum/65 transition-colors duration-300 group-hover:text-platinum/85">{pillar.body}</p>
+          </article>
         ))}
       </div>
 
-      <!-- Model diagram — simplified text-based flow -->
-      <div class="mt-16 rounded-2xl border border-white/8 bg-white/[0.015] p-8">
-        <p class="mb-8 text-center text-eyebrow uppercase text-cool">How the model flows</p>
-        <div class="flex flex-wrap items-center justify-center gap-4 text-sm">
-          {[
-            { label: 'Client', sub: 'Enterprise buyer, GCC / MEA', accent: false },
-            { label: '→', sub: '', accent: false, divider: true },
-            { label: 'Emerge Digital', sub: 'Local Prime · Dubai Mainland · Single contract', accent: true },
-            { label: '→', sub: '', accent: false, divider: true },
-            { label: 'Regional bench', sub: '23 yrs heritage · 7 offices', accent: false },
-            { label: '+', sub: '', accent: false, divider: true },
-            { label: 'Global network', sub: '80,000+ engineers', accent: false },
-          ].map((item) =>
-            item.divider ? (
-              <span class="text-cool">{item.label}</span>
-            ) : (
-              <div class:list={['rounded-xl border p-4 text-center', item.accent ? 'border-teal/40 bg-teal/8' : 'border-white/8 bg-white/[0.02]']}>
-                <p class:list={['font-semibold', item.accent ? 'text-teal' : 'text-white']}>{item.label}</p>
-                {item.sub && <p class="mt-1 text-[11px] leading-snug text-cool">{item.sub}</p>}
+      <!-- Model flow diagram -->
+      <div class="mt-16" data-reveal>
+        <div class="rounded-card border border-white/8 p-8 sm:p-10" style="background: rgba(255,255,255,0.015); backdrop-filter: blur(12px);">
+          <p class="mb-8 text-center text-[11px] font-semibold uppercase tracking-eyebrow text-cool/60">How the model flows</p>
+
+          <!-- Flow row -->
+          <div class="flex flex-wrap items-center justify-center gap-3 text-sm">
+            <!-- Client node -->
+            <div class="rounded-card border border-white/10 bg-white/[0.03] p-4 text-center">
+              <p class="font-semibold text-platinum/80">Client</p>
+              <p class="mt-1 text-[11px] leading-snug text-cool">Enterprise buyer<br/>GCC / MEA</p>
+            </div>
+
+            <!-- Arrow -->
+            <div class="flex flex-col items-center gap-1">
+              <svg width="40" height="12" viewBox="0 0 40 12" fill="none" aria-hidden="true">
+                <path d="M2 6h32" stroke="url(#arr-grad)" stroke-width="1.5" stroke-dasharray="4 2"/>
+                <path d="M28 2l6 4-6 4" stroke="#00C2C7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <defs>
+                  <linearGradient id="arr-grad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="rgba(255,255,255,0.15)"/>
+                    <stop offset="100%" stop-color="#00C2C7"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+
+            <!-- Emerge node (accent) -->
+            <div class="gradient-border rounded-card p-4 text-center" style="background: rgba(0,194,199,0.07); backdrop-filter: blur(12px);">
+              <p class="font-semibold text-teal">Emerge Digital</p>
+              <p class="mt-1 text-[11px] leading-snug text-teal/70">Local Prime · Dubai Mainland<br/>Single contract</p>
+            </div>
+
+            <!-- Arrow -->
+            <div class="flex flex-col items-center gap-1">
+              <svg width="40" height="12" viewBox="0 0 40 12" fill="none" aria-hidden="true">
+                <path d="M2 6h32" stroke="url(#arr-grad2)" stroke-width="1.5" stroke-dasharray="4 2"/>
+                <path d="M28 2l6 4-6 4" stroke="#3DDCE3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <defs>
+                  <linearGradient id="arr-grad2" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#00C2C7"/>
+                    <stop offset="100%" stop-color="#3DDCE3"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+
+            <!-- Regional + Global nodes stacked -->
+            <div class="flex flex-col gap-2">
+              <div class="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-center">
+                <p class="font-semibold text-platinum/80">Regional bench</p>
+                <p class="mt-0.5 text-[11px] text-cool">23 yrs heritage · 7 offices</p>
               </div>
-            )
-          )}
+              <div class="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-center">
+                <p class="font-semibold text-platinum/80">Global network</p>
+                <p class="mt-0.5 text-[11px] text-cool">80,000+ engineers</p>
+              </div>
+            </div>
+          </div>
+
+          <p class="mt-8 text-center text-sm text-cool/70">
+            Unified enterprise outcomes — delivered under a single Dubai Mainland contract.
+          </p>
         </div>
-        <p class="mt-8 text-center text-sm text-cool">
-          Unified enterprise outcomes — delivered under a single Dubai Mainland contract.
-        </p>
       </div>
     </Container>
   </section>
 
   <!-- ── Operating Principles ──────────────────────────────── -->
-  <section class="border-t border-white/8 bg-ink py-section-sm md:py-section">
-    <Container>
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-ink py-section-sm md:py-section">
+    <Container class="relative">
       <div class="mb-16 max-w-2xl">
         <Eyebrow class="mb-4" data-reveal>How we operate</Eyebrow>
         <h2 class="text-display-lg text-white" data-reveal data-reveal-delay="1">Our operating principles.</h2>
-        <p class="mt-4 text-lead text-platinum/70" data-reveal data-reveal-delay="2">
+        <p class="mt-5 text-lead text-platinum/70" data-reveal data-reveal-delay="2">
           Five commitments that are non-negotiable on every engagement.
         </p>
       </div>
 
-      <div class="grid gap-px bg-white/8 sm:grid-cols-2 lg:grid-cols-3 rounded-2xl overflow-hidden border border-white/8">
+      <!-- Principles grid -->
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {principles.map((p, i) => (
-          <div class="group bg-ink p-8 transition-colors duration-300 hover:bg-navy/60" data-reveal data-reveal-delay={String((i % 3) + 1)}>
-            <p class="font-mono text-xs font-semibold text-teal/50">{p.n}</p>
-            <h3 class="mt-4 text-lg font-semibold text-white">{p.title}</h3>
-            <p class="mt-3 text-sm leading-relaxed text-platinum/60">{p.body}</p>
+          <div
+            class="group relative overflow-hidden rounded-card border border-white/8 p-8 transition-all duration-400 hover:border-teal/30 hover:-translate-y-0.5"
+            style="background: rgba(255,255,255,0.025); backdrop-filter: blur(12px);"
+            data-reveal
+            data-reveal-delay={String((i % 3) + 1)}
+          >
+            <!-- Hover glow -->
+            <div class="pointer-events-none absolute inset-0 rounded-card opacity-0 transition-opacity duration-400 group-hover:opacity-100"
+              style="background: radial-gradient(ellipse 70% 55% at 50% -15%, rgba(0,194,199,0.1), transparent 80%);"
+            ></div>
+
+            <!-- Left accent bar -->
+            <div class="absolute bottom-6 left-0 top-6 w-[2px] origin-top scale-y-0 bg-gradient-accent transition-transform duration-500 ease-out-quint group-hover:scale-y-100 rounded-r-full pointer-events-none"></div>
+
+            <div class="relative z-10">
+              <!-- Number -->
+              <p class="stat-value text-[2.5rem] leading-none">{p.n}</p>
+              <h3 class="mt-4 text-lg font-semibold text-white transition-colors duration-300 group-hover:text-teal">{p.title}</h3>
+              <p class="mt-3 text-sm leading-relaxed text-platinum/60 transition-colors duration-300 group-hover:text-platinum/80">{p.body}</p>
+            </div>
           </div>
         ))}
+
         <!-- Sixth cell — CTA -->
-        <div class="bg-ink p-8 flex flex-col justify-between gap-6">
-          <div>
-            <p class="font-mono text-xs font-semibold text-cool/40">06</p>
-            <h3 class="mt-4 text-lg font-semibold text-white">See the principles in practice.</h3>
-            <p class="mt-3 text-sm leading-relaxed text-platinum/60">
-              Read our case studies to see how each principle shows up in real program delivery.
-            </p>
+        <div
+          class="gradient-border relative overflow-hidden rounded-card p-8 transition-all duration-400 hover:-translate-y-0.5"
+          style="background: rgba(0,194,199,0.06); backdrop-filter: blur(12px);"
+          data-reveal
+          data-reveal-delay="3"
+        >
+          <div class="relative z-10 flex h-full flex-col justify-between gap-6">
+            <div>
+              <p class="stat-value text-[2.5rem] leading-none">06</p>
+              <h3 class="mt-4 text-lg font-semibold text-white">See the principles in practice.</h3>
+              <p class="mt-3 text-sm leading-relaxed text-platinum/60">
+                Read our case studies to see how each principle shows up in real program delivery.
+              </p>
+            </div>
+            <Button href="/case-studies/" variant="ghost" size="md">View case studies</Button>
           </div>
-          <Button href="/case-studies" variant="ghost" size="md">View case studies</Button>
         </div>
       </div>
     </Container>
   </section>
 
   <!-- ── Compliance & Trust ─────────────────────────────────── -->
-  <section class="border-t border-white/8 bg-navy py-section-sm md:py-section">
-    <Container>
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-navy py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 55% 45% at 20% 50%, rgba(0,194,199,0.06), transparent 70%); filter: blur(60px);"></div>
+
+    <Container class="relative">
       <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
         <div>
           <Eyebrow class="mb-4" data-reveal>Compliance & Licensing</Eyebrow>
           <h2 class="text-display-lg text-white" data-reveal data-reveal-delay="1">
-            Procurement-ready from day one.
+            Procurement-ready
+            <span class="text-gradient-accent">from day one.</span>
           </h2>
-          <p class="mt-4 text-lead text-platinum/70" data-reveal data-reveal-delay="2">
+          <p class="mt-5 text-lead text-platinum/70" data-reveal data-reveal-delay="2">
             Emerge Digital is structured for enterprise procurement. Dubai Mainland incorporation,
             ESR and UBO compliance, and data-handling frameworks aligned to GCC PDPL — the
             compliance questions enterprise buyers ask first are already answered.
           </p>
-          <Button href="/contact" class="mt-8" data-reveal data-reveal-delay="3">Talk to Rami</Button>
+          <div class="mt-8" data-reveal data-reveal-delay="3">
+            <Button href="/contact/" class="btn-shimmer">Talk to Rami</Button>
+          </div>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
           {compliance.map((item, i) => (
-            <div class="rounded-2xl border border-white/8 bg-white/[0.02] p-6" data-reveal data-reveal-delay={String(i + 1)}>
-              <p class="text-eyebrow uppercase text-cool">{item.label}</p>
-              <p class="mt-2 font-semibold text-white">{item.value}</p>
+            <div
+              class="group relative overflow-hidden rounded-card border border-white/8 p-6 transition-all duration-400 hover:border-teal/30 hover:-translate-y-0.5"
+              style="background: rgba(255,255,255,0.025); backdrop-filter: blur(12px);"
+              data-reveal
+              data-reveal-delay={String(i + 1)}
+            >
+              <div class="pointer-events-none absolute inset-0 rounded-card opacity-0 transition-opacity duration-400 group-hover:opacity-100"
+                style="background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,194,199,0.1), transparent 80%);"
+              ></div>
+              <div class="relative z-10">
+                <p class="text-[11px] font-semibold uppercase tracking-eyebrow text-cool/60">{item.label}</p>
+                <p class="mt-2 font-semibold text-white">{item.value}</p>
+              </div>
             </div>
           ))}
-          <div class="col-span-2 rounded-2xl border border-teal/20 bg-teal/5 p-6">
-            <p class="text-sm text-platinum/70">
-              ISO and security alignment across our global delivery network. Data residency and
-              regional data-handling commitments available on request.
-            </p>
+          <div class="col-span-2 rounded-card border border-teal/20 p-6" style="background: rgba(0,194,199,0.05); backdrop-filter: blur(12px);">
+            <div class="flex items-start gap-3">
+              <svg class="mt-0.5 h-4 w-4 shrink-0 text-teal" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M8 1l5.5 2.2v5c0 3.5-2.5 6-5.5 7-3-1-5.5-3.5-5.5-7V3.2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M5.5 8l2 2 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <p class="text-sm text-platinum/65">
+                ISO and security alignment across our global delivery network. Data residency and
+                regional data-handling commitments available on request.
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -272,20 +428,100 @@ const compliance = [
   </section>
 
   <!-- ── Final CTA ─────────────────────────────────────────── -->
-  <section class="border-t border-white/8 bg-ink py-section-sm md:py-section">
-    <Container>
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-ink py-section-sm md:py-section">
+    <!-- Aurora -->
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 70% 60% at 50% 110%, rgba(0,194,199,0.22), transparent 65%), radial-gradient(ellipse 45% 45% at 18% 0%, rgba(61,220,227,0.12), transparent 60%); filter: blur(60px);"></div>
+
+    <Container class="relative">
       <div class="flex flex-col items-center gap-6 text-center">
-        <Eyebrow data-reveal>Start the conversation</Eyebrow>
-        <h2 class="text-display-lg max-w-xl text-white" data-reveal data-reveal-delay="1">Ready to talk Vision 2030?</h2>
+        <p class="chip-eyebrow-teal w-fit" data-reveal>Start the conversation</p>
+        <h2 class="text-display-lg max-w-xl text-white" data-reveal data-reveal-delay="1">
+          Ready to talk
+          <span class="text-gradient-glow">Vision 2030?</span>
+        </h2>
         <p class="max-w-xl text-lead text-platinum/70" data-reveal data-reveal-delay="2">
           Book a 30-minute Readiness Briefing with Rami. We'll map your priorities to the
           2026–2027 procurement window and show you how the local-prime model works in practice.
         </p>
-        <div class="flex flex-wrap justify-center gap-4">
-          <Button href="/contact" size="lg">Book a Vision 2030 Readiness Briefing</Button>
-          <Button href="/services" variant="secondary" size="lg">Explore the capability stack</Button>
+        <div class="flex flex-wrap justify-center gap-4" data-reveal data-reveal-delay="3">
+          <Button href="/contact/" size="lg" class="btn-shimmer">Book a Vision 2030 Readiness Briefing</Button>
+          <Button href="/services/" variant="ghost" size="lg">Explore the capability stack</Button>
+        </div>
+
+        <!-- Trust strip -->
+        <div class="mt-4 flex flex-wrap items-center justify-center gap-x-8 gap-y-3" data-reveal data-reveal-delay="4">
+          {['Dubai Mainland · ESR & UBO Compliant', 'GCC PDPL Aligned', '23 years regional heritage'].map((t) => (
+            <div class="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-eyebrow text-platinum/40">
+              <div class="h-1 w-1 rounded-full bg-teal/50"></div>
+              {t}
+            </div>
+          ))}
         </div>
       </div>
     </Container>
   </section>
 </BaseLayout>
+
+<script>
+  // Animate count-up stats
+  const counters = document.querySelectorAll<HTMLElement>('.counter-value[data-target]');
+  const dur = 1600;
+
+  const animateCounter = (el: HTMLElement) => {
+    const target  = parseInt(el.dataset.target  ?? '0', 10);
+    const suffix  = el.dataset.suffix ?? '';
+    const start   = performance.now();
+
+    const tick = (now: number) => {
+      const t      = Math.min((now - start) / dur, 1);
+      const eased  = 1 - Math.pow(1 - t, 4); // ease-out-quart
+      const v      = Math.round(target * eased);
+      el.textContent = String(v) + suffix;
+      if (t < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    counters.forEach((el) => {
+      el.textContent = (el.dataset.target ?? '') + (el.dataset.suffix ?? '');
+    });
+  } else {
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            animateCounter(entry.target as HTMLElement);
+            obs.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+    counters.forEach((el) => obs.observe(el));
+  }
+
+  // Mouse-tracked glow on model pillar cards
+  document.querySelectorAll<HTMLElement>('.service-card-premium').forEach((card) => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty('--mx', `${((e.clientX - rect.left) / rect.width)  * 100}%`);
+      card.style.setProperty('--my', `${((e.clientY - rect.top)  / rect.height) * 100}%`);
+    });
+  });
+
+  // Reveal top accent bar on hover
+  document.querySelectorAll<HTMLElement>('.service-card-premium').forEach((card) => {
+    const bar = card.querySelector<HTMLElement>('.absolute.inset-x-0.top-0');
+    if (!bar) return;
+    card.addEventListener('mouseenter', () => bar.style.transform = 'scaleX(1)');
+    card.addEventListener('mouseleave', () => bar.style.transform = 'scaleX(0)');
+  });
+</script>
+
+<style>
+  @keyframes aurora-drift {
+    0%, 100% { transform: translate3d(0,0,0) scale(1); opacity: 0.85; }
+    50%       { transform: translate3d(2%,-3%,0) scale(1.06); opacity: 1; }
+  }
+</style>
