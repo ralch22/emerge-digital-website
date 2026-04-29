@@ -3,7 +3,6 @@
    Brand tokens (CSS vars) + Tailwind base/components/utilities
    ---------------------------------------------------------- */
 
-/* Fonts (variable, performant) */
 @import '@fontsource-variable/inter';
 @import '@fontsource-variable/jetbrains-mono';
 
@@ -11,11 +10,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Brand tokens as CSS variables — for use in inline SVGs,
-   raw CSS, and anywhere Tailwind classes can't reach. */
 :root {
   --color-navy: #0A1F3D;
   --color-ink: #06122A;
+  --color-ink-deep: #03081A;
   --color-teal: #00C2C7;
   --color-cyan: #3DDCE3;
   --color-platinum: #E8EEF5;
@@ -23,14 +21,14 @@
   --color-slate: #1F2A3C;
   --color-cool: #6B7A90;
 
-  --gradient-hero: radial-gradient(ellipse 100% 80% at 50% 0%, rgba(0, 194, 199, 0.10), transparent 60%),
-                    linear-gradient(160deg, #06122A 0%, #0A1F3D 55%, #06122A 100%);
   --gradient-accent: linear-gradient(90deg, #00C2C7 0%, #3DDCE3 100%);
-  --gradient-data: linear-gradient(180deg, #0A1F3D 0%, #00C2C7 100%);
+  --gradient-text: linear-gradient(110deg, #FFFFFF 0%, #E8EEF5 40%, #3DDCE3 100%);
 
-  --radius-card: 1.5rem;
   --shadow-elevated: 0 30px 80px -30px rgba(0, 194, 199, 0.18), 0 20px 60px -20px rgba(6, 18, 42, 0.55);
   --shadow-glow: 0 0 0 1px rgba(0, 194, 199, 0.4), 0 8px 32px rgba(0, 194, 199, 0.18);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @layer base {
@@ -38,14 +36,30 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  /* When Lenis is active it sets these classes; turn off native smooth scroll */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  html.lenis-smooth {
+    scroll-behavior: auto;
+  }
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  .lenis.lenis-stopped {
+    overflow: clip;
   }
 
   body {
     @apply bg-ink text-platinum font-sans;
     font-feature-settings: 'ss01', 'cv11';
+    overflow-x: hidden;
   }
 
-  /* Default heading rhythm — components can override */
   h1, h2, h3, h4 {
     @apply font-display tracking-tight text-white;
     text-wrap: balance;
@@ -55,48 +69,29 @@
     text-wrap: pretty;
   }
 
-  /* Generous default selection */
   ::selection {
-    background-color: rgba(0, 194, 199, 0.3);
+    background-color: rgba(0, 194, 199, 0.35);
     color: #fff;
   }
 
-  /* Focus ring — visible, on-brand */
   :focus-visible {
     outline: 2px solid var(--color-teal);
-    outline-offset: 2px;
+    outline-offset: 3px;
     border-radius: 4px;
   }
 
-  /* Smooth anchor scroll */
-  html {
-    scroll-behavior: smooth;
-  }
-
-  /* Subtle scrollbar (webkit) */
-  ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-  }
-  ::-webkit-scrollbar-track {
-    background: var(--color-ink);
-  }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--color-ink); }
   ::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.08);
     border-radius: 8px;
     border: 2px solid var(--color-ink);
   }
-  ::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 194, 199, 0.35);
-  }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(0, 194, 199, 0.35); }
 
   @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
-    *,
-    *::before,
-    *::after {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
@@ -105,16 +100,142 @@
 }
 
 @layer components {
-  /* Reusable utility for the signature hero gradient backdrop. */
+  /* Surface utilities */
   .surface-hero {
     background: var(--gradient-hero);
   }
 
-  /* Subtle gradient text utility */
+  /* Gradient text */
   .text-gradient-accent {
     background: var(--gradient-accent);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+  }
+
+  .text-gradient-soft {
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Premium card surface — used by feature cards / case-study tiles */
+  .card-surface {
+    @apply relative overflow-hidden rounded-card border border-white/8 bg-white/[0.02];
+    backdrop-filter: blur(8px);
+    transition: border-color 0.4s var(--ease-out-quint),
+                transform 0.4s var(--ease-out-quint),
+                box-shadow 0.4s var(--ease-out-quint);
+  }
+  .card-surface::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(600px circle at var(--mx, 50%) var(--my, 0%),
+      rgba(0, 194, 199, 0.10), transparent 40%);
+    opacity: 0;
+    transition: opacity 0.4s var(--ease-out-quint);
+    pointer-events: none;
+  }
+  .card-surface:hover {
+    border-color: rgba(0, 194, 199, 0.45);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-elevated);
+  }
+  .card-surface:hover::before {
+    opacity: 1;
+  }
+
+  /* Hairline divider */
+  .hairline {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+  }
+
+  /* Eyebrow chip */
+  .chip-eyebrow {
+    @apply inline-flex items-center gap-2 rounded-pill border border-white/10 bg-white/5 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-eyebrow text-platinum/85 backdrop-blur;
+  }
+
+  /* Pulse dot */
+  .pulse-dot {
+    @apply relative flex h-2 w-2;
+  }
+  .pulse-dot::before {
+    content: '';
+    @apply absolute inline-flex h-full w-full animate-ping rounded-full bg-teal opacity-75;
+  }
+  .pulse-dot::after {
+    content: '';
+    @apply relative inline-flex h-2 w-2 rounded-full bg-teal;
+  }
+
+  /* Background grid (large) */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+  .bg-grid-fade {
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 75%);
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 75%);
+  }
+
+  /* Aurora layer used in hero / CTA */
+  .aurora {
+    background:
+      radial-gradient(ellipse 60% 50% at 78% 20%, rgba(0, 194, 199, 0.32), transparent 65%),
+      radial-gradient(ellipse 50% 40% at 12% 88%, rgba(61, 220, 227, 0.18), transparent 60%),
+      radial-gradient(ellipse 30% 25% at 50% 50%, rgba(0, 194, 199, 0.06), transparent 70%);
+    filter: blur(60px);
+  }
+
+  /* Subtle SVG noise */
+  .noise {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.4;
+    mix-blend-mode: overlay;
+  }
+
+  /* Word-reveal animation primitive (used by hero) */
+  .reveal-word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(110%);
+  }
+
+  /* Word reveal mask wrapper — clips the word so it slides up cleanly */
+  .reveal-mask {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    line-height: 1;
+    padding-bottom: 0.08em; /* prevent descender clipping */
+  }
+
+  /* Underline stroke that draws in on reveal */
+  .stroke-draw {
+    stroke-dasharray: 200;
+    stroke-dashoffset: 200;
+  }
+
+  /* Marquee — used by trust strip / logo wall when needed */
+  .marquee-track {
+    @apply flex gap-12 animate-marquee;
+    width: max-content;
+  }
+}
+
+@layer utilities {
+  /* Container query — used on hero where breakpoints feel cramped */
+  .text-balance { text-wrap: balance; }
+  .text-pretty { text-wrap: pretty; }
+
+  /* Mask for fading edges on horizontal scrollers */
+  .mask-fade-x {
+    -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+            mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
   }
 }

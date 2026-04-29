@@ -22,6 +22,9 @@ pnpm-debug.log*
 .idea/
 *.swp
 
+# Claude Code local config
+.claude/
+
 # Cloudflare Pages / Wrangler
 .wrangler/
 .dev.vars

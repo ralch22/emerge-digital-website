@@ -1,0 +1,287 @@
+---
+/**
+ * Navbar — sticky, scroll-aware site header.
+ *  - Compresses on scroll (padding + blur)
+ *  - Thin gradient scroll-progress bar at the bottom
+ *  - Mobile sheet panel with simple focus trap
+ */
+
+const navItems = [
+  { href: '/services/', label: 'Services' },
+  { href: '/industries/', label: 'Industries' },
+  { href: '/credentials/', label: 'Credentials' },
+  { href: '/success-stories/', label: 'Success Stories' },
+  { href: '/insights/', label: 'Insights' },
+  { href: '/about/', label: 'About' },
+];
+---
+
+<header
+  id="site-header"
+  data-site-header
+  class="fixed inset-x-0 top-0 z-50 transition-[padding,background-color,backdrop-filter] duration-500 ease-out-quint"
+>
+  <div
+    class="header-surface relative mx-auto flex max-w-wide items-center justify-between gap-6 px-6 py-4 transition-all duration-500 ease-out-quint sm:px-8 lg:px-12"
+  >
+    <a
+      href="/"
+      class="group relative z-10 flex items-center gap-2.5 font-display text-base font-semibold tracking-tight text-white"
+      aria-label="Emerge Digital — home"
+    >
+      <span class="logo-mark relative inline-flex h-8 w-8 items-center justify-center rounded-md bg-gradient-accent text-ink">
+        <span class="text-sm font-bold">E</span>
+      </span>
+      <span class="hidden sm:inline-flex items-baseline">
+        Emerge<span class="text-teal">.</span>
+      </span>
+    </a>
+
+    <nav aria-label="Primary" class="hidden lg:flex">
+      <ul class="flex items-center gap-7 text-[13px] font-medium text-platinum/80">
+        {navItems.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class="nav-link relative inline-flex py-2 transition-colors duration-300 hover:text-white"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a
+        href="/contact/"
+        class="hidden md:inline-flex group items-center gap-2 rounded-pill bg-gradient-accent px-5 py-2.5 text-[13px] font-semibold text-ink transition-all duration-300 hover:shadow-glow hover:scale-[1.02]"
+      >
+        Book a Briefing
+        <span aria-hidden="true" class="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+      </a>
+
+      <button
+        id="nav-toggle"
+        type="button"
+        aria-label="Open navigation"
+        aria-controls="mobile-nav"
+        aria-expanded="false"
+        class="lg:hidden inline-flex h-10 w-10 items-center justify-center rounded-md border border-white/10 bg-white/5 text-white transition-colors hover:bg-white/10"
+      >
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path d="M2 5h14M2 9h14M2 13h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div aria-hidden="true" class="scroll-progress" data-scroll-progress></div>
+</header>
+
+<!-- Spacer that matches the header so content starts below it. The header itself is fixed. -->
+<div aria-hidden="true" class="h-[72px]"></div>
+
+<!-- Mobile sheet -->
+<div
+  id="mobile-nav"
+  aria-hidden="true"
+  class="mobile-sheet fixed inset-0 z-[60] hidden"
+>
+  <div class="mobile-sheet-backdrop absolute inset-0 bg-ink/80 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
+  <aside
+    role="dialog"
+    aria-modal="true"
+    aria-label="Mobile navigation"
+    class="mobile-sheet-panel absolute right-0 top-0 h-full w-[88%] max-w-sm translate-x-full bg-gradient-ink border-l border-white/8 shadow-2xl transition-transform duration-500 ease-out-quint"
+  >
+    <div class="flex items-center justify-between border-b border-white/8 px-6 py-4">
+      <span class="font-display text-base font-semibold text-white">Menu</span>
+      <button
+        id="nav-close"
+        type="button"
+        aria-label="Close navigation"
+        class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-white/10 bg-white/5 text-white transition-colors hover:bg-white/10"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M3 3l10 10M13 3 3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+    <nav aria-label="Mobile primary" class="px-6 py-6">
+      <ul class="space-y-1">
+        {navItems.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class="mobile-link group flex items-center justify-between rounded-lg px-4 py-3 text-base font-medium text-platinum/85 transition-colors hover:bg-white/5 hover:text-white"
+            >
+              <span>{item.label}</span>
+              <span aria-hidden="true" class="text-cool transition-transform duration-300 group-hover:translate-x-1 group-hover:text-teal">→</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <a
+        href="/contact/"
+        class="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-pill bg-gradient-accent px-5 py-3 text-sm font-semibold text-ink"
+      >
+        Book a Briefing
+        <span aria-hidden="true">→</span>
+      </a>
+    </nav>
+  </aside>
+</div>
+
+<style>
+  /* Surface — when at top: transparent. When scrolled: blurred + bordered. */
+  .header-surface {
+    background-color: transparent;
+    border-bottom: 1px solid transparent;
+    transition: background-color 0.5s var(--ease-out-quint),
+                border-color 0.5s var(--ease-out-quint),
+                backdrop-filter 0.5s var(--ease-out-quint),
+                padding 0.5s var(--ease-out-quint);
+  }
+  [data-site-header][data-scrolled='true'] .header-surface {
+    background-color: rgba(6, 18, 42, 0.72);
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+    backdrop-filter: saturate(160%) blur(18px);
+    -webkit-backdrop-filter: saturate(160%) blur(18px);
+    padding-top: 0.625rem;
+    padding-bottom: 0.625rem;
+  }
+
+  /* Logo mark glow */
+  .logo-mark {
+    box-shadow: 0 0 0 1px rgba(0, 194, 199, 0.4), 0 4px 16px rgba(0, 194, 199, 0.25);
+  }
+
+  /* Animated underline */
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 4px;
+    height: 1.5px;
+    background: linear-gradient(90deg, var(--color-teal), var(--color-cyan));
+    border-radius: 2px;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.35s var(--ease-out-quint);
+  }
+  .nav-link:hover::after,
+  .nav-link[aria-current='page']::after {
+    transform: scaleX(1);
+  }
+
+  /* Scroll progress bar */
+  .scroll-progress {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 1.5px;
+    width: 100%;
+    background: linear-gradient(90deg, var(--color-teal), var(--color-cyan));
+    transform: scaleX(0);
+    transform-origin: left center;
+    opacity: 0;
+    transition: opacity 0.4s var(--ease-out-quint);
+  }
+  [data-site-header][data-scrolled='true'] .scroll-progress {
+    opacity: 0.9;
+  }
+
+  /* Mobile sheet open state */
+  .mobile-sheet[data-open='true'] {
+    display: block;
+  }
+  .mobile-sheet[data-open='true'] .mobile-sheet-backdrop {
+    opacity: 1;
+  }
+  .mobile-sheet[data-open='true'] .mobile-sheet-panel {
+    transform: translateX(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .header-surface,
+    .scroll-progress,
+    .mobile-sheet-backdrop,
+    .mobile-sheet-panel,
+    .nav-link::after {
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+  // Scroll-aware header + scroll-progress bar.
+  const header = document.querySelector<HTMLElement>('[data-site-header]');
+  const progress = document.querySelector<HTMLElement>('[data-scroll-progress]');
+
+  if (header && progress) {
+    let ticking = false;
+
+    const update = () => {
+      const y = window.scrollY;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const ratio = max > 0 ? Math.min(1, y / max) : 0;
+
+      header.dataset.scrolled = y > 8 ? 'true' : 'false';
+      progress.style.transform = `scaleX(${ratio})`;
+      ticking = false;
+    };
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          requestAnimationFrame(update);
+          ticking = true;
+        }
+      },
+      { passive: true },
+    );
+    update();
+  }
+
+  // Mobile sheet
+  const toggle = document.getElementById('nav-toggle');
+  const close = document.getElementById('nav-close');
+  const sheet = document.getElementById('mobile-nav');
+  const links = sheet?.querySelectorAll<HTMLAnchorElement>('a');
+
+  const openSheet = () => {
+    if (!sheet || !toggle) return;
+    sheet.dataset.open = 'true';
+    sheet.setAttribute('aria-hidden', 'false');
+    toggle.setAttribute('aria-expanded', 'true');
+    document.documentElement.classList.add('lenis-stopped');
+    requestAnimationFrame(() => {
+      const first = sheet.querySelector<HTMLElement>('a, button');
+      first?.focus();
+    });
+  };
+
+  const closeSheet = () => {
+    if (!sheet || !toggle) return;
+    sheet.dataset.open = 'false';
+    sheet.setAttribute('aria-hidden', 'true');
+    toggle.setAttribute('aria-expanded', 'false');
+    document.documentElement.classList.remove('lenis-stopped');
+    setTimeout(() => {
+      if (sheet.dataset.open !== 'true') sheet.style.display = '';
+    }, 500);
+    toggle.focus();
+  };
+
+  toggle?.addEventListener('click', openSheet);
+  close?.addEventListener('click', closeSheet);
+  sheet?.querySelector('.mobile-sheet-backdrop')?.addEventListener('click', closeSheet);
+  links?.forEach((a) => a.addEventListener('click', closeSheet));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && sheet?.dataset.open === 'true') closeSheet();
+  });
+</script>

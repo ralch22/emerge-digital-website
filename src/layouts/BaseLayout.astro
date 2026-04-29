@@ -4,6 +4,8 @@
  * Pages should pass `title`, `description`, and optionally `ogImage`.
  */
 import '../styles/global.css';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
 
 interface Props {
   title: string;
@@ -17,15 +19,7 @@ const {
   ogImage = '/og-default.png',
 } = Astro.props;
 
-const canonical = new URL(Astro.url.pathname, Astro.site).toString();
-const navItems = [
-  { href: '/services/', label: 'Services' },
-  { href: '/industries/', label: 'Industries' },
-  { href: '/partnerships/', label: 'Credentials' },
-  { href: '/success-stories/', label: 'Success Stories' },
-  { href: '/insights/', label: 'Insights' },
-  { href: '/about/', label: 'About' },
-];
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://emerge-digital-website.emerge-digital.workers.dev').toString();
 ---
 
 <!doctype html>
@@ -39,141 +33,70 @@ const navItems = [
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
 
-    <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={new URL(ogImage, Astro.site).toString()} />
+    <meta property="og:image" content={new URL(ogImage, canonical).toString()} />
+    <meta property="og:site_name" content="Emerge Digital" />
 
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
 
-    <!-- Favicon (placeholder — add real favicons in /public) -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-
-    <!-- Theme color matches the brand navy -->
     <meta name="theme-color" content="#0A1F3D" />
   </head>
 
   <body>
     <a
       href="#main"
-      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-pill focus:bg-teal focus:px-4 focus:py-2 focus:text-ink"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-pill focus:bg-teal focus:px-4 focus:py-2 focus:text-ink"
     >
       Skip to content
     </a>
 
-    <header class="sticky top-0 z-40 site-header">
-      <div class="mx-auto flex max-w-section items-center justify-between px-6 py-4">
-        <a href="/" class="group flex items-center gap-2 font-display text-lg font-semibold tracking-tight text-white">
-          <span class="logo-mark relative inline-flex h-7 w-7 items-center justify-center rounded-md bg-gradient-accent text-ink shadow-glow/40">
-            <span class="text-[13px] font-bold">E</span>
-          </span>
-          <span class="transition group-hover:text-white">Emerge<span class="text-teal">.</span></span>
-        </a>
-        <nav aria-label="Primary" class="hidden items-center gap-7 text-sm text-platinum/85 lg:flex">
-          {navItems.map((item) => (
-            <a href={item.href} class="nav-link relative transition hover:text-white">
-              {item.label}
-            </a>
-          ))}
-        </nav>
-        <a
-          href="/contact/"
-          class="group inline-flex items-center gap-2 rounded-pill bg-gradient-accent px-5 py-2.5 text-sm font-semibold text-ink transition hover:shadow-glow"
-        >
-          Book a Briefing
-          <span aria-hidden="true" class="transition group-hover:translate-x-0.5">→</span>
-        </a>
-      </div>
-    </header>
+    <Navbar />
 
     <main id="main">
       <slot />
     </main>
 
-    <footer class="footer-surface relative isolate overflow-hidden border-t border-white/5">
-      <div aria-hidden="true" class="footer-glow pointer-events-none absolute inset-0"></div>
-      <div class="relative mx-auto max-w-section px-6 py-16 text-sm text-cool">
-        <div class="grid gap-10 md:grid-cols-4">
-          <div>
-            <a href="/" class="font-display text-lg font-semibold tracking-tight text-white">
-              Emerge<span class="text-teal">.</span>
-            </a>
-            <p class="mt-3 max-w-xs">
-              Local prime. Global power. Enterprise outcomes across the MEA region.
-            </p>
-          </div>
-          <div>
-            <h4 class="text-white/90 font-semibold">Company</h4>
-            <ul class="mt-3 space-y-2">
-              <li><a href="/about/" class="hover:text-white">About</a></li>
-              <li><a href="/partnerships/" class="hover:text-white">Credentials</a></li>
-              <li><a href="/contact/" class="hover:text-white">Contact</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 class="text-white/90 font-semibold">Capabilities</h4>
-            <ul class="mt-3 space-y-2">
-              <li><a href="/services/" class="hover:text-white">Services</a></li>
-              <li><a href="/industries/" class="hover:text-white">Industries</a></li>
-              <li><a href="/success-stories/" class="hover:text-white">Success Stories</a></li>
-              <li><a href="/insights/" class="hover:text-white">Insights</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 class="text-white/90 font-semibold">Compliance</h4>
-            <p class="mt-3">
-              Emerge Digital — Dubai Mainland Licence No. [XXXXX] · Registered Office: [Address] · ESR &amp; UBO Compliant.
-            </p>
-          </div>
-        </div>
-        <div class="mt-12 flex flex-col items-start justify-between gap-4 border-t border-white/5 pt-6 md:flex-row md:items-center">
-          <p>© {new Date().getFullYear()} Emerge Digital. All rights reserved.</p>
-          <ul class="flex gap-6">
-            <li><a href="/legal/privacy/" class="hover:text-white">Privacy</a></li>
-            <li><a href="/legal/cookies/" class="hover:text-white">Cookies</a></li>
-            <li><a href="/legal/terms/" class="hover:text-white">Terms</a></li>
-          </ul>
-        </div>
-      </div>
-    </footer>
+    <Footer />
 
-    <style>
-      .site-header {
-        background: rgba(6, 18, 42, 0.7);
-        backdrop-filter: saturate(160%) blur(14px);
-        -webkit-backdrop-filter: saturate(160%) blur(14px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    <!-- Lenis smooth scroll — initialised at end of body so DOM is ready. -->
+    <script>
+      import Lenis from 'lenis';
+
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduced) {
+        const lenis = new Lenis({
+          duration: 1.15,
+          // Smooth easing — ease-out-expo
+          easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          wheelMultiplier: 1,
+          touchMultiplier: 1.4,
+        });
+
+        function raf(time: number) {
+          lenis.raf(time);
+          requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        // Anchor links — smooth scroll handled by Lenis automatically.
+        document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) => {
+          a.addEventListener('click', (e) => {
+            const id = a.getAttribute('href');
+            if (!id || id === '#') return;
+            const target = document.querySelector(id);
+            if (target) {
+              e.preventDefault();
+              lenis.scrollTo(target as HTMLElement, { offset: -80 });
+            }
+          });
+        });
       }
-      .nav-link::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: -6px;
-        height: 2px;
-        background: linear-gradient(90deg, var(--color-teal), var(--color-cyan));
-        border-radius: 2px;
-        transform: scaleX(0);
-        transform-origin: left center;
-        transition: transform 0.25s ease;
-      }
-      .nav-link:hover::after {
-        transform: scaleX(1);
-      }
-      .logo-mark {
-        box-shadow: 0 0 0 1px rgba(0, 194, 199, 0.4), 0 4px 16px rgba(0, 194, 199, 0.25);
-      }
-      .footer-surface {
-        background: linear-gradient(180deg, #06122A 0%, #03081A 100%);
-      }
-      .footer-glow {
-        background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(0, 194, 199, 0.07), transparent 70%);
-      }
-    </style>
+    </script>
   </body>
 </html>
