@@ -1,0 +1,63 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Container from '../components/Container.astro';
+import Button from '../components/Button.astro';
+---
+
+<BaseLayout
+  title="Page Not Found — Emerge Digital"
+  description="The page you're looking for doesn't exist. Find your way back to Emerge Digital."
+>
+  <section class="relative flex min-h-[80vh] items-center overflow-hidden bg-gradient-hero">
+    <div class="pointer-events-none absolute inset-0 bg-grid bg-grid-fade" aria-hidden="true"></div>
+    <div class="aurora pointer-events-none absolute inset-0 opacity-50" aria-hidden="true"></div>
+
+    <Container>
+      <div class="max-w-2xl py-section-sm">
+        <!-- Oversized 404 numeral -->
+        <p
+          class="select-none font-display text-[clamp(7rem,20vw,14rem)] font-semibold leading-none tracking-tightest text-gradient-accent opacity-20"
+          aria-hidden="true"
+        >
+          404
+        </p>
+
+        <h1 class="-mt-4 text-display-xl text-white">
+          Page not found.
+        </h1>
+
+        <p class="mt-5 max-w-lg text-lead text-platinum/70">
+          The page you're looking for has moved, or never existed. Let's get you
+          somewhere useful.
+        </p>
+
+        <!-- Quick links -->
+        <nav aria-label="Suggested pages" class="mt-10">
+          <p class="mb-4 text-eyebrow uppercase text-cool">Try one of these</p>
+          <ul class="flex flex-wrap gap-3">
+            {[
+              { href: '/',              label: 'Homepage' },
+              { href: '/services/',     label: 'Services' },
+              { href: '/case-studies/', label: 'Case Studies' },
+              { href: '/insights/',     label: 'Insights' },
+              { href: '/about/',        label: 'About' },
+            ].map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="inline-flex items-center gap-1.5 rounded-pill border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-platinum/80 transition hover:border-teal/40 hover:text-teal"
+                >
+                  {link.label} →
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div class="mt-12">
+          <Button href="/contact" size="lg">Book a Vision 2030 Readiness Briefing</Button>
+        </div>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>
