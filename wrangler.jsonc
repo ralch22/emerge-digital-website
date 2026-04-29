@@ -1,8 +1,9 @@
 {
   "name": "emerge-digital-website",
+  "main": "worker.ts",
   "compatibility_date": "2026-04-29",
-  "pages_build_output_dir": "./dist",
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    "binding": "ASSETS"
   }
 }
