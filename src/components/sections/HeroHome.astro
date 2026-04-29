@@ -53,16 +53,19 @@ const marqueeChunks = [
 
       <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
       <!--                  V I S I O N                       -->
+      <!--   Three-column grid locks the O to viewport center -->
       <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
       <div data-letters class="letters-wrap">
-        <div class="letters-row">
-          <span data-letter data-pos="-3"  class="letter">V</span>
-          <span data-letter data-pos="-2"  class="letter">I</span>
-          <span data-letter data-pos="-1"  class="letter">S</span>
-          <span data-letter data-pos="-0.4" class="letter">I</span>
+        <!-- Left letter group · pushed right by 1fr column, justified to its right edge -->
+        <div data-letters-left class="letters-side letters-left">
+          <span data-letter data-side="left" data-pos="-4" class="letter">V</span>
+          <span data-letter data-side="left" data-pos="-3" class="letter">I</span>
+          <span data-letter data-side="left" data-pos="-2" class="letter">S</span>
+          <span data-letter data-side="left" data-pos="-1" class="letter">I</span>
+        </div>
 
-          <!-- ── The "O" frame — content viewport ── -->
-          <div data-o-frame class="o-frame">
+        <!-- Centered O frame — auto-sized grid column → always at viewport center -->
+        <div data-o-frame class="o-frame">
             <div data-o-inner class="o-inner">
               <!-- Content layer: full viewport, clipped by the O -->
               <div data-o-content class="o-content">
@@ -126,32 +129,35 @@ const marqueeChunks = [
                   </svg>
                 </div>
 
-                <!-- Centered content stack (this is what the O reveals) -->
+                <!-- Centered content stack — grid 1fr/auto/1fr keeps H1 at exact viewport center -->
                 <div data-o-inner-stack class="o-inner-stack">
-                  <p class="chip-eyebrow-teal">
+                  <!-- Top row · eyebrow sits flush against headline's top edge -->
+                  <p class="stack-eyebrow chip-eyebrow-teal">
                     <span class="pulse-dot" aria-hidden="true"></span>
                     <span>Vision 2030 · {monthsRemaining} months remain in the procurement window</span>
                   </p>
 
-                  <h1 class="hero-headline">
-                    Local Prime.<br/>
-                    Global Power.<br/>
+                  <!-- Center row · the H1 anchors precisely at viewport vertical center -->
+                  <h1 class="stack-h1 hero-headline">
+                    Local Prime. Global Power.<br/>
                     <span class="text-gradient-glow">Enterprise Outcomes.</span>
                   </h1>
 
-                  <p class="hero-sub">
-                    The agile <strong class="text-platinum">Dubai Mainland</strong> prime for enterprise
-                    Customer Experience, Data, AI, and digital transformation across MEA — channelling
-                    23 years of regional heritage and 80,000+ engineers through a single accountable contract.
-                  </p>
-
-                  <div class="cta-row">
-                    <Button href="/contact/" size="lg" class="btn-shimmer">
-                      Book a Vision 2030 Readiness Briefing
-                    </Button>
-                    <Button variant="ghost" href="/services/" size="lg">
-                      Explore the Capability Stack
-                    </Button>
+                  <!-- Bottom row · sub-headline + CTAs flush below headline -->
+                  <div class="stack-extras">
+                    <p class="hero-sub">
+                      The agile <strong class="text-platinum">Dubai Mainland</strong> prime for enterprise
+                      CX, Data, AI, and digital transformation across MEA — channelling 23 years of
+                      regional heritage and 80,000+ engineers through one accountable contract.
+                    </p>
+                    <div class="cta-row">
+                      <Button href="/contact/" size="lg" class="btn-shimmer">
+                        Book a Vision 2030 Readiness Briefing
+                      </Button>
+                      <Button variant="ghost" href="/services/" size="lg">
+                        Explore the Capability Stack
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
@@ -170,13 +176,15 @@ const marqueeChunks = [
             <div data-o-ring aria-hidden="true" class="o-ring"></div>
           </div>
 
-          <span data-letter data-pos="+3"  class="letter">N</span>
+        <!-- Right letter group · pushed left by 1fr column, justified to its left edge -->
+        <div data-letters-right class="letters-side letters-right">
+          <span data-letter data-side="right" data-pos="+1" class="letter">N</span>
         </div>
       </div>
 
-      <!-- ░░ Bottom row — tagline + CTA, visible from 0 % scroll ░░ -->
-      <Container class="bottom-bar-container">
-        <div data-bottom-bar class="bottom-bar">
+      <!-- ░░ Bottom row — plain div (Container would lose Astro scoped CSS) ░░ -->
+      <div class="bottom-bar-outer">
+        <div data-bottom-bar class="bottom-bar mx-auto max-w-section px-6 sm:px-8 lg:px-12">
           <div class="bottom-bar-text">
             <p class="text-[11px] font-semibold uppercase tracking-eyebrow text-teal/80">
               Emerge Digital · Dubai Mainland
@@ -198,7 +206,7 @@ const marqueeChunks = [
             </a>
           </div>
         </div>
-      </Container>
+      </div>
     </div>
   </div>
 
@@ -277,43 +285,45 @@ const marqueeChunks = [
 
   /* ════════════════════════════════════════════════════════════
      LETTERS · V I S I O N
+     Three-column grid · 1fr [auto-O] 1fr · O always at viewport center
      ──────────────────────────────────────────────────────────── */
   .letters-wrap {
     position: absolute;
     inset: 0;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    justify-content: center;
     z-index: 5;
-    /* allow letters to overflow when O expands */
     pointer-events: none;
+    overflow: visible;
   }
-  .letters-row {
+  .letters-side {
     display: flex;
     align-items: center;
-    justify-content: center;
     flex-wrap: nowrap;
-    width: max-content;
-    font-family: var(--font-family-display, 'Inter Variable'), sans-serif;
+    overflow: visible;
+    font-family: 'Inter Variable', system-ui, sans-serif;
     font-weight: 900;
-    font-size: clamp(8rem, 26vw, 22rem);
+    font-size: clamp(8rem, 22vw, 18rem);
     line-height: 0.85;
-    letter-spacing: -0.06em;
-    color: rgba(255, 255, 255, 0.92);
+    letter-spacing: -0.07em;
     text-transform: uppercase;
-    /* Slight gradient sheen on letters */
-    background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.5) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 40px rgba(0, 194, 199, 0.05);
     user-select: none;
+    filter: drop-shadow(0 0 40px rgba(0, 194, 199, 0.15));
   }
+  .letters-left  { justify-content: flex-end;   padding-right: 0.6vw; }
+  .letters-right { justify-content: flex-start; padding-left:  0.6vw; }
   .letter {
     display: inline-block;
     flex-shrink: 0;
-    will-change: transform, opacity;
     padding: 0 0.4vw;
+    will-change: transform, opacity;
+    /* Gradient applied PER LETTER so background-clip: text actually paints */
+    background: linear-gradient(180deg, #FFFFFF 0%, rgba(255,255,255,0.85) 55%, rgba(0,194,199,0.5) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
   }
 
   /* ════════════════════════════════════════════════════════════
@@ -323,10 +333,10 @@ const marqueeChunks = [
     position: relative;
     flex-shrink: 0;
     margin: 0 0.6vw;
-    width: 22vw;
-    height: 30vh;
+    width: 38vw;        /* matches Arooth's banner-letter O ratio */
+    height: 32vh;
     border-radius: 9999px;
-    overflow: visible;     /* ring sits OUTSIDE inner */
+    overflow: visible;  /* ring sits OUTSIDE inner */
     will-change: width, height, border-radius;
     pointer-events: auto;
   }
@@ -369,37 +379,58 @@ const marqueeChunks = [
     position: absolute;
     inset: 0;
     z-index: 5;
+    /* Grid 1fr / auto / 1fr · headline anchored at exact viewport center */
+    display: grid;
+    grid-template-rows: 1fr auto 1fr;
+    align-items: stretch;
+    justify-items: center;
+    text-align: center;
+    padding: 0 6vw;
+    /* Initial state: pre-scaled to fit the small O on first paint
+     * (Motion One scroll() takes over once scroll begins) */
+    transform: scale(0.65);
+    transform-origin: center center;
+    opacity: 0.7;
+    will-change: opacity, transform;
+  }
+  .stack-eyebrow {
+    align-self: end;
+    margin-bottom: 2rem;
+  }
+  .stack-h1 {
+    align-self: center;
+  }
+  .stack-extras {
+    align-self: start;
+    margin-top: 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 0 6vw;
     gap: 1.5rem;
-    will-change: opacity, transform;
+    max-width: 64ch;
   }
   .hero-headline {
-    font-family: var(--font-family-display, 'Inter Variable'), sans-serif;
+    font-family: 'Inter Variable', system-ui, sans-serif;
     font-weight: 700;
-    font-size: clamp(2.5rem, 5.4vw, 5.5rem);
-    line-height: 0.98;
-    letter-spacing: -0.035em;
+    font-size: clamp(1.75rem, 3.6vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
     color: white;
     text-wrap: balance;
-    max-width: 22ch;
+    max-width: 24ch;
+    margin: 0;
   }
   .hero-sub {
-    font-size: clamp(1rem, 1.18vw, 1.25rem);
-    line-height: 1.55;
-    color: rgba(232, 238, 245, 0.72);
-    max-width: 56ch;
+    font-size: clamp(0.9rem, 1.05vw, 1.125rem);
+    line-height: 1.5;
+    color: rgba(232, 238, 245, 0.7);
+    max-width: 50ch;
   }
   .cta-row {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
     justify-content: center;
-    margin-top: 1rem;
   }
 
   /* Mini skyline tucked at bottom of content area */
@@ -450,8 +481,9 @@ const marqueeChunks = [
 
   /* ════════════════════════════════════════════════════════════
      BOTTOM BAR · always-visible details + scroll cue
+     Plain div (not Container) so Astro scoped CSS applies cleanly
      ──────────────────────────────────────────────────────────── */
-  .bottom-bar-container {
+  .bottom-bar-outer {
     position: absolute;
     inset: auto 0 0 0;
     z-index: 30;
@@ -517,99 +549,98 @@ const marqueeChunks = [
   }
 
   /* ════════════════════════════════════════════════════════════
-     MOBILE FALLBACK (≤ 768 px) · clean stack, no sticky, no scroll
+     STATIC FALLBACK · clean stacked layout
+     Used for BOTH:  (a) mobile (≤ 768 px)
+                     (b) reduced motion (any width)
      ──────────────────────────────────────────────────────────── */
   .hero-mobile { display: none; }
-
-  @media (max-width: 768px) {
-    /* Disable the cinematic stage entirely */
-    .hero-section {
-      height: auto;
-      margin-top: 0;
-    }
-    .hero-sticky {
-      position: relative;
-      height: auto;
-    }
-    .letters-wrap, .bottom-bar-container { display: none; }
-
-    /* Show clean mobile layout */
-    .hero-mobile { display: block; position: relative; isolation: isolate; }
-    .hero-mobile-bg {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-      z-index: -1;
-      background: var(--color-ink-deep);
-    }
-    .hero-mobile-content {
-      padding-top: 7rem;     /* clear navbar */
-      padding-bottom: 4rem;
-      text-align: center;
-      position: relative;
-      min-height: 92vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    .hero-mobile-vision {
-      font-family: var(--font-family-display, 'Inter Variable'), sans-serif;
-      font-weight: 900;
-      font-size: clamp(4rem, 22vw, 8rem);
-      line-height: 0.85;
-      letter-spacing: -0.06em;
-      color: rgba(255, 255, 255, 0.95);
-      background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(0,194,199,0.4) 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin: 0;
-    }
-    .hero-mobile-year {
-      font-family: var(--font-family-display, 'Inter Variable'), sans-serif;
-      font-weight: 700;
-      font-size: 1.25rem;
-      letter-spacing: 0.4em;
-      color: var(--color-teal);
-      margin-top: 0.5rem;
-      margin-bottom: 2.5rem;
-    }
-    .hero-mobile-headline {
-      font-family: var(--font-family-display, 'Inter Variable'), sans-serif;
-      font-weight: 700;
-      font-size: clamp(1.875rem, 7.5vw, 2.5rem);
-      line-height: 1.05;
-      letter-spacing: -0.025em;
-      color: white;
-      margin: 0;
-    }
-    .hero-mobile-sub {
-      margin-top: 1.5rem;
-      font-size: 1rem;
-      line-height: 1.55;
-      color: rgba(232, 238, 245, 0.7);
-      max-width: 32rem;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .hero-mobile-ctas {
-      margin-top: 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      align-items: stretch;
-    }
-    .hero-mobile-trust {
-      margin-top: 3rem;
-    }
+  .hero-mobile-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: -1;
+    background: var(--color-ink-deep);
+  }
+  .hero-mobile-content {
+    padding-top: 7rem;     /* clear navbar */
+    padding-bottom: 4rem;
+    text-align: center;
+    position: relative;
+    min-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .hero-mobile-vision {
+    font-family: 'Inter Variable', system-ui, sans-serif;
+    font-weight: 900;
+    font-size: clamp(4rem, 18vw, 12rem);
+    line-height: 0.85;
+    letter-spacing: -0.06em;
+    background: linear-gradient(180deg, #FFFFFF 0%, rgba(0,194,199,0.5) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    margin: 0;
+  }
+  .hero-mobile-year {
+    font-family: 'Inter Variable', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: 0.4em;
+    color: var(--color-teal);
+    margin-top: 0.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .hero-mobile-headline {
+    font-family: 'Inter Variable', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.875rem, 4.5vw, 3rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    color: white;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .hero-mobile-sub {
+    margin-top: 1.5rem;
+    font-size: 1rem;
+    line-height: 1.55;
+    color: rgba(232, 238, 245, 0.7);
+    max-width: 38rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero-mobile-ctas {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: center;
+  }
+  .hero-mobile-trust {
+    margin-top: 3rem;
   }
 
-  /* ════════════════════════════════════════════════════════════
-     REDUCED MOTION — strip all motion, keep static beauty
-     ──────────────────────────────────────────────────────────── */
-  @media (prefers-reduced-motion: reduce) {
+  /* Trigger: mobile width OR reduced motion */
+  @media (max-width: 768px), (prefers-reduced-motion: reduce) {
+    /* Disable the cinematic stage entirely */
+    .hero-section { height: auto; margin-top: 0; }
+    .hero-sticky  { position: relative; height: auto; overflow: visible; }
+    .letters-wrap, .bottom-bar-outer { display: none; }
+    .hero-mobile  { display: block; position: relative; isolation: isolate; }
+
+    /* Suppress non-essential animations under reduced motion */
     .aurora-layer-1, .aurora-layer-2, .aurora-layer-3,
-    .marquee-track, .beam-scan::after { animation: none !important; }
+    .marquee-track, .beam-scan::after { animation: none; }
+  }
+  @media (max-width: 768px) {
+    /* Mobile-only refinements */
+    .hero-mobile-ctas { flex-direction: column; align-items: stretch; }
+    .hero-mobile-headline { font-size: clamp(1.875rem, 7.5vw, 2.5rem); }
   }
 </style>
 
@@ -637,8 +668,8 @@ const marqueeChunks = [
        * with extra translateX to ensure they exit the screen cleanly. */
       scroll(
         animate(oFrame, {
-          width:        ['22vw', '100vw'],
-          height:       ['30vh', '100vh'],
+          width:        ['38vw', '100vw'],
+          height:       ['32vh', '100vh'],
           borderRadius: ['9999px', '0px'],
           margin:       ['0 0.6vw', '0 0vw'],
         }, { easing: 'linear' }),
@@ -661,27 +692,27 @@ const marqueeChunks = [
         { target: heroSection, offset: range }
       );
 
-      /* Letters scatter outward and fade. data-pos drives direction. */
+      /* Letters scatter outward and fade.
+       * Layout already pushes them aside as the O grows (1fr columns
+       * shrink); we add explicit translateX for stronger scatter. */
       letters.forEach((l) => {
         const pos = parseFloat(l.dataset.pos ?? '0');
-        const x   = pos * 18;       // vw — strong scatter
-        const dim = pos * 1.0;      // dim slightly before fading
+        const x   = pos * 14;       // vw — additional scatter on top of layout shift
 
         scroll(
           animate(l, {
             x:       ['0vw', `${x}vw`],
-            opacity: [1, 1, 0],
+            opacity: [1, 1, 0.2, 0],
           }, { easing: 'linear' }),
           { target: heroSection, offset: range }
         );
       });
 
-      /* Content stack inside the O scales up + sharpens as the O grows */
+      /* Content stack inside the O · scale up + sharpen as the O grows */
       scroll(
         animate(oStack, {
-          scale:   [0.55, 0.55, 1],
-          opacity: [0.4, 0.7, 1],
-          filter:  ['blur(2px)', 'blur(1px)', 'blur(0px)'],
+          scale:   [0.65, 0.85, 1],
+          opacity: [0.7, 0.92, 1],
         }, { easing: 'linear' }),
         { target: heroSection, offset: range }
       );
