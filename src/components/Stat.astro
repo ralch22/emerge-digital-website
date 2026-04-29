@@ -9,14 +9,22 @@ interface Props {
 const { value, label, accent = true, class: className = '' } = Astro.props;
 ---
 
-<div class:list={[className]}>
+<div class:list={['stat group', className]}>
   <p
     class:list={[
-      'font-display text-display-xl tabular-nums',
-      accent ? 'text-teal' : 'text-white',
+      'font-display text-display-xl tabular-nums leading-none transition duration-300',
+      accent ? 'text-gradient-accent' : 'text-white',
     ]}
   >
     {value}
   </p>
-  <p class="mt-2 text-eyebrow uppercase text-cool">{label}</p>
+  <p class="mt-3 text-eyebrow uppercase text-cool transition duration-300 group-hover:text-platinum">
+    {label}
+  </p>
 </div>
+
+<style>
+  .stat:hover .text-gradient-accent {
+    filter: brightness(1.15);
+  }
+</style>

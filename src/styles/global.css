@@ -23,12 +23,13 @@
   --color-slate: #1F2A3C;
   --color-cool: #6B7A90;
 
-  --gradient-hero: linear-gradient(135deg, #06122A 0%, #0A1F3D 60%, rgba(0, 194, 199, 0.08) 100%);
+  --gradient-hero: radial-gradient(ellipse 100% 80% at 50% 0%, rgba(0, 194, 199, 0.10), transparent 60%),
+                    linear-gradient(160deg, #06122A 0%, #0A1F3D 55%, #06122A 100%);
   --gradient-accent: linear-gradient(90deg, #00C2C7 0%, #3DDCE3 100%);
   --gradient-data: linear-gradient(180deg, #0A1F3D 0%, #00C2C7 100%);
 
   --radius-card: 1.5rem;
-  --shadow-elevated: 0 20px 60px -20px rgba(6, 18, 42, 0.45);
+  --shadow-elevated: 0 30px 80px -30px rgba(0, 194, 199, 0.18), 0 20px 60px -20px rgba(6, 18, 42, 0.55);
   --shadow-glow: 0 0 0 1px rgba(0, 194, 199, 0.4), 0 8px 32px rgba(0, 194, 199, 0.18);
 }
 
@@ -47,6 +48,11 @@
   /* Default heading rhythm — components can override */
   h1, h2, h3, h4 {
     @apply font-display tracking-tight text-white;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
   }
 
   /* Generous default selection */
@@ -67,6 +73,23 @@
     scroll-behavior: smooth;
   }
 
+  /* Subtle scrollbar (webkit) */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-ink);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    border: 2px solid var(--color-ink);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 194, 199, 0.35);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
@@ -82,9 +105,16 @@
 }
 
 @layer components {
-  /* Reusable utility for the signature hero gradient backdrop.
-     Use sparingly — primary use is BaseLayout / Hero. */
+  /* Reusable utility for the signature hero gradient backdrop. */
   .surface-hero {
     background: var(--gradient-hero);
+  }
+
+  /* Subtle gradient text utility */
+  .text-gradient-accent {
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 }

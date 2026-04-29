@@ -2,27 +2,26 @@
 import Section from '../Section.astro';
 import Container from '../Container.astro';
 import Eyebrow from '../Eyebrow.astro';
-import Card from '../Card.astro';
 import Button from '../Button.astro';
 
-const partners = [
+const families = [
   {
-    name: 'e-CENS (Nuummite Consulting)',
-    points: [
-      '23 years of operating heritage in the Middle East',
-      '7 offices across the MEA region',
-      'One of only four Global Google Marketing Platform Partners worldwide',
-      'Deep specializations in Digital Analytics, CX, MarTech, and Commerce',
-    ],
+    title: 'Customer Data & MarTech',
+    body:
+      'CDP, identity, real-time activation, and consent — implemented in production across BFSI, Retail, and Government.',
+    items: ['Salesforce Data Cloud', 'Adobe Real-Time CDP', 'Tealium', 'mParticle', 'Treasure Data'],
   },
   {
-    name: 'FPT Corporation',
-    points: [
-      'US$2B+ annual revenue',
-      '80,000+ engineers globally',
-      'Operations across 30+ countries',
-      'Enterprise modernization, cloud, AI engineering, managed services',
-    ],
+    title: 'Analytics & Media',
+    body:
+      'Standing as one of only four Global Google Marketing Platform Partners worldwide, with deep MarTech-AdTech integration capability.',
+    items: ['Google Marketing Platform', 'GA4 / GTM', 'BigQuery', 'Snowflake', 'DV360 / SA360'],
+  },
+  {
+    title: 'Cloud, AI & Engineering',
+    body:
+      'Hyperscaler-certified cloud, modernization, and AI engineering capacity at enterprise scale — across all three major hyperscalers.',
+    items: ['AWS', 'Microsoft Azure', 'Google Cloud', 'OpenAI / Anthropic', 'Databricks'],
   },
 ];
 ---
@@ -30,32 +29,37 @@ const partners = [
 <Section tone="dark">
   <Container>
     <div class="max-w-3xl">
-      <Eyebrow>Strategic Partnerships</Eyebrow>
+      <Eyebrow>Technology Credentials</Eyebrow>
       <h2 class="mt-4 text-display-lg">
-        Built on two of the strongest names in regional and global delivery.
+        The platforms we deploy. The credentials we hold.
       </h2>
+      <p class="mt-6 max-w-prose text-lead text-platinum/80">
+        Vendor-certified across the stacks enterprise buyers actually run — from CDP and
+        commerce to hyperscaler cloud and AI. Built on a foundation of proven regional
+        delivery and global engineering capacity.
+      </p>
     </div>
 
-    <div class="mt-14 grid gap-6 lg:grid-cols-2">
+    <div class="mt-14 grid gap-6 lg:grid-cols-3">
       {
-        partners.map((p) => (
-          <Card tone="dark" class="flex h-full flex-col">
-            <h3 class="text-display-md">{p.name}</h3>
-            <ul class="mt-6 space-y-3">
-              {p.points.map((point) => (
-                <li class="flex gap-3 text-platinum/85">
-                  <span aria-hidden="true" class="mt-1 inline-block h-1.5 w-1.5 flex-none rounded-full bg-teal" />
-                  <span>{point}</span>
+        families.map((f) => (
+          <article class="partner-card group relative overflow-hidden rounded-card border border-white/10 bg-navy/40 p-8 transition duration-300 hover:-translate-y-1 hover:border-teal/40">
+            <h3 class="text-display-md text-white">{f.title}</h3>
+            <p class="mt-4 text-platinum/85">{f.body}</p>
+            <ul class="mt-6 flex flex-wrap gap-2">
+              {f.items.map((item) => (
+                <li class="rounded-pill border border-white/10 bg-white/5 px-3 py-1 font-mono text-xs text-platinum/90 transition group-hover:border-teal/30 group-hover:text-white">
+                  {item}
                 </li>
               ))}
             </ul>
-          </Card>
+          </article>
         ))
       }
     </div>
 
     <div class="mt-12">
-      <Button variant="ghost" href="/partnerships/">Read about each partner</Button>
+      <Button variant="ghost" href="/partnerships/">See the full credentials list</Button>
     </div>
   </Container>
 </Section>

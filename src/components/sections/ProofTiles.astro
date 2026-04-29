@@ -38,16 +38,15 @@ const stories = [
         What enterprise outcomes look like in practice.
       </h2>
       <p class="mt-6 text-lead text-slate/80">
-        A selection of the programs we and our JV partners have delivered for Government,
-        BFSI, and Retail leaders across the MEA region. (Client names are anonymized where
-        engagement terms require it.)
+        A selection of programs we've led for Government, BFSI, and Retail leaders across
+        the MEA region. Client names are anonymized where engagement terms require it.
       </p>
     </div>
 
     <div class="mt-14 grid gap-6 lg:grid-cols-3">
       {
         stories.map((s) => (
-          <Card tone="light" eyebrow={s.eyebrow} title={s.title} class="flex h-full flex-col">
+          <Card tone="light" eyebrow={s.eyebrow} title={s.title} class="group flex h-full flex-col transition duration-300 hover:-translate-y-1 hover:border-teal/40 hover:shadow-elevated">
             <p class="text-slate/80">{s.body}</p>
             <p class="mt-6 border-t border-platinum pt-6 font-semibold text-teal">
               {s.metric}
