@@ -64,6 +64,35 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://emerge-digi
 
     <Footer />
 
+    <!-- Scroll-reveal: IntersectionObserver wires [data-reveal] → .is-visible -->
+    <script>
+      (() => {
+        // Bail if the user prefers reduced motion — CSS already forces visible
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        const targets = document.querySelectorAll<HTMLElement>('[data-reveal]');
+        if (!targets.length) return;
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target); // animate once
+              }
+            });
+          },
+          {
+            // Trigger when element is 80px from the bottom of the viewport
+            rootMargin: '0px 0px -80px 0px',
+            threshold: 0.01,
+          },
+        );
+
+        targets.forEach((el) => observer.observe(el));
+      })();
+    </script>
+
     <!-- Lenis smooth scroll — initialised at end of body so DOM is ready. -->
     <script>
       import Lenis from 'lenis';

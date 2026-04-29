@@ -30,15 +30,15 @@ const steps = [
   <div aria-hidden="true" class="cwr-grid pointer-events-none absolute inset-0"></div>
   <Container class="relative">
     <div class="max-w-3xl">
-      <Eyebrow>How We Engage</Eyebrow>
-      <h2 class="mt-4 text-display-lg">A risk-managed path from ambition to enterprise outcome.</h2>
+      <Eyebrow data-reveal>How We Engage</Eyebrow>
+      <h2 class="mt-4 text-display-lg" data-reveal data-reveal-delay="1">A risk-managed path from ambition to enterprise outcome.</h2>
     </div>
 
     <div class="mt-16">
       <ol class="cwr-track grid gap-8 lg:grid-cols-3 lg:gap-6">
         {
           steps.map((s, i) => (
-            <li class="cwr-step relative rounded-card border border-white/10 bg-navy/40 p-8 backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:border-teal/40">
+            <li class="cwr-step relative rounded-card border border-white/10 bg-navy/40 p-8 backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:border-teal/40" data-reveal data-reveal-delay={String(i + 1)}>
               <div aria-hidden="true" class="cwr-node absolute -top-4 left-8 inline-flex h-8 w-8 items-center justify-center rounded-full bg-gradient-accent text-xs font-mono font-bold text-ink shadow-glow">
                 {String(i + 1).padStart(2, '0')}
               </div>

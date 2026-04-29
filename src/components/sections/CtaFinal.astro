@@ -9,18 +9,18 @@ import Button from '../Button.astro';
   <div aria-hidden="true" class="cta-grid pointer-events-none absolute inset-0"></div>
 
   <Container class="relative">
-    <div class="relative mx-auto max-w-3xl rounded-card border border-white/10 bg-white/[0.03] px-8 py-16 text-center backdrop-blur-sm md:px-16">
-      <p class="text-eyebrow uppercase font-semibold text-teal">2026–2027 Window</p>
-      <h2 class="mt-4 text-display-lg text-white">
+    <div class="relative mx-auto max-w-3xl rounded-card border border-white/10 bg-white/[0.03] px-8 py-16 text-center backdrop-blur-sm md:px-16" data-reveal>
+      <p class="text-eyebrow uppercase font-semibold text-teal" data-reveal data-reveal-delay="1">2026–2027 Window</p>
+      <h2 class="mt-4 text-display-lg text-white" data-reveal data-reveal-delay="2">
         Ready to talk
         <span class="text-gradient-accent">Vision 2030?</span>
       </h2>
-      <p class="mx-auto mt-6 max-w-prose text-lead text-platinum/85">
+      <p class="mx-auto mt-6 max-w-prose text-lead text-platinum/85" data-reveal data-reveal-delay="3">
         Book a 30-minute Readiness Briefing with our founder. We'll map your priorities to
         the 2026–2027 procurement window, walk you through the local-prime model, and show
         you which capabilities best fit your program.
       </p>
-      <div class="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-4" data-reveal data-reveal-delay="4">
         <Button href="/contact/" size="lg">Book a Vision 2030 Readiness Briefing</Button>
         <Button variant="ghost" href="/contact/?intent=brief" size="lg">Or send us a brief</Button>
       </div>

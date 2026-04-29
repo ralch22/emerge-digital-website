@@ -56,10 +56,12 @@ function formatDate(d: Date | string) {
   {featured && (
     <section class="bg-navy py-section-sm md:py-16">
       <Container>
-        <Eyebrow class="mb-8">Featured</Eyebrow>
+        <Eyebrow class="mb-8" data-reveal>Featured</Eyebrow>
         <a
           href={`/insights/${featured.slug}`}
           class="card-surface group grid gap-8 p-8 no-underline md:grid-cols-[1fr_320px] lg:p-12"
+          data-reveal
+          data-reveal-delay="1"
           aria-label={`Read featured article: ${featured.data.title}`}
         >
           <div class="flex flex-col justify-between gap-6">
@@ -141,8 +143,8 @@ function formatDate(d: Date | string) {
         class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
         aria-label="Insights articles"
       >
-        {rest.map((article) => (
-          <li data-category={article.data.category} class="insight-card">
+        {rest.map((article, i) => (
+          <li data-category={article.data.category} class="insight-card" data-reveal data-reveal-delay={String((i % 3) + 1)}>
             <a
               href={`/insights/${article.slug}`}
               class="card-surface group flex h-full flex-col gap-5 p-7 no-underline"

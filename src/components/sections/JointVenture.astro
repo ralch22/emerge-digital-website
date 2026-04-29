@@ -35,11 +35,11 @@ const pillars = [
 <Section tone="dark" id="why-emerge">
   <Container>
     <div class="max-w-3xl">
-      <Eyebrow>The Operating Model</Eyebrow>
-      <h2 class="mt-4 text-display-lg">
+      <Eyebrow data-reveal>The Operating Model</Eyebrow>
+      <h2 class="mt-4 text-display-lg" data-reveal data-reveal-delay="1">
         One commercial engine. Three sources of unfair advantage.
       </h2>
-      <p class="mt-6 max-w-prose text-lead text-platinum/80">
+      <p class="mt-6 max-w-prose text-lead text-platinum/80" data-reveal data-reveal-delay="2">
         We combine the speed of a local prime, the depth of a 23-year regional bench,
         and the muscle of a global engineering network — under a single Dubai Mainland
         contract.
@@ -48,12 +48,14 @@ const pillars = [
 
     <div class="mt-14 grid gap-6 lg:grid-cols-3">
       {
-        pillars.map((p) => (
+        pillars.map((p, i) => (
           <article
             class:list={[
               'pillar-card group relative overflow-hidden rounded-card border border-white/10 bg-navy/40 p-8 transition duration-300 hover:-translate-y-1 hover:border-teal/40 hover:bg-navy/60',
               p.accent && 'pillar-accent',
             ]}
+            data-reveal
+            data-reveal-delay={String(i + 1)}
           >
             <div aria-hidden="true" class="pillar-glow pointer-events-none absolute inset-0 opacity-0 transition duration-500 group-hover:opacity-100" />
             <p class="text-eyebrow uppercase font-semibold text-teal">{p.eyebrow}</p>

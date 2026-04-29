@@ -76,11 +76,13 @@ const capabilities = ['All', ...Array.from(capabilitySet)].slice(0, 6); // cap f
         class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
         aria-label="Case studies"
       >
-        {studies.map((study) => (
+        {studies.map((study, i) => (
           <li
             data-industry={study.data.industry}
             data-capabilities={study.data.capabilities.join('|')}
             class="study-card"
+            data-reveal
+            data-reveal-delay={String((i % 3) + 1)}
           >
             <a
               href={`/case-studies/${study.slug}`}
@@ -155,11 +157,11 @@ const capabilities = ['All', ...Array.from(capabilitySet)].slice(0, 6); // cap f
   <section class="border-t border-white/8 bg-navy py-section-sm md:py-section">
     <Container>
       <div class="flex flex-col items-center gap-6 text-center">
-        <Eyebrow>Start your program</Eyebrow>
-        <h2 class="text-display-lg max-w-2xl text-white">
+        <Eyebrow data-reveal>Start your program</Eyebrow>
+        <h2 class="text-display-lg max-w-2xl text-white" data-reveal data-reveal-delay="1">
           Ready to be the next case study?
         </h2>
-        <p class="max-w-xl text-lead text-platinum/70">
+        <p class="max-w-xl text-lead text-platinum/70" data-reveal data-reveal-delay="2">
           Book a 30-minute Readiness Briefing and we'll map your priorities to the 2026–2027
           procurement window.
         </p>

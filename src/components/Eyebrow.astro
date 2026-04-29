@@ -1,11 +1,12 @@
 ---
-interface Props {
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'p'> {
   tone?: 'teal' | 'cool' | 'white';
   as?: 'p' | 'span' | 'div';
-  class?: string;
 }
 
-const { tone = 'teal', as = 'p', class: className = '' } = Astro.props;
+const { tone = 'teal', as = 'p', class: className = '', ...rest } = Astro.props;
 
 const tones = {
   teal: 'text-teal',
@@ -16,6 +17,6 @@ const tones = {
 const Tag = as;
 ---
 
-<Tag class:list={['text-eyebrow uppercase font-semibold', tones[tone], className]}>
+<Tag class:list={['text-eyebrow uppercase font-semibold', tones[tone], className]} {...rest}>
   <slot />
 </Tag>

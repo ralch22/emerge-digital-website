@@ -12,6 +12,8 @@ const navItems = [
   { href: '/insights/', label: 'Insights' },
   { href: '/about/', label: 'About' },
 ];
+
+const currentPath = Astro.url.pathname;
 ---
 
 <header
@@ -37,16 +39,20 @@ const navItems = [
 
     <nav aria-label="Primary" class="hidden lg:flex">
       <ul class="flex items-center gap-7 text-[13px] font-medium text-platinum/80">
-        {navItems.map((item) => (
-          <li>
-            <a
-              href={item.href}
-              class="nav-link relative inline-flex py-2 transition-colors duration-300 hover:text-white"
-            >
-              {item.label}
-            </a>
-          </li>
-        ))}
+        {navItems.map((item) => {
+          const isActive = currentPath === item.href || currentPath.startsWith(item.href);
+          return (
+            <li>
+              <a
+                href={item.href}
+                aria-current={isActive ? 'page' : undefined}
+                class:list={['nav-link relative inline-flex py-2 transition-colors duration-300 hover:text-white', isActive && 'text-white']}
+              >
+                {item.label}
+              </a>
+            </li>
+          );
+        })}
       </ul>
     </nav>
 
@@ -108,17 +114,21 @@ const navItems = [
     </div>
     <nav aria-label="Mobile primary" class="px-6 py-6">
       <ul class="space-y-1">
-        {navItems.map((item) => (
-          <li>
-            <a
-              href={item.href}
-              class="mobile-link group flex items-center justify-between rounded-lg px-4 py-3 text-base font-medium text-platinum/85 transition-colors hover:bg-white/5 hover:text-white"
-            >
-              <span>{item.label}</span>
-              <span aria-hidden="true" class="text-cool transition-transform duration-300 group-hover:translate-x-1 group-hover:text-teal">→</span>
-            </a>
-          </li>
-        ))}
+        {navItems.map((item) => {
+          const isActive = currentPath === item.href || currentPath.startsWith(item.href);
+          return (
+            <li>
+              <a
+                href={item.href}
+                aria-current={isActive ? 'page' : undefined}
+                class:list={['mobile-link group flex items-center justify-between rounded-lg px-4 py-3 text-base font-medium transition-colors hover:bg-white/5 hover:text-white', isActive ? 'bg-white/5 text-white' : 'text-platinum/85']}
+              >
+                <span>{item.label}</span>
+                <span aria-hidden="true" class:list={['transition-transform duration-300 group-hover:translate-x-1', isActive ? 'text-teal' : 'text-cool group-hover:text-teal']}>→</span>
+              </a>
+            </li>
+          );
+        })}
       </ul>
       <a
         href="/contact/"

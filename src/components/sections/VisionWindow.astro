@@ -16,20 +16,20 @@ const stats = [
   <Container>
     <div class="grid gap-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-24">
       <div>
-        <Eyebrow>The 2026–2027 Window</Eyebrow>
-        <h2 class="mt-4 text-display-lg">
+        <Eyebrow data-reveal>The 2026–2027 Window</Eyebrow>
+        <h2 class="mt-4 text-display-lg" data-reveal data-reveal-delay="1">
           The next 18 months will define the next decade of MEA digital transformation.
         </h2>
       </div>
       <div class="space-y-6 text-platinum/85">
-        <p class="text-lead">
+        <p class="text-lead" data-reveal data-reveal-delay="2">
           Government, BFSI, and Retail leaders across the UAE, KSA, and Egypt are entering
           the most concentrated procurement window in the region's history. Vision 2030,
           the UAE's We the UAE 2031 agenda, and Egypt's Vision 2030 are converging into a
           single inflection point — and the partners who win will be the ones who combine
           in-country accountability with proven global delivery muscle.
         </p>
-        <p>
+        <p data-reveal data-reveal-delay="3">
           Emerge Digital was built for exactly this moment. We are the Dubai Mainland prime
           that owns your contract, structures your program, and stands accountable in your
           jurisdiction — backed by 23 years of regional CX, data, and analytics leadership
@@ -39,7 +39,7 @@ const stats = [
     </div>
 
     <div class="mt-20 grid grid-cols-2 gap-x-8 gap-y-12 border-t border-white/8 pt-12 md:grid-cols-4">
-      {stats.map((s) => <Stat value={s.value} label={s.label} />)}
+      {stats.map((s, i) => <Stat value={s.value} label={s.label} data-reveal data-reveal-delay={String(i + 1)} />)}
     </div>
   </Container>
 </Section>

@@ -162,10 +162,10 @@ const pillars: Pillar[] = [
         <div class="mb-12 grid gap-8 lg:grid-cols-[1fr_2fr]">
           <!-- Label column -->
           <div class="lg:pt-1">
-            <Eyebrow class="mb-3">{pillar.eyebrow}</Eyebrow>
-            <h2 class="text-display-lg text-white">{pillar.headline}</h2>
+            <Eyebrow class="mb-3" data-reveal>{pillar.eyebrow}</Eyebrow>
+            <h2 class="text-display-lg text-white" data-reveal data-reveal-delay="1">{pillar.headline}</h2>
             {pillar.note && (
-              <span class="mt-4 inline-flex items-center gap-2 rounded-pill border border-teal/20 bg-teal/8 px-3 py-1.5 text-xs font-semibold text-teal">
+              <span class="mt-4 inline-flex items-center gap-2 rounded-pill border border-teal/20 bg-teal/8 px-3 py-1.5 text-xs font-semibold text-teal" data-reveal data-reveal-delay="2">
                 <svg class="h-3 w-3" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
                   <circle cx="6" cy="6" r="3"/>
                 </svg>
@@ -174,13 +174,13 @@ const pillars: Pillar[] = [
             )}
           </div>
           <!-- Lead text -->
-          <p class="self-start text-lead text-platinum/70 lg:pt-1">{pillar.lead}</p>
+          <p class="self-start text-lead text-platinum/70 lg:pt-1" data-reveal data-reveal-delay="2">{pillar.lead}</p>
         </div>
 
         <!-- Service cards -->
         <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {pillar.services.map((svc) => (
-            <div class="card-surface flex flex-col gap-4 p-7">
+          {pillar.services.map((svc, si) => (
+            <div class="card-surface flex flex-col gap-4 p-7" data-reveal data-reveal-delay={String(si + 1)}>
               <h3 class="text-lg font-semibold leading-snug text-white">{svc.title}</h3>
               <p class="flex-1 text-sm leading-relaxed text-platinum/65">{svc.body}</p>
               {svc.platforms && (
@@ -204,11 +204,11 @@ const pillars: Pillar[] = [
     <Container>
       <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
         <div>
-          <Eyebrow class="mb-4">How we engage</Eyebrow>
-          <h2 class="text-display-lg text-white">
+          <Eyebrow class="mb-4" data-reveal>How we engage</Eyebrow>
+          <h2 class="text-display-lg text-white" data-reveal data-reveal-delay="1">
             A risk-managed path from ambition to enterprise outcome.
           </h2>
-          <p class="mt-4 text-lead text-platinum/70">
+          <p class="mt-4 text-lead text-platinum/70" data-reveal data-reveal-delay="2">
             Every engagement, regardless of capability pillar, follows the Crawl–Walk–Run model.
             Low-risk entry. Defined gates. Founder-level oversight at every phase.
           </p>
@@ -224,7 +224,7 @@ const pillars: Pillar[] = [
             { phase: 'Walk', duration: '3–6 months', body: 'A defined transformation phase against a prioritised opportunity. Clear gates, named KPIs, founder-level oversight throughout.' },
             { phase: 'Run', duration: '12+ months', body: 'A long-term, multi-workstream program managed through the local prime, with managed services providing run-state operations and continuous modernisation.' },
           ].map((step, idx) => (
-            <div class="flex gap-5 rounded-2xl border border-white/8 bg-white/[0.02] p-6">
+            <div class="flex gap-5 rounded-2xl border border-white/8 bg-white/[0.02] p-6" data-reveal data-reveal-delay={String(idx + 1)}>
               <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-teal/10 text-teal">
                 <span class="font-mono text-xs font-bold">0{idx + 1}</span>
               </div>
@@ -246,9 +246,9 @@ const pillars: Pillar[] = [
   <section class="border-t border-white/8 bg-navy py-section-sm md:py-section">
     <Container>
       <div class="mx-auto max-w-2xl text-center">
-        <Eyebrow class="mb-4">Let's talk</Eyebrow>
-        <h2 class="text-display-lg text-white">Don't see your need on this list?</h2>
-        <p class="mt-4 text-lead text-platinum/70">
+        <Eyebrow class="mb-4" data-reveal>Let's talk</Eyebrow>
+        <h2 class="text-display-lg text-white" data-reveal data-reveal-delay="1">Don't see your need on this list?</h2>
+        <p class="mt-4 text-lead text-platinum/70" data-reveal data-reveal-delay="2">
           It probably still fits. The four pillars above are the structure we use — not a ceiling
           on what we can deliver. If you're facing an enterprise CX, data, AI, or transformation
           challenge in the MEA region, book a Readiness Briefing and let's map it together.

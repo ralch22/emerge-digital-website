@@ -9,7 +9,7 @@ const pillars = [
   {
     title: 'Customer Experience',
     note: 'CX Division — led by Rami, Founder',
-    href: '/services/customer-experience/',
+    href: '/services/#cx',
     items: [
       'CX Strategy & Design',
       'MarTech & Customer Data Orchestration (CDP)',
@@ -19,7 +19,7 @@ const pillars = [
   {
     title: 'Data & Analytics',
     note: '23 years of regional analytics heritage',
-    href: '/services/data-analytics/',
+    href: '/services/#data',
     items: [
       'Digital Analytics & Data Science',
       'Data & Tag Governance',
@@ -29,7 +29,7 @@ const pillars = [
   {
     title: 'AI & Generative Solutions',
     note: 'Built into every engagement',
-    href: '/services/ai/',
+    href: '/services/#ai',
     items: [
       'Enterprise GenAI deployments',
       'AI for personalization & CX',
@@ -39,7 +39,7 @@ const pillars = [
   {
     title: 'Digital Transformation',
     note: '80,000-engineer global delivery network',
-    href: '/services/transformation/',
+    href: '/services/#transformation',
     items: [
       'Enterprise application modernization',
       'Cloud & platform engineering',
@@ -52,11 +52,11 @@ const pillars = [
 <Section tone="light">
   <Container>
     <div class="max-w-3xl">
-      <Eyebrow tone="cool">What We Do</Eyebrow>
-      <h2 class="mt-4 text-display-lg text-slate">
+      <Eyebrow tone="cool" data-reveal>What We Do</Eyebrow>
+      <h2 class="mt-4 text-display-lg text-slate" data-reveal data-reveal-delay="1">
         A full-stack capability bench for CX, Data, AI, and Transformation.
       </h2>
-      <p class="mt-6 text-lead text-slate/80">
+      <p class="mt-6 text-lead text-slate/80" data-reveal data-reveal-delay="2">
         Emerge Digital is led personally by our founder Rami, who heads the CX Division —
         Customer Experience, MarTech, and Commerce. The full capability stack extends
         across Data, AI, and Enterprise Modernization, giving you a single contracting
@@ -66,8 +66,8 @@ const pillars = [
 
     <div class="mt-14 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
       {
-        pillars.map((p) => (
-          <Card tone="light" class="service-card group flex h-full flex-col transition duration-300 hover:-translate-y-1 hover:border-teal/40 hover:shadow-elevated">
+        pillars.map((p, i) => (
+          <Card tone="light" class="service-card group flex h-full flex-col transition duration-300 hover:-translate-y-1 hover:border-teal/40 hover:shadow-elevated" data-reveal data-reveal-delay={String(i + 1)}>
             <p class="text-eyebrow uppercase text-teal">{p.note}</p>
             <h3 class="mt-3 text-display-md text-slate">{p.title}</h3>
             <ul class="mt-5 space-y-2 text-slate/80">

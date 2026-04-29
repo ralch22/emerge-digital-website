@@ -29,11 +29,11 @@ const families = [
 <Section tone="dark">
   <Container>
     <div class="max-w-3xl">
-      <Eyebrow>Technology Credentials</Eyebrow>
-      <h2 class="mt-4 text-display-lg">
+      <Eyebrow data-reveal>Technology Credentials</Eyebrow>
+      <h2 class="mt-4 text-display-lg" data-reveal data-reveal-delay="1">
         The platforms we deploy. The credentials we hold.
       </h2>
-      <p class="mt-6 max-w-prose text-lead text-platinum/80">
+      <p class="mt-6 max-w-prose text-lead text-platinum/80" data-reveal data-reveal-delay="2">
         Vendor-certified across the stacks enterprise buyers actually run — from CDP and
         commerce to hyperscaler cloud and AI. Built on a foundation of proven regional
         delivery and global engineering capacity.
@@ -42,8 +42,8 @@ const families = [
 
     <div class="mt-14 grid gap-6 lg:grid-cols-3">
       {
-        families.map((f) => (
-          <article class="partner-card group relative overflow-hidden rounded-card border border-white/10 bg-navy/40 p-8 transition duration-300 hover:-translate-y-1 hover:border-teal/40">
+        families.map((f, i) => (
+          <article class="partner-card group relative overflow-hidden rounded-card border border-white/10 bg-navy/40 p-8 transition duration-300 hover:-translate-y-1 hover:border-teal/40" data-reveal data-reveal-delay={String(i + 1)}>
             <h3 class="text-display-md text-white">{f.title}</h3>
             <p class="mt-4 text-platinum/85">{f.body}</p>
             <ul class="mt-6 flex flex-wrap gap-2">
