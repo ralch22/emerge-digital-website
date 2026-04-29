@@ -1,0 +1,358 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Container from '../../components/Container.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import Button from '../../components/Button.astro';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('insights', ({ data }) => data.published);
+  return articles.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+const { Content } = await article.render();
+
+const { title, summary, author, publishDate, category, tags, gated, readingMinutes } = article.data;
+
+function formatDate(d: Date | string) {
+  return new Date(d).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+}
+
+// Related articles (same category, excluding self)
+const allArticles = await getCollection('insights', ({ data }) => data.published);
+const related = allArticles
+  .filter((a) => a.slug !== article.slug && a.data.category === category)
+  .slice(0, 2);
+---
+
+<BaseLayout
+  title={`${title} | Emerge Digital Insights`}
+  description={summary}
+>
+  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <section class="relative overflow-hidden bg-gradient-hero pb-0 pt-section-sm md:pt-24">
+    <div class="pointer-events-none absolute inset-0 bg-grid bg-grid-fade" aria-hidden="true"></div>
+    <div class="aurora pointer-events-none absolute inset-0 opacity-45" aria-hidden="true"></div>
+
+    <Container>
+      <!-- Breadcrumb -->
+      <nav aria-label="Breadcrumb" class="mb-8">
+        <ol class="flex items-center gap-2 text-sm text-cool">
+          <li><a href="/" class="hover:text-teal">Home</a></li>
+          <li aria-hidden="true" class="text-cool/40">›</li>
+          <li><a href="/insights" class="hover:text-teal">Insights</a></li>
+          <li aria-hidden="true" class="text-cool/40">›</li>
+          <li class="truncate text-platinum/70" aria-current="page">{category}</li>
+        </ol>
+      </nav>
+
+      <!-- Category + meta -->
+      <div class="flex flex-wrap items-center gap-3">
+        <span class="rounded-pill border border-teal/25 bg-teal/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-teal">
+          {category}
+        </span>
+        {gated && (
+          <span class="rounded-pill border border-warning/20 bg-warning/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-warning">
+            Gated
+          </span>
+        )}
+        <time class="text-xs text-cool" datetime={new Date(publishDate).toISOString()}>
+          {formatDate(publishDate)}
+        </time>
+        {readingMinutes && (
+          <span class="text-xs text-cool">{readingMinutes} min read</span>
+        )}
+      </div>
+
+      <h1 class="mt-5 max-w-3xl text-display-xl text-white">{title}</h1>
+      <p class="mt-5 max-w-2xl text-lead text-platinum/70">{summary}</p>
+      <p class="mt-4 text-sm text-cool">{author}</p>
+    </Container>
+
+    <div class="hairline mt-16" aria-hidden="true"></div>
+  </section>
+
+  <!-- ── Article body ───────────────────────────────────── -->
+  <div class="bg-ink">
+    <Container>
+      <div class="py-section-sm md:py-section">
+        <div class="grid gap-16 lg:grid-cols-[1fr_260px]">
+
+          <!-- Prose -->
+          <article class="prose-insight prose max-w-none">
+            <Content />
+          </article>
+
+          <!-- Sidebar -->
+          <aside class="space-y-6 lg:pt-1">
+            <!-- Tags -->
+            <div class="rounded-2xl border border-white/8 bg-white/[0.02] p-6">
+              <h3 class="text-eyebrow uppercase text-cool">Topics</h3>
+              <div class="mt-3 flex flex-wrap gap-1.5">
+                {tags.map((tag) => (
+                  <span class="rounded border border-white/8 bg-white/[0.03] px-2 py-0.5 text-[10px] uppercase tracking-wide text-cool">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <!-- Author -->
+            <div class="rounded-2xl border border-white/8 bg-white/[0.02] p-6">
+              <h3 class="text-eyebrow uppercase text-cool">Author</h3>
+              <div class="mt-4 flex items-center gap-3">
+                <div class="h-10 w-10 rounded-full bg-gradient-accent"></div>
+                <div>
+                  <p class="text-sm font-semibold text-white">Rami</p>
+                  <p class="text-xs text-cool">Founder, Emerge Digital</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Briefing CTA -->
+            <div class="rounded-2xl border border-teal/20 bg-teal/5 p-6">
+              <h3 class="text-sm font-semibold text-white">
+                Ready to discuss this for your program?
+              </h3>
+              <p class="mt-2 text-sm leading-relaxed text-platinum/65">
+                Book a 30-minute Readiness Briefing with Rami — no deck, no sales process.
+              </p>
+              <Button href="/contact" size="md" class="mt-5 w-full justify-center">
+                Book a Briefing
+              </Button>
+            </div>
+
+            <!-- Share -->
+            <div class="rounded-2xl border border-white/8 bg-white/[0.02] p-6">
+              <h3 class="text-eyebrow uppercase text-cool">Share</h3>
+              <div class="mt-4 flex gap-3">
+                <a
+                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://emergedigital.com/insights/${article.slug}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-semibold text-platinum/70 transition hover:border-teal/30 hover:text-teal"
+                  aria-label="Share on LinkedIn"
+                >
+                  <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                    <path d="M13.5 1h-11A1.5 1.5 0 001 2.5v11A1.5 1.5 0 002.5 15h11a1.5 1.5 0 001.5-1.5v-11A1.5 1.5 0 0013.5 1zM5.5 12.5h-2v-6h2v6zm-1-7a1 1 0 110-2 1 1 0 010 2zm8 7h-2V9c0-.8-.7-1.5-1.5-1.5S7.5 8.2 7.5 9v3.5h-2v-6H7.5V7a3 3 0 016 0v5.5z"/>
+                  </svg>
+                  LinkedIn
+                </a>
+                <button
+                  id="copy-link"
+                  class="flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-semibold text-platinum/70 transition hover:border-teal/30 hover:text-teal"
+                  aria-label="Copy link to clipboard"
+                >
+                  <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" aria-hidden="true">
+                    <path d="M6.5 9.5a3 3 0 004.243 0l2-2a3 3 0 00-4.243-4.243L7 4.757" stroke-width="1.3" stroke-linecap="round"/>
+                    <path d="M9.5 6.5a3 3 0 00-4.243 0l-2 2a3 3 0 004.243 4.243L9 11.243" stroke-width="1.3" stroke-linecap="round"/>
+                  </svg>
+                  <span id="copy-label">Copy link</span>
+                </button>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </Container>
+  </div>
+
+  <!-- ── Related ────────────────────────────────────────── -->
+  {related.length > 0 && (
+    <section class="border-t border-white/8 bg-navy py-section-sm md:py-section">
+      <Container>
+        <Eyebrow class="mb-8">More from Insights</Eyebrow>
+        <div class="grid gap-6 sm:grid-cols-2">
+          {related.map((a) => (
+            <a
+              href={`/insights/${a.slug}`}
+              class="card-surface group flex flex-col gap-4 p-7 no-underline"
+            >
+              <span class="rounded-pill border border-teal/20 bg-teal/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-teal self-start">
+                {a.data.category}
+              </span>
+              <h3 class="text-lg font-semibold text-white transition group-hover:text-teal">
+                {a.data.title}
+              </h3>
+              <p class="flex-1 text-sm text-platinum/60">{a.data.summary}</p>
+              <div class="flex items-center gap-1 text-sm font-semibold text-teal transition group-hover:gap-2 mt-auto">
+                Read <span aria-hidden="true">→</span>
+              </div>
+            </a>
+          ))}
+        </div>
+        <div class="mt-8">
+          <Button href="/insights" variant="secondary">All insights</Button>
+        </div>
+      </Container>
+    </section>
+  )}
+
+  <!-- ── Bottom CTA ──────────────────────────────────────── -->
+  <section class="border-t border-white/8 bg-ink py-section-sm md:py-section">
+    <Container>
+      <div class="flex flex-col items-center gap-6 text-center">
+        <Eyebrow>Start a conversation</Eyebrow>
+        <h2 class="text-display-lg max-w-xl text-white">Ready to put this into practice?</h2>
+        <p class="max-w-xl text-lead text-platinum/70">
+          Book a 30-minute Vision 2030 Readiness Briefing with our founder.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <Button href="/contact" size="lg">Book a Readiness Briefing</Button>
+          <Button href="/case-studies" variant="secondary" size="lg">See the proof</Button>
+        </div>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>
+
+<style is:global>
+  /* Prose styling for insight articles */
+  .prose-insight {
+    color: rgba(232, 238, 245, 0.80);
+    line-height: 1.8;
+    font-size: 1.0625rem;
+  }
+
+  .prose-insight h2 {
+    color: #fff;
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .prose-insight h2:first-child {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .prose-insight h3 {
+    color: #e8eef5;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .prose-insight p {
+    margin-top: 0;
+    margin-bottom: 1.4rem;
+  }
+
+  .prose-insight strong {
+    color: #e8eef5;
+    font-weight: 600;
+  }
+
+  .prose-insight ul, .prose-insight ol {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .prose-insight ul li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.9375rem;
+  }
+
+  .prose-insight ul li::before {
+    content: '';
+    display: inline-block;
+    flex-shrink: 0;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: #00C2C7;
+    margin-top: 0.6em;
+  }
+
+  .prose-insight ol {
+    counter-reset: ol-counter;
+  }
+
+  .prose-insight ol li {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    counter-increment: ol-counter;
+    font-size: 0.9375rem;
+  }
+
+  .prose-insight ol li::before {
+    content: counter(ol-counter);
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(0, 194, 199, 0.12);
+    border: 1px solid rgba(0, 194, 199, 0.2);
+    color: #00C2C7;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    margin-top: 0.15em;
+  }
+
+  .prose-insight blockquote {
+    border-left: 2px solid #00C2C7;
+    margin: 2rem 0;
+    padding: 1rem 1.5rem;
+    background: rgba(0, 194, 199, 0.04);
+    border-radius: 0 0.75rem 0.75rem 0;
+    font-style: italic;
+    color: rgba(232, 238, 245, 0.85);
+  }
+
+  .prose-insight a {
+    color: #00C2C7;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .prose-insight a:hover { color: #3DDCE3; }
+
+  .prose-insight hr {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    margin: 3rem 0;
+  }
+
+  .prose-insight em {
+    color: rgba(232, 238, 245, 0.70);
+  }
+</style>
+
+<script>
+  const copyBtn = document.getElementById('copy-link');
+  const copyLabel = document.getElementById('copy-label');
+
+  copyBtn?.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      if (copyLabel) {
+        copyLabel.textContent = 'Copied!';
+        setTimeout(() => { if (copyLabel) copyLabel.textContent = 'Copy link'; }, 2000);
+      }
+    } catch {
+      // Fallback for browsers without clipboard API
+    }
+  });
+</script>
