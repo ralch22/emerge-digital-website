@@ -1,89 +1,27 @@
 ---
 /**
- * HeroHome — Arooth-style cinematic scroll hero.
+ * HeroHome — Arooth-style "VISION" letter-frame hero.
  *
- *   • 220vh outer section produces a long scroll runway
- *   • Inner content is sticky-pinned to viewport for ~120vh of scroll
- *   • Background layers parallax at different depths:
- *       skyline (slow) → aurora (medium) → neural net (fast + scale)
- *   • Three content stages crossfade as scroll progresses:
- *       A — Big headline reveal           (0–40 %)
- *       B — Vision 2030 storyline         (35–70 %)
- *       C — KPIs + procurement urgency    (65–100 %)
- *   • All choreography driven by Motion One's `scroll()` + `animate()`
- *   • Build-time neural-network SVG (zero runtime cost)
+ * The signature Arooth pattern, adapted for Emerge Digital:
+ *
+ *   V · I · S · I · O · N    (six massive letters span the screen)
+ *
+ *   The "O" is not a letter — it is a circular viewport that frames
+ *   the hero content (eyebrow, headline, CTA, marquee). Small at the
+ *   start; expands to fill the entire screen as the user scrolls.
+ *
+ *   Sticky-pinned for 200 vh of scroll runway. Letters V·I·S·I drift
+ *   left, N drifts right, all fading as the O expands. Inside the O,
+ *   content scales up from a teaser into full-size hero.
+ *
+ *   Mobile (≤ 768 px): the sticky/letter mechanic disables completely.
+ *   A clean stacked layout takes over with a static "VISION 2030"
+ *   wordmark, the headline, sub, and CTAs.
  */
 
 import Container from '../Container.astro';
 import Button from '../Button.astro';
 import TrustStrip from '../TrustStrip.astro';
-
-/* ─────────────────────────────────────────────────────────────
-   Build-time neural network — deterministic seeded random
-   ───────────────────────────────────────────────────────────── */
-interface NNode { x: number; y: number; r: number; op: number }
-interface NEdge { x1: number; y1: number; x2: number; y2: number; op: number }
-
-function makeRng(seed: number) {
-  let s = seed >>> 0;
-  return () => { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 0xFFFFFFFF; };
-}
-const rng = makeRng(2030);
-
-const RAW: [number, number][] = [
-  [  65,  78], [195,  48], [355, 112], [520,  58], [670,  92],
-  [ 810,  44], [960, 102], [1110,  62], [1270,  98], [1410,  52],
-  [ 120, 224], [295, 192], [450, 248], [620, 202], [762, 244],
-  [ 912, 196], [1062, 238], [1220, 208],
-  [  82, 374], [242, 342], [420, 392], [582, 354], [742, 402],
-  [ 902, 358], [1082, 388], [1302, 362],
-  [ 162, 514], [362, 482], [562, 526], [752, 492],
-  [ 982, 518], [1182, 494], [1370, 530],
-  [ 700, 310], [480, 130], [1050, 440],
-];
-
-const NODES: NNode[] = RAW.map(([x, y]) => ({
-  x, y,
-  r: 1.4 + rng() * 2.8,
-  op: 0.12 + rng() * 0.38,
-}));
-
-const HUB_INDICES = [4, 10, 14, 16, 20, 23, 27, 33];
-
-const MAX_D = 215;
-const EDGES: NEdge[] = [];
-for (let i = 0; i < NODES.length; i++) {
-  for (let j = i + 1; j < NODES.length; j++) {
-    const dx = NODES[i].x - NODES[j].x;
-    const dy = NODES[i].y - NODES[j].y;
-    const d  = Math.sqrt(dx * dx + dy * dy);
-    if (d <= MAX_D) {
-      EDGES.push({
-        x1: NODES[i].x, y1: NODES[i].y,
-        x2: NODES[j].x, y2: NODES[j].y,
-        op: Math.max(0.04, 0.22 * (1 - d / MAX_D)),
-      });
-    }
-  }
-}
-
-const FLOW_PATHS: Array<[number,number][]> = [
-  [[195,48],[295,192],[450,248],[582,354],[752,492]],
-  [[960,102],[912,196],[902,358],[982,518]],
-  [[520,58],[620,202],[700,310],[562,526]],
-  [[65,78],[120,224],[82,374],[162,514]],
-  [[1110,62],[1220,208],[1302,362],[1182,494]],
-];
-
-/* ─────────────────────────────────────────────────────────────
-   Headline + procurement urgency
-   ───────────────────────────────────────────────────────────── */
-interface HLine { words: string[]; accent?: boolean }
-const headlineLines: HLine[] = [
-  { words: ['Local',      'Prime.'] },
-  { words: ['Global',     'Power.'] },
-  { words: ['Enterprise', 'Outcomes.'], accent: true },
-];
 
 // Months remaining in the Vision 2030 procurement window (through Dec 2027)
 const now      = new Date();
@@ -91,384 +29,460 @@ const windowEnd = new Date('2027-12-31T00:00:00Z');
 const monthsRemaining = Math.max(0, Math.round(
   (windowEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24 * 30.44)
 ));
+
+// Marquee phrases — alternating italic / bold / mark like Arooth
+const marqueeChunks = [
+  { text: 'Local Prime',         style: 'bold' },
+  { text: '✦',                   style: 'star' },
+  { text: 'Global Power',        style: 'mark' },
+  { text: '✦',                   style: 'star' },
+  { text: 'Vision 2030',         style: 'italic' },
+  { text: '✦',                   style: 'star' },
+  { text: 'Enterprise Outcomes', style: 'bold' },
+  { text: '✦',                   style: 'star' },
+  { text: 'Dubai Mainland',      style: 'mark' },
+  { text: '✦',                   style: 'star' },
+];
 ---
 
 <section data-hero class="hero-section relative">
 
-  <!-- ╭──────────────────────────────────────────────────╮
-       │  STICKY STAGE — pins to the viewport while       │
-       │  the outer section scrolls past it.              │
-       ╰──────────────────────────────────────────────────╯ -->
-  <div data-hero-sticky class="hero-sticky sticky top-0 isolate flex h-screen flex-col overflow-hidden">
+  <!-- Sticky stage — pins for the full scroll runway -->
+  <div data-hero-sticky class="hero-sticky">
+    <div data-hero-wrapper class="hero-wrapper">
 
-    <!-- ── Layer 0 · deep gradient base ── -->
-    <div aria-hidden="true" class="absolute inset-0 bg-gradient-hero-premium"></div>
+      <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+      <!--                  V I S I O N                       -->
+      <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+      <div data-letters class="letters-wrap">
+        <div class="letters-row">
+          <span data-letter data-pos="-3"  class="letter">V</span>
+          <span data-letter data-pos="-2"  class="letter">I</span>
+          <span data-letter data-pos="-1"  class="letter">S</span>
+          <span data-letter data-pos="-0.4" class="letter">I</span>
 
-    <!-- ── Layer 1 · Dubai skyline (slow parallax — far) ── -->
-    <div data-bg-skyline aria-hidden="true" class="dubai-skyline absolute inset-x-0 bottom-0 overflow-hidden will-change-transform">
-      <svg viewBox="0 0 1440 220" preserveAspectRatio="xMidYMax slice" class="h-[260px] w-full" fill="none">
-        <defs>
-          <linearGradient id="skyline-fade" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%"   stop-color="#00C2C7" stop-opacity="0.08"/>
-            <stop offset="100%" stop-color="#00C2C7" stop-opacity="0.02"/>
-          </linearGradient>
-          <linearGradient id="skyline-h-fade" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%"   stop-color="white" stop-opacity="0"/>
-            <stop offset="14%"  stop-color="white" stop-opacity="1"/>
-            <stop offset="86%"  stop-color="white" stop-opacity="1"/>
-            <stop offset="100%" stop-color="white" stop-opacity="0"/>
-          </linearGradient>
-          <mask id="skyline-mask">
-            <rect width="1440" height="220" fill="url(#skyline-h-fade)"/>
-          </mask>
-        </defs>
-        <g fill="url(#skyline-fade)" mask="url(#skyline-mask)">
-          <!-- Burj Khalifa central spire -->
-          <path d="M697 0 L699 44 L701 82 L703 112 L705 132 L707 152 L709 166 L711 178 L713 190 L717 202 L722 220 L678 220 L682 202 L687 190 L689 178 L691 166 L693 152 L695 132 L697 112 L699 82 Z"/>
-          <rect x="618" y="55" width="20" height="165" rx="2"/>
-          <rect x="634" y="42" width="13" height="178" rx="1"/>
-          <path d="M508 68 L510 68 L511 82 L512 220 L504 220 L505 82 Z"/>
-          <path d="M522 84 L524 84 L525 96 L526 220 L518 220 L519 96 Z"/>
-          <rect x="758"  y="76"  width="22" height="144" rx="2"/>
-          <rect x="796"  y="92"  width="17" height="128" rx="1"/>
-          <rect x="828"  y="62"  width="18" height="158" rx="1"/>
-          <rect x="862"  y="108" width="14" height="112" rx="1"/>
-          <rect x="342"  y="92"  width="20" height="128" rx="2"/>
-          <rect x="378"  y="78"  width="16" height="142" rx="2"/>
-          <rect x="412"  y="104" width="15" height="116" rx="1"/>
-          <rect x="448"  y="118" width="18" height="102" rx="1"/>
-          <rect x="958"  y="98"  width="22" height="122" rx="2"/>
-          <rect x="996"  y="118" width="16" height="102" rx="1"/>
-          <rect x="1036" y="82"  width="20" height="138" rx="2"/>
-          <rect x="1074" y="112" width="14" height="108" rx="1"/>
-          <rect x="1106" y="88"  width="18" height="132" rx="2"/>
-          <rect x="148"  y="118" width="16" height="102" rx="1"/>
-          <rect x="180"  y="102" width="20" height="118" rx="2"/>
-          <rect x="218"  y="128" width="14" height="92"  rx="1"/>
-          <rect x="252"  y="108" width="18" height="112" rx="1"/>
-          <rect x="0"    y="182" width="130"  height="38"/>
-          <rect x="108"  y="172" width="160"  height="48"/>
-          <rect x="1310" y="172" width="130"  height="48"/>
-          <rect x="1200" y="185" width="244"  height="35"/>
-          <rect x="0"    y="205" width="1440" height="15"/>
-        </g>
-      </svg>
-    </div>
+          <!-- ── The "O" frame — content viewport ── -->
+          <div data-o-frame class="o-frame">
+            <div data-o-inner class="o-inner">
+              <!-- Content layer: full viewport, clipped by the O -->
+              <div data-o-content class="o-content">
 
-    <!-- ── Layer 2 · Neural network (medium parallax + scale) ── -->
-    <div data-bg-neural aria-hidden="true" class="neural-net pointer-events-none absolute inset-0 will-change-transform">
-      <svg
-        viewBox="0 0 1440 680"
-        width="100%"
-        height="100%"
-        preserveAspectRatio="xMidYMid slice"
-        fill="none"
-        class="absolute inset-0"
-      >
-        <defs>
-          <filter id="nn-blur-sm"><feGaussianBlur stdDeviation="0.8"/></filter>
-          <filter id="nn-node-glow">
-            <feGaussianBlur stdDeviation="2.5" result="blur"/>
-            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-          </filter>
-        </defs>
+                <!-- Backdrop layers -->
+                <div aria-hidden="true" class="absolute inset-0 bg-gradient-hero-premium"></div>
+                <div aria-hidden="true" class="aurora-layer-1 pointer-events-none absolute inset-0"></div>
+                <div aria-hidden="true" class="aurora-layer-2 pointer-events-none absolute inset-0"></div>
+                <div aria-hidden="true" class="aurora-layer-3 pointer-events-none absolute inset-0"></div>
+                <div aria-hidden="true" class="bg-grid bg-grid-fade pointer-events-none absolute inset-0 opacity-50"></div>
+                <div aria-hidden="true" class="noise pointer-events-none absolute inset-0"></div>
+                <div aria-hidden="true" class="beam-scan absolute inset-0"></div>
 
-        <!-- Static connection lines -->
-        {EDGES.map((e) => (
-          <line
-            x1={e.x1} y1={e.y1} x2={e.x2} y2={e.y2}
-            stroke="#3DDCE3" stroke-opacity={e.op}
-            stroke-width="0.8" filter="url(#nn-blur-sm)"
-          />
-        ))}
+                <!-- Mini Dubai skyline at bottom -->
+                <div aria-hidden="true" class="dubai-skyline-mini">
+                  <svg viewBox="0 0 1440 220" preserveAspectRatio="xMidYMax slice" class="h-full w-full" fill="none">
+                    <defs>
+                      <linearGradient id="hero-skyline-fade" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%"   stop-color="#00C2C7" stop-opacity="0.10"/>
+                        <stop offset="100%" stop-color="#00C2C7" stop-opacity="0.02"/>
+                      </linearGradient>
+                      <linearGradient id="hero-skyline-h-fade" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%"   stop-color="white" stop-opacity="0"/>
+                        <stop offset="14%"  stop-color="white" stop-opacity="1"/>
+                        <stop offset="86%"  stop-color="white" stop-opacity="1"/>
+                        <stop offset="100%" stop-color="white" stop-opacity="0"/>
+                      </linearGradient>
+                      <mask id="hero-skyline-mask">
+                        <rect width="1440" height="220" fill="url(#hero-skyline-h-fade)"/>
+                      </mask>
+                    </defs>
+                    <g fill="url(#hero-skyline-fade)" mask="url(#hero-skyline-mask)">
+                      <path d="M697 0 L699 44 L701 82 L703 112 L705 132 L707 152 L709 166 L711 178 L713 190 L717 202 L722 220 L678 220 L682 202 L687 190 L689 178 L691 166 L693 152 L695 132 L697 112 L699 82 Z"/>
+                      <rect x="618" y="55" width="20" height="165" rx="2"/>
+                      <rect x="634" y="42" width="13" height="178" rx="1"/>
+                      <path d="M508 68 L510 68 L511 82 L512 220 L504 220 L505 82 Z"/>
+                      <path d="M522 84 L524 84 L525 96 L526 220 L518 220 L519 96 Z"/>
+                      <rect x="758"  y="76"  width="22" height="144" rx="2"/>
+                      <rect x="796"  y="92"  width="17" height="128" rx="1"/>
+                      <rect x="828"  y="62"  width="18" height="158" rx="1"/>
+                      <rect x="862"  y="108" width="14" height="112" rx="1"/>
+                      <rect x="342"  y="92"  width="20" height="128" rx="2"/>
+                      <rect x="378"  y="78"  width="16" height="142" rx="2"/>
+                      <rect x="412"  y="104" width="15" height="116" rx="1"/>
+                      <rect x="448"  y="118" width="18" height="102" rx="1"/>
+                      <rect x="958"  y="98"  width="22" height="122" rx="2"/>
+                      <rect x="996"  y="118" width="16" height="102" rx="1"/>
+                      <rect x="1036" y="82"  width="20" height="138" rx="2"/>
+                      <rect x="1074" y="112" width="14" height="108" rx="1"/>
+                      <rect x="1106" y="88"  width="18" height="132" rx="2"/>
+                      <rect x="148"  y="118" width="16" height="102" rx="1"/>
+                      <rect x="180"  y="102" width="20" height="118" rx="2"/>
+                      <rect x="218"  y="128" width="14" height="92"  rx="1"/>
+                      <rect x="252"  y="108" width="18" height="112" rx="1"/>
+                      <rect x="0"    y="182" width="130"  height="38"/>
+                      <rect x="108"  y="172" width="160"  height="48"/>
+                      <rect x="1310" y="172" width="130"  height="48"/>
+                      <rect x="1200" y="185" width="244"  height="35"/>
+                      <rect x="0"    y="205" width="1440" height="15"/>
+                    </g>
+                  </svg>
+                </div>
 
-        <!-- Animated data-flow paths -->
-        {FLOW_PATHS.map((pts, fi) => {
-          const d = 'M ' + pts.map(([x,y]) => `${x} ${y}`).join(' L ');
-          const len = pts.reduce((acc, [x,y], i) => {
-            if (i === 0) return 0;
-            const [px,py] = pts[i-1];
-            return acc + Math.hypot(x-px, y-py);
-          }, 0);
-          const delays = [0, 2.5, 4.8, 7.1, 9.4];
-          return (
-            <path
-              d={d}
-              stroke={fi % 2 === 0 ? '#3DDCE3' : '#00C2C7'}
-              stroke-width={fi === 0 ? '1.2' : '0.9'}
-              stroke-linecap="round"
-              fill="none"
-              stroke-dasharray={`${len * 0.18} ${len}`}
-              style={`animation: data-flow-loop ${6.5 + fi * 1.1}s ease-in-out ${delays[fi]}s infinite`}
-              opacity="0.6"
-            />
-          );
-        })}
+                <!-- Centered content stack (this is what the O reveals) -->
+                <div data-o-inner-stack class="o-inner-stack">
+                  <p class="chip-eyebrow-teal">
+                    <span class="pulse-dot" aria-hidden="true"></span>
+                    <span>Vision 2030 · {monthsRemaining} months remain in the procurement window</span>
+                  </p>
 
-        <!-- Regular nodes -->
-        {NODES.map((n, i) => (
-          <circle cx={n.x} cy={n.y} r={n.r}
-            fill={i % 3 === 0 ? '#3DDCE3' : '#00C2C7'} opacity={n.op}/>
-        ))}
+                  <h1 class="hero-headline">
+                    Local Prime.<br/>
+                    Global Power.<br/>
+                    <span class="text-gradient-glow">Enterprise Outcomes.</span>
+                  </h1>
 
-        <!-- Hub nodes (glowing, animated) -->
-        {HUB_INDICES.map((hi, i) => {
-          const n = NODES[hi];
-          return (
-            <>
-              <circle cx={n.x} cy={n.y} r={n.r * 3.5} fill="#00C2C7" opacity="0.06"
-                style={`animation: neural-pulse ${2.8 + i * 0.4}s ease-in-out ${i * 0.5}s infinite`}/>
-              <circle cx={n.x} cy={n.y} r={n.r * 1.6} fill="#3DDCE3" opacity="0.5"
-                filter="url(#nn-node-glow)"
-                style={`animation: neural-pulse ${2.8 + i * 0.4}s ease-in-out ${i * 0.5}s infinite`}/>
-            </>
-          );
-        })}
-      </svg>
-    </div>
+                  <p class="hero-sub">
+                    The agile <strong class="text-platinum">Dubai Mainland</strong> prime for enterprise
+                    Customer Experience, Data, AI, and digital transformation across MEA — channelling
+                    23 years of regional heritage and 80,000+ engineers through a single accountable contract.
+                  </p>
 
-    <!-- ── Layer 3 · Triple aurora (medium parallax) ── -->
-    <div data-bg-aurora aria-hidden="true" class="absolute inset-0 will-change-transform">
-      <div class="aurora-layer-1 absolute inset-0"></div>
-      <div class="aurora-layer-2 absolute inset-0"></div>
-      <div class="aurora-layer-3 absolute inset-0"></div>
-    </div>
+                  <div class="cta-row">
+                    <Button href="/contact/" size="lg" class="btn-shimmer">
+                      Book a Vision 2030 Readiness Briefing
+                    </Button>
+                    <Button variant="ghost" href="/services/" size="lg">
+                      Explore the Capability Stack
+                    </Button>
+                  </div>
+                </div>
 
-    <!-- ── Layer 4 · Grid overlay ── -->
-    <div data-bg-grid aria-hidden="true" class="bg-grid bg-grid-fade pointer-events-none absolute inset-0 opacity-40 will-change-transform"></div>
+                <!-- Marquee bar at bottom -->
+                <div class="marquee-bar" aria-hidden="true">
+                  <div class="marquee-track">
+                    {Array.from({ length: 4 }, () => marqueeChunks).flat().map((c, i) => (
+                      <span class:list={['marquee-chunk', `marquee-chunk--${c.style}`]}>{c.text}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
 
-    <!-- ── Layer 5 · Beam scan ── -->
-    <div aria-hidden="true" class="beam-scan absolute inset-0"></div>
+            <!-- O ring border (teal glow) -->
+            <div data-o-ring aria-hidden="true" class="o-ring"></div>
+          </div>
 
-    <!-- ── Layer 6 · Noise ── -->
-    <div aria-hidden="true" class="noise pointer-events-none absolute inset-0"></div>
-
-    <!-- ── Layer 7 · Vignette (deepens with scroll) ── -->
-    <div data-bg-vignette aria-hidden="true" class="hero-vignette pointer-events-none absolute inset-0"></div>
-
-
-    <!-- ╭──────────────────────────────────────────────────╮
-         │  CONTENT — three crossfading stages              │
-         ╰──────────────────────────────────────────────────╯ -->
-    <Container class="relative z-10 flex flex-1 flex-col">
-
-      <!-- ░ TOP ROW — eyebrow + procurement urgency ░ -->
-      <div data-hero-top class="flex flex-wrap items-center justify-between gap-4 pt-28 sm:pt-32 opacity-0">
-        <div class="chip-eyebrow-teal">
-          <span class="pulse-dot" aria-hidden="true"></span>
-          <span>Local Prime · Dubai Mainland · MEA-Wide Delivery</span>
-        </div>
-
-        <div class="flex items-center gap-3 rounded-pill border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-eyebrow text-platinum/60 backdrop-blur">
-          <svg class="h-3 w-3 text-teal" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-            <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/>
-            <path d="M6 3.5V6L7.8 7.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-          </svg>
-          <span>Vision 2030 Window</span>
-          <span class="font-mono text-teal">{monthsRemaining}</span>
-          <span class="text-platinum/45">months remaining</span>
+          <span data-letter data-pos="+3"  class="letter">N</span>
         </div>
       </div>
 
-      <!-- ░ CENTER STAGE — three crossfading content blocks ░ -->
-      <div class="relative flex flex-1 items-center">
-
-        <!-- ─── Stage A — Big headline reveal ─── -->
-        <div data-stage-a class="absolute inset-0 flex items-center will-change-transform">
-          <div class="w-full">
-            <h1 class="font-display text-[clamp(2.75rem,7.2vw,7rem)] font-bold leading-[0.95] tracking-tighter text-white"
-                aria-label="Local Prime. Global Power. Enterprise Outcomes.">
-              {headlineLines.map((line, li) => (
-                <span class="block">
-                  {line.words.map((word, wi) => (
-                    <>
-                      <span class="reveal-mask">
-                        <span
-                          class:list={['reveal-word', line.accent && 'text-gradient-glow']}
-                          data-hero-word
-                          data-line={li}
-                          data-index={wi}
-                        >{word}</span>
-                      </span>
-                      {wi < line.words.length - 1 && ' '}
-                    </>
-                  ))}
-                  {line.accent && (
-                    <svg
-                      data-hero-underline aria-hidden="true"
-                      viewBox="0 0 600 14"
-                      class="hero-underline mt-3 block h-[12px] w-[min(100%,30ch)]"
-                      preserveAspectRatio="none"
-                    >
-                      <defs>
-                        <linearGradient id="ul-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%"   stop-color="#00C2C7"/>
-                          <stop offset="60%"  stop-color="#3DDCE3"/>
-                          <stop offset="100%" stop-color="#00F5FF"/>
-                        </linearGradient>
-                      </defs>
-                      <path
-                        d="M 2 7 Q 150 3 300 7 Q 450 11 598 7"
-                        stroke="url(#ul-grad)" stroke-width="2.5"
-                        stroke-linecap="round" fill="none"
-                        pathLength="200" class="stroke-draw"
-                      />
-                    </svg>
-                  )}
-                </span>
-              ))}
-            </h1>
-
-            <p data-hero-tagline class="mt-10 max-w-[44ch] text-lead text-platinum/70 opacity-0">
-              The agile Dubai Mainland prime built for the
-              <span class="text-platinum">enterprise transformation decade</span>
-              across Government, BFSI, and Retail in MEA.
+      <!-- ░░ Bottom row — tagline + CTA, visible from 0 % scroll ░░ -->
+      <Container class="bottom-bar-container">
+        <div data-bottom-bar class="bottom-bar">
+          <div class="bottom-bar-text">
+            <p class="text-[11px] font-semibold uppercase tracking-eyebrow text-teal/80">
+              Emerge Digital · Dubai Mainland
+            </p>
+            <p class="bottom-bar-tagline">
+              The local prime built for the Vision 2030 decade —
+              <span class="text-white">23 years of regional heritage</span>,
+              <span class="text-white">80,000+ engineers</span>,
+              <span class="text-white">one accountable contract</span>.
             </p>
           </div>
-        </div>
-
-        <!-- ─── Stage B — Vision 2030 storyline ─── -->
-        <div data-stage-b class="absolute inset-0 flex items-center opacity-0 will-change-transform">
-          <div class="max-w-4xl">
-            <p class="chip-eyebrow-teal mb-8">
-              <span class="pulse-dot" aria-hidden="true"></span>
-              The 2026–2027 Procurement Window
-            </p>
-
-            <h2 class="font-display text-[clamp(2.25rem,5.5vw,5rem)] font-bold leading-[1.0] tracking-tighter text-white">
-              The window is open.<br/>
-              <span class="text-gradient-glow">The clock is ticking.</span>
-            </h2>
-
-            <p class="mt-8 max-w-[60ch] text-lead text-platinum/75">
-              Vision 2030 transformation contracts across MEA Government, BFSI, and Retail are
-              being scoped, structured, and signed
-              <span class="text-teal">right now</span>.
-              The enterprises that win the next decade choose their local prime in this window.
-            </p>
-
-            <div class="mt-10 flex flex-wrap gap-x-10 gap-y-3 text-sm text-platinum/60">
-              {[
-                ['UAE',   'Dubai Economic Agenda D33'],
-                ['KSA',   'Saudi Vision 2030'],
-                ['Egypt', 'Vision 2030 + Digital Egypt'],
-              ].map(([region, prog]) => (
-                <div class="flex items-center gap-2.5">
-                  <div class="h-1.5 w-1.5 rounded-full bg-teal shadow-[0_0_8px_rgba(0,194,199,0.7)]"></div>
-                  <span class="font-semibold text-white">{region}</span>
-                  <span class="text-cool">·</span>
-                  <span>{prog}</span>
-                </div>
-              ))}
-            </div>
+          <div class="bottom-bar-actions">
+            <a href="#what-we-do" class="hero-scroll group inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-eyebrow text-platinum/55 transition-colors hover:text-teal">
+              <span class="hero-scroll-line h-px w-8 bg-platinum/25 transition-all duration-500 group-hover:w-14 group-hover:bg-teal"></span>
+              Scroll the story
+              <svg class="h-3 w-3 animate-[float_2.4s_ease-in-out_infinite]" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M6 1v9M2.5 6.5L6 10l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
           </div>
         </div>
+      </Container>
+    </div>
+  </div>
 
-        <!-- ─── Stage C — KPIs + CTAs ─── -->
-        <div data-stage-c class="absolute inset-0 flex items-center opacity-0 will-change-transform">
-          <div class="w-full max-w-5xl">
-            <p class="chip-eyebrow-teal mb-6">
-              <span class="pulse-dot" aria-hidden="true"></span>
-              Why Emerge — by the numbers
-            </p>
+  <!-- ░░ Mobile stack — completely separate clean layout ░░ -->
+  <div class="hero-mobile" aria-hidden="false">
+    <div class="hero-mobile-bg">
+      <div aria-hidden="true" class="absolute inset-0 bg-gradient-hero-premium"></div>
+      <div aria-hidden="true" class="aurora-layer-1 absolute inset-0"></div>
+      <div aria-hidden="true" class="aurora-layer-2 absolute inset-0"></div>
+      <div aria-hidden="true" class="bg-grid bg-grid-fade absolute inset-0 opacity-50"></div>
+      <div aria-hidden="true" class="noise absolute inset-0"></div>
+    </div>
 
-            <h3 class="font-display text-[clamp(1.75rem,3.6vw,3rem)] font-bold leading-tight tracking-tight text-white">
-              Local accountability with the
-              <span class="text-gradient-accent">depth of a global SI.</span>
-            </h3>
+    <Container class="hero-mobile-content">
+      <p class="chip-eyebrow-teal mb-6 mx-auto w-fit">
+        <span class="pulse-dot" aria-hidden="true"></span>
+        Vision 2030 · {monthsRemaining}mo window
+      </p>
 
-            <!-- KPI strip -->
-            <dl class="mt-12 grid max-w-3xl grid-cols-3 gap-x-8 gap-y-4 border-t border-white/10 pt-8">
-              {[
-                { term: 'Heritage',  value: '23',     unit: 'yrs',     sub: 'MEA delivery' },
-                { term: 'Footprint', value: '7',      unit: 'offices', sub: 'UAE · KSA · Egypt +' },
-                { term: 'Engine',    value: '80K+',   unit: '',         sub: 'global engineers' },
-              ].map(({ term, value, unit, sub }) => (
-                <div class="group">
-                  <dt class="text-[10px] font-semibold uppercase tracking-eyebrow text-cool transition-colors group-hover:text-teal/70">
-                    {term}
-                  </dt>
-                  <dd class="mt-2 font-display text-[clamp(1.6rem,3.2vw,2.6rem)] font-bold leading-none">
-                    <span class="stat-value">{value}</span>
-                    {unit && <span class="ml-1 text-base font-semibold text-teal/70">{unit}</span>}
-                  </dd>
-                  <dd class="mt-1.5 text-xs text-platinum/45">{sub}</dd>
-                </div>
-              ))}
-            </dl>
+      <!-- VISION wordmark -->
+      <h1 class="hero-mobile-vision">VISION</h1>
+      <p class="hero-mobile-year">2030</p>
 
-            <!-- CTAs -->
-            <div class="mt-10 flex flex-wrap items-center gap-x-5 gap-y-4">
-              <Button href="/contact/" size="lg" class="btn-shimmer">
-                Book a Vision 2030 Readiness Briefing
-              </Button>
-              <Button variant="ghost" href="/services/" size="lg">
-                Explore the Capability Stack
-              </Button>
-            </div>
-          </div>
-        </div>
+      <h2 class="hero-mobile-headline">
+        Local Prime.<br/>
+        Global Power.<br/>
+        <span class="text-gradient-glow">Enterprise Outcomes.</span>
+      </h2>
+
+      <p class="hero-mobile-sub">
+        The agile Dubai Mainland prime for enterprise CX, Data, AI, and
+        digital transformation across MEA.
+      </p>
+
+      <div class="hero-mobile-ctas">
+        <Button href="/contact/" size="lg" class="btn-shimmer w-full sm:w-auto">
+          Book a Readiness Briefing
+        </Button>
+        <Button variant="ghost" href="/services/" size="lg" class="w-full sm:w-auto">
+          Explore the Stack
+        </Button>
       </div>
 
-      <!-- ░ BOTTOM ROW — trust strip + scroll cue ░ -->
-      <div data-hero-bottom class="pb-10 pt-6 opacity-0">
-        <div class="hairline-teal mb-6"></div>
-        <div class="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
-          <TrustStrip
-            prefix="Trusted Across"
-            items={['Government', 'BFSI', 'Retail', 'GCC PDPL Aligned', 'ESR / UBO Compliant']}
-          />
-          <a
-            href="#what-we-do"
-            class="hero-scroll group inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-eyebrow text-platinum/55 transition-colors hover:text-teal"
-          >
-            <span class="hero-scroll-line h-px w-8 bg-platinum/25 transition-all duration-500 group-hover:w-14 group-hover:bg-teal"></span>
-            Scroll the story
-            <svg class="h-3 w-3 animate-[float_2.4s_ease-in-out_infinite]" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-              <path d="M6 1v9M2.5 6.5L6 10l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </a>
-        </div>
+      <div class="hero-mobile-trust">
+        <TrustStrip
+          prefix="Trusted Across"
+          items={['Government', 'BFSI', 'Retail', 'GCC PDPL Aligned']}
+        />
       </div>
     </Container>
-
-    <!-- Stage progress indicator (right rail) -->
-    <div data-hero-rail aria-hidden="true" class="absolute right-6 top-1/2 hidden -translate-y-1/2 flex-col gap-3 opacity-0 lg:flex">
-      {[0,1,2].map((i) => (
-        <div data-rail-dot data-stage={i} class="rail-dot h-1.5 w-1.5 rounded-full bg-white/15 transition-all duration-500"></div>
-      ))}
-    </div>
   </div>
 </section>
 
 <style>
-  /* ── Outer section — produces 220vh of scroll runway ── */
+  /* ════════════════════════════════════════════════════════════
+     OUTER SECTION
+     ──────────────────────────────────────────────────────────── */
   .hero-section {
-    height: 220vh;
-    margin-top: -72px;  /* tuck under fixed navbar */
-    padding-top: 0;
+    height: 300vh;            /* 3-screen scroll runway, like Arooth */
+    margin-top: -72px;        /* tuck under fixed navbar */
+    overflow: clip;
   }
-
-  /* ── Inner sticky stage ── */
   .hero-sticky {
-    /* pad-top compensates for navbar */
-    padding-top: 72px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .hero-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--color-ink-deep);
   }
 
-  /* ── Vignette ── */
-  .hero-vignette {
-    background: radial-gradient(
-      ellipse 75% 55% at 50% 50%,
-      transparent 40%,
-      rgba(3, 8, 26, 0.45) 100%
-    );
+  /* ════════════════════════════════════════════════════════════
+     LETTERS · V I S I O N
+     ──────────────────────────────────────────────────────────── */
+  .letters-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    /* allow letters to overflow when O expands */
+    pointer-events: none;
+  }
+  .letters-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    width: max-content;
+    font-family: var(--font-family-display, 'Inter Variable'), sans-serif;
+    font-weight: 900;
+    font-size: clamp(8rem, 26vw, 22rem);
+    line-height: 0.85;
+    letter-spacing: -0.06em;
+    color: rgba(255, 255, 255, 0.92);
+    text-transform: uppercase;
+    /* Slight gradient sheen on letters */
+    background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.5) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 40px rgba(0, 194, 199, 0.05);
+    user-select: none;
+  }
+  .letter {
+    display: inline-block;
+    flex-shrink: 0;
+    will-change: transform, opacity;
+    padding: 0 0.4vw;
   }
 
-  /* ── Triple aurora layers ── */
+  /* ════════════════════════════════════════════════════════════
+     THE "O" FRAME · expands to reveal hero content
+     ──────────────────────────────────────────────────────────── */
+  .o-frame {
+    position: relative;
+    flex-shrink: 0;
+    margin: 0 0.6vw;
+    width: 22vw;
+    height: 30vh;
+    border-radius: 9999px;
+    overflow: visible;     /* ring sits OUTSIDE inner */
+    will-change: width, height, border-radius;
+    pointer-events: auto;
+  }
+  .o-inner {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    overflow: hidden;
+    background: var(--color-ink-deep);
+    will-change: border-radius;
+  }
+  .o-ring {
+    position: absolute;
+    inset: -3px;
+    border: 3px solid rgba(0, 194, 199, 0.85);
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow:
+      0  0 32px  4px rgba(0, 194, 199, 0.45),
+      0  0 80px 12px rgba(0, 194, 199, 0.25),
+      inset 0 0 30px rgba(0, 194, 199, 0.18);
+    will-change: opacity, border-width, box-shadow;
+  }
+
+  /* ════════════════════════════════════════════════════════════
+     CONTENT INSIDE THE O · always 100vw × 100vh, clipped by O
+     ──────────────────────────────────────────────────────────── */
+  .o-content {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    /* center on the O so headline always sits centered on viewport */
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+    will-change: transform;
+  }
+  .o-inner-stack {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 6vw;
+    gap: 1.5rem;
+    will-change: opacity, transform;
+  }
+  .hero-headline {
+    font-family: var(--font-family-display, 'Inter Variable'), sans-serif;
+    font-weight: 700;
+    font-size: clamp(2.5rem, 5.4vw, 5.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    color: white;
+    text-wrap: balance;
+    max-width: 22ch;
+  }
+  .hero-sub {
+    font-size: clamp(1rem, 1.18vw, 1.25rem);
+    line-height: 1.55;
+    color: rgba(232, 238, 245, 0.72);
+    max-width: 56ch;
+  }
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+
+  /* Mini skyline tucked at bottom of content area */
+  .dubai-skyline-mini {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 200px;
+    z-index: 1;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 50%);
+            mask-image: linear-gradient(180deg, transparent 0%, black 50%);
+  }
+
+  /* ════════════════════════════════════════════════════════════
+     MARQUEE · bottom of revealed content
+     ──────────────────────────────────────────────────────────── */
+  .marquee-bar {
+    position: absolute;
+    inset: auto 0 6vh 0;
+    overflow: hidden;
+    z-index: 6;
+    -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+            mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+  }
+  .marquee-track {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    width: max-content;
+    animation: marquee 40s linear infinite;
+    font-family: var(--font-family-display, 'Inter Variable'), sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.5rem, 3.4vw, 3rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .marquee-chunk { color: rgba(232, 238, 245, 0.55); }
+  .marquee-chunk--bold   { font-weight: 800; color: rgba(255,255,255,0.85); }
+  .marquee-chunk--italic { font-style: italic; color: rgba(232,238,245,0.55); font-weight: 500; }
+  .marquee-chunk--mark   { color: var(--color-teal); font-style: italic; }
+  .marquee-chunk--star   { color: var(--color-teal); font-weight: 400; opacity: 0.7; transform: translateY(-0.05em); }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-25%); }   /* 4 copies → 25% loop */
+  }
+
+  /* ════════════════════════════════════════════════════════════
+     BOTTOM BAR · always-visible details + scroll cue
+     ──────────────────────────────────────────────────────────── */
+  .bottom-bar-container {
+    position: absolute;
+    inset: auto 0 0 0;
+    z-index: 30;
+    pointer-events: none;
+  }
+  .bottom-bar {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 2rem;
+    padding-bottom: 2.5rem;
+    padding-top: 2rem;
+    pointer-events: auto;
+  }
+  .bottom-bar-text { max-width: 32rem; }
+  .bottom-bar-tagline {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: rgba(232, 238, 245, 0.5);
+  }
+  .bottom-bar-actions { display: flex; align-items: center; gap: 1rem; }
+
+  /* ════════════════════════════════════════════════════════════
+     AURORA LAYERS (animated)
+     ──────────────────────────────────────────────────────────── */
   .aurora-layer-1 {
     background:
-      radial-gradient(ellipse 85% 65% at 78% -8%, rgba(0,194,199,0.28), transparent 56%),
-      radial-gradient(ellipse 55% 45% at 5% 108%, rgba(61,220,227,0.20), transparent 55%);
+      radial-gradient(ellipse 85% 65% at 78% -8%, rgba(0,194,199,0.30), transparent 56%),
+      radial-gradient(ellipse 55% 45% at 5% 108%, rgba(61,220,227,0.22), transparent 55%);
     filter: blur(50px);
     animation: aurora-drift 22s ease-in-out infinite;
     will-change: transform;
@@ -488,31 +502,6 @@ const monthsRemaining = Math.max(0, Math.round(
     animation: aurora-drift 28s ease-in-out 8s infinite reverse;
     will-change: transform;
   }
-
-  /* ── Neural net ── */
-  .neural-net {
-    opacity: 0.85;
-    mask-image: radial-gradient(ellipse 95% 80% at 60% 40%, black 30%, transparent 78%);
-    -webkit-mask-image: radial-gradient(ellipse 95% 80% at 60% 40%, black 30%, transparent 78%);
-  }
-
-  /* ── Skyline ── */
-  .dubai-skyline {
-    mask-image: linear-gradient(180deg, transparent 0%, black 38%);
-    -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 38%);
-  }
-
-  /* ── Underline ── */
-  .hero-underline { margin-left: -2px; }
-
-  /* ── Active rail dot ── */
-  :global([data-rail-dot].is-active) {
-    background-color: var(--color-teal);
-    box-shadow: 0 0 8px rgba(0, 194, 199, 0.7);
-    transform: scale(1.6);
-  }
-
-  /* ── Keyframes ── */
   @keyframes aurora-drift {
     0%, 100% { transform: translate3d(0,0,0) scale(1); opacity: 0.85; }
     50%       { transform: translate3d(2%,-3%,0) scale(1.06); opacity: 1; }
@@ -522,186 +511,180 @@ const monthsRemaining = Math.max(0, Math.round(
     33%      { transform: translate3d(-2%,2%,0) scale(1.04); opacity: 0.9; }
     66%      { transform: translate3d(1%,-1%,0) scale(0.97); opacity: 0.75; }
   }
-  @keyframes data-flow-loop {
-    0%   { stroke-dashoffset: 600; opacity: 0; }
-    8%   { opacity: 0.7; }
-    90%  { opacity: 0.7; }
-    100% { stroke-dashoffset: 0; opacity: 0; }
-  }
-  @keyframes neural-pulse {
-    0%, 100% { opacity: 0.25; }
-    50%      { opacity: 0.88; }
-  }
   @keyframes float {
     0%, 100% { transform: translateY(0); }
     50%       { transform: translateY(3px); }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .aurora-layer-1, .aurora-layer-2, .aurora-layer-3 { animation: none !important; }
-    .beam-scan::after { animation: none !important; }
-    :global([data-stage-a]),
-    :global([data-stage-b]),
-    :global([data-stage-c]) { opacity: 1 !important; transform: none !important; }
-    :global([data-stage-b]),
-    :global([data-stage-c]) { display: none; }
-    :global(.reveal-word) { opacity: 1 !important; transform: none !important; }
-    :global(.stroke-draw) { stroke-dashoffset: 0 !important; }
-    :global([data-hero-top]),
-    :global([data-hero-tagline]),
-    :global([data-hero-bottom]) { opacity: 1 !important; }
+  /* ════════════════════════════════════════════════════════════
+     MOBILE FALLBACK (≤ 768 px) · clean stack, no sticky, no scroll
+     ──────────────────────────────────────────────────────────── */
+  .hero-mobile { display: none; }
+
+  @media (max-width: 768px) {
+    /* Disable the cinematic stage entirely */
+    .hero-section {
+      height: auto;
+      margin-top: 0;
+    }
+    .hero-sticky {
+      position: relative;
+      height: auto;
+    }
+    .letters-wrap, .bottom-bar-container { display: none; }
+
+    /* Show clean mobile layout */
+    .hero-mobile { display: block; position: relative; isolation: isolate; }
+    .hero-mobile-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: -1;
+      background: var(--color-ink-deep);
+    }
+    .hero-mobile-content {
+      padding-top: 7rem;     /* clear navbar */
+      padding-bottom: 4rem;
+      text-align: center;
+      position: relative;
+      min-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .hero-mobile-vision {
+      font-family: var(--font-family-display, 'Inter Variable'), sans-serif;
+      font-weight: 900;
+      font-size: clamp(4rem, 22vw, 8rem);
+      line-height: 0.85;
+      letter-spacing: -0.06em;
+      color: rgba(255, 255, 255, 0.95);
+      background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(0,194,199,0.4) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 0;
+    }
+    .hero-mobile-year {
+      font-family: var(--font-family-display, 'Inter Variable'), sans-serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: 0.4em;
+      color: var(--color-teal);
+      margin-top: 0.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .hero-mobile-headline {
+      font-family: var(--font-family-display, 'Inter Variable'), sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.875rem, 7.5vw, 2.5rem);
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+      color: white;
+      margin: 0;
+    }
+    .hero-mobile-sub {
+      margin-top: 1.5rem;
+      font-size: 1rem;
+      line-height: 1.55;
+      color: rgba(232, 238, 245, 0.7);
+      max-width: 32rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .hero-mobile-ctas {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: stretch;
+    }
+    .hero-mobile-trust {
+      margin-top: 3rem;
+    }
   }
 
-  /* ── Mobile: stack stages instead of pin (avoid awkward small-screen sticky) ── */
-  @media (max-width: 768px) {
-    .hero-section { height: auto; }
-    .hero-sticky  { position: relative; height: auto; min-height: 100vh; padding-bottom: 4rem; }
-    :global([data-stage-a]),
-    :global([data-stage-b]),
-    :global([data-stage-c]) { position: relative; opacity: 1 !important; transform: none !important; }
-    :global([data-stage-b]) { margin-top: 4rem; }
-    :global([data-stage-c]) { margin-top: 4rem; }
-    :global([data-hero-rail]) { display: none; }
+  /* ════════════════════════════════════════════════════════════
+     REDUCED MOTION — strip all motion, keep static beauty
+     ──────────────────────────────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .aurora-layer-1, .aurora-layer-2, .aurora-layer-3,
+    .marquee-track, .beam-scan::after { animation: none !important; }
   }
 </style>
 
 <script>
-  import { animate, stagger, scroll } from 'motion';
+  import { animate, scroll } from 'motion';
 
   const reduced  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isMobile = window.matchMedia('(max-width: 768px)').matches;
 
-  /* ── Initial entrance choreography ─────────────────────────── */
-  if (!reduced) {
-    const top      = document.querySelector<HTMLElement>('[data-hero-top]');
-    const words    = document.querySelectorAll<HTMLElement>('[data-hero-word]');
-    const ulPath   = document.querySelector<SVGPathElement>('[data-hero-underline] path');
-    const tagline  = document.querySelector<HTMLElement>('[data-hero-tagline]');
-    const bottom   = document.querySelector<HTMLElement>('[data-hero-bottom]');
-    const rail     = document.querySelector<HTMLElement>('[data-hero-rail]');
-
-    const E = [0.16, 1, 0.3, 1] as const;
-
-    if (top)
-      animate(top, { opacity: [0,1], y: [10,0] },
-        { duration: 0.65, easing: E });
-
-    if (words.length)
-      animate(words,
-        { opacity: [0,1], y: ['110%','0%'] },
-        { delay: stagger(0.07, { start: 0.22 }), duration: 0.85, easing: E });
-
-    const wordDelay = 0.22 + words.length * 0.07 + 0.05;
-
-    if (ulPath)
-      animate(ulPath, { strokeDashoffset: [200, 0] },
-        { delay: wordDelay, duration: 1.1, easing: E });
-
-    if (tagline)
-      animate(tagline, { opacity: [0,1], y: [14,0] },
-        { delay: 0.85, duration: 0.7, easing: E });
-
-    if (bottom)
-      animate(bottom, { opacity: [0,1], y: [12,0] },
-        { delay: 1.15, duration: 0.7, easing: E });
-
-    if (rail)
-      animate(rail, { opacity: [0,1] },
-        { delay: 1.35, duration: 0.5, easing: E });
-  }
-
-  /* ── Scroll-driven cinematic choreography ──────────────────── */
+  /* ── Scroll-driven cinematic O-reveal (desktop / tablet only) ── */
   if (!reduced && !isMobile) {
     const heroSection = document.querySelector<HTMLElement>('[data-hero]');
-    if (heroSection) {
-      const stageA   = document.querySelector<HTMLElement>('[data-stage-a]');
-      const stageB   = document.querySelector<HTMLElement>('[data-stage-b]');
-      const stageC   = document.querySelector<HTMLElement>('[data-stage-c]');
-      const skyline  = document.querySelector<HTMLElement>('[data-bg-skyline]');
-      const neural   = document.querySelector<HTMLElement>('[data-bg-neural]');
-      const aurora   = document.querySelector<HTMLElement>('[data-bg-aurora]');
-      const grid     = document.querySelector<HTMLElement>('[data-bg-grid]');
-      const vignette = document.querySelector<HTMLElement>('[data-bg-vignette]');
-      const railDots = document.querySelectorAll<HTMLElement>('[data-rail-dot]');
+    const oFrame      = document.querySelector<HTMLElement>('[data-o-frame]');
+    const oInner      = document.querySelector<HTMLElement>('[data-o-inner]');
+    const oRing       = document.querySelector<HTMLElement>('[data-o-ring]');
+    const oContent    = document.querySelector<HTMLElement>('[data-o-content]');
+    const oStack      = document.querySelector<HTMLElement>('[data-o-inner-stack]');
+    const letters     = document.querySelectorAll<HTMLElement>('[data-letter]');
 
+    if (heroSection && oFrame && oRing && oContent && oStack) {
       const range = ['start start', 'end end'] as const;
 
-      /* ── Background parallax (different speeds = depth) ── */
-      if (skyline)
-        scroll(animate(skyline, { y: [0, -60], opacity: [1, 0.5] }, { easing: 'linear' }),
-          { target: heroSection, offset: range });
+      /* The O frame expands width × height to fill the viewport.
+       * Letters in the flex row are pushed sideways by the growing O,
+       * with extra translateX to ensure they exit the screen cleanly. */
+      scroll(
+        animate(oFrame, {
+          width:        ['22vw', '100vw'],
+          height:       ['30vh', '100vh'],
+          borderRadius: ['9999px', '0px'],
+          margin:       ['0 0.6vw', '0 0vw'],
+        }, { easing: 'linear' }),
+        { target: heroSection, offset: range }
+      );
 
-      if (neural)
-        scroll(animate(neural, { y: [0, -180], scale: [1, 1.08], opacity: [0.85, 0.35] }, { easing: 'linear' }),
-          { target: heroSection, offset: range });
-
-      if (aurora)
-        scroll(animate(aurora, { y: [0, -120] }, { easing: 'linear' }),
-          { target: heroSection, offset: range });
-
-      if (grid)
-        scroll(animate(grid, { y: [0, -90], opacity: [0.4, 0.15] }, { easing: 'linear' }),
-          { target: heroSection, offset: range });
-
-      if (vignette)
-        scroll(animate(vignette, { opacity: [0.6, 1] }, { easing: 'linear' }),
-          { target: heroSection, offset: range });
-
-      /* ── Stage A: visible 0-40 % ── */
-      if (stageA)
+      /* Inner mirrors border-radius so the clip path matches the frame */
+      if (oInner)
         scroll(
-          animate(stageA, {
-            opacity: [1, 1, 0.0, 0.0],
-            y:       [0, 0, -90,  -90],
-            scale:   [1, 1, 0.94, 0.94],
-            filter:  ['blur(0px)', 'blur(0px)', 'blur(6px)', 'blur(6px)'],
-          }, { easing: 'linear' }),
-          { target: heroSection, offset: ['start start', 'end end'] }
+          animate(oInner, { borderRadius: ['9999px', '0px'] }, { easing: 'linear' }),
+          { target: heroSection, offset: range }
         );
 
-      /* ── Stage B: visible 30-65 % ── */
-      if (stageB)
-        scroll(
-          animate(stageB, {
-            opacity: [0.0, 0.0, 1.0, 1.0, 0.0, 0.0],
-            y:       [60,  60,  0,   0,   -60,  -60],
-            filter:  ['blur(8px)', 'blur(8px)', 'blur(0px)', 'blur(0px)', 'blur(6px)', 'blur(6px)'],
-          }, { easing: 'linear' }),
-          { target: heroSection, offset: ['start start', 'end end'] }
-        );
+      /* Ring fades and thins as the O reveals — disappears entirely at end */
+      scroll(
+        animate(oRing, {
+          opacity:    [1, 1, 0],
+          borderWidth:['3px', '3px', '0px'],
+        }, { easing: 'linear' }),
+        { target: heroSection, offset: range }
+      );
 
-      /* ── Stage C: visible 60-100 % ── */
-      if (stageC)
-        scroll(
-          animate(stageC, {
-            opacity: [0.0, 0.0, 1.0, 1.0],
-            y:       [60,  60,  0,   0  ],
-            filter:  ['blur(8px)', 'blur(8px)', 'blur(0px)', 'blur(0px)'],
-          }, { easing: 'linear' }),
-          { target: heroSection, offset: ['start start', 'end end'] }
-        );
+      /* Letters scatter outward and fade. data-pos drives direction. */
+      letters.forEach((l) => {
+        const pos = parseFloat(l.dataset.pos ?? '0');
+        const x   = pos * 18;       // vw — strong scatter
+        const dim = pos * 1.0;      // dim slightly before fading
 
-      /* ── Rail-dot active state tracker ── */
-      if (railDots.length === 3) {
-        const sectionRect = () => heroSection.getBoundingClientRect();
-        const tick = () => {
-          const r = sectionRect();
-          const total = r.height - window.innerHeight;
-          const p = total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 0;
-          const active = p < 0.33 ? 0 : p < 0.66 ? 1 : 2;
-          railDots.forEach((dot, i) => {
-            dot.classList.toggle('is-active', i === active);
-          });
-        };
-        tick();
-        let frame = 0;
-        const onScroll = () => {
-          if (frame) cancelAnimationFrame(frame);
-          frame = requestAnimationFrame(tick);
-        };
-        window.addEventListener('scroll', onScroll, { passive: true });
-        window.addEventListener('resize', onScroll, { passive: true });
-      }
+        scroll(
+          animate(l, {
+            x:       ['0vw', `${x}vw`],
+            opacity: [1, 1, 0],
+          }, { easing: 'linear' }),
+          { target: heroSection, offset: range }
+        );
+      });
+
+      /* Content stack inside the O scales up + sharpens as the O grows */
+      scroll(
+        animate(oStack, {
+          scale:   [0.55, 0.55, 1],
+          opacity: [0.4, 0.7, 1],
+          filter:  ['blur(2px)', 'blur(1px)', 'blur(0px)'],
+        }, { easing: 'linear' }),
+        { target: heroSection, offset: range }
+      );
     }
   }
 
