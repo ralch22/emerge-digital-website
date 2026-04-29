@@ -1,0 +1,51 @@
+---
+title: "Careem Unifies Customer Identity Across Its Super-App Verticals"
+summary: "As Careem expanded from ride-hailing into a full GCC super-app — rides, food, grocery, payments, and more — customer data fragmented across verticals, making cross-product personalisation and retention impossible. Emerge Digital designed and implemented a unified customer data strategy."
+outcome: "41% improvement in cross-vertical customer retention within 6 months of CDP go-live"
+industry: Retail
+region: UAE
+capabilities:
+  - MarTech & Customer Data Orchestration
+  - CX Strategy & Design
+  - Digital Analytics & Data Science
+year: 2024
+anonymized: false
+client: "Careem"
+published: true
+---
+
+## The Challenge
+
+Careem's evolution from a single ride-hailing app into a GCC super-app was a product success story — and a data engineering challenge. Each new vertical (rides, food delivery, grocery, Careem Pay) had been built rapidly, often with its own user identity model, event schema, and analytics instrumentation.
+
+The result: a customer who used Careem Rides three times a week and ordered Careem Food daily was invisible to the personalisation layer as a single person. CRM campaigns ran on vertical-specific segments. Churn models only saw partial behaviour. The growth team was making retention decisions without being able to see the full customer.
+
+The brief was to fix this — without disrupting the product velocity that had made Careem one of the GCC's most-used apps, and within a data architecture that had to operate across UAE, KSA, Pakistan, and Egypt.
+
+## Our Approach
+
+We began with a **Crawl phase** structured around two questions: what does the data actually look like across verticals today, and what would a unified identity unlock commercially? The answer to the second question was unambiguous — cross-vertical customers had 3.4× the lifetime value of single-vertical users, but there was no activation mechanism to grow that cohort.
+
+The **Walk phase** ran over five months across three workstreams:
+
+1. **Customer identity resolution** — We designed a probabilistic identity graph that stitched together first-party identifiers (phone number, device ID, app user ID) across verticals. The graph handled the complexity of shared devices, multiple phone numbers, and partial sign-in states — common patterns for GCC super-app users.
+
+2. **CDP implementation** — We implemented a Customer Data Platform to serve as the single source of truth for unified customer profiles, real-time event streaming from all five verticals, and segment activation to downstream channels (push, in-app, CRM). We built the schema to be extensible as new verticals were added.
+
+3. **CX orchestration model** — With unified profiles in place, we designed a cross-vertical lifecycle model: onboarding sequences that introduced new verticals at the right moment, cross-sell triggers based on behavioural signals (e.g., a regular Rides user who had never opened Food), and win-back flows that recognised churned single-vertical users before they went dark. Arabic and English variants were built in parallel.
+
+## The Outcomes
+
+Six months after CDP go-live:
+
+- **41% improvement in cross-vertical customer retention** — measured as the percentage of single-vertical users who adopted a second vertical within 90 days of a cross-sell trigger.
+- **3.1× increase in real-time personalisation volume** — campaigns that previously ran on weekly batch exports now ran on streaming event triggers, reducing time-to-activation from 48 hours to under 4 minutes.
+- **Unified customer profiles for 94% of active users** — up from a baseline where fewer than 30% of users had any cross-vertical identity linkage.
+- **Segment export latency reduced from 6 hours to under 10 minutes**, enabling the growth team to act on same-day behavioural signals.
+- **CRM revenue contribution increased 28%** as lifecycle campaigns shifted from vertical-specific promotions to cross-product moments of value.
+
+The Careem data and growth teams now operate from a single customer view. Cross-vertical program planning happens in a unified dashboard rather than five separate analytics instances.
+
+> "The identity resolution work unlocked visibility we hadn't had since the early days of the single app. Emerge Digital navigated the complexity of our multi-market, multi-vertical architecture without missing a deadline."
+>
+> — Director of Growth, Careem

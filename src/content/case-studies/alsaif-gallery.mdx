@@ -1,0 +1,57 @@
+---
+title: "Alsaif Gallery Rebuilds Its Omnichannel Analytics Stack for Digital Growth"
+summary: "Saudi Arabia's leading kitchenware and home-goods retailer needed end-to-end visibility across digital and in-store channels — in a PDPL-compliant, Arabic-first commerce environment. Emerge Digital designed and delivered a new analytics foundation in 14 weeks."
+outcome: "+54% increase in attributable digital revenue within 8 months of go-live"
+industry: Retail
+region: KSA
+capabilities:
+  - Digital Analytics & Data Science
+  - Data & Tag Governance
+  - Commerce & Platform Development
+year: 2024
+anonymized: false
+client: "Alsaif Gallery"
+published: true
+---
+
+## The Challenge
+
+Alsaif Gallery operates one of Saudi Arabia's largest retail networks — hundreds of stores across the Kingdom, a growing e-commerce platform, and a loyal customer base transacting across WhatsApp, Mada, and their owned digital properties. But their analytics infrastructure had not kept pace with their ambition.
+
+Marketing data sat fragmented across four disconnected systems: a legacy GA Universal property approaching end-of-life, a standalone performance media dashboard, an ERP-side BI tool, and a manual monthly report that nobody fully trusted. Attribution was effectively impossible. The team was making six-figure media decisions on gut instinct.
+
+There were also compliance pressures. Saudi Arabia's Personal Data Protection Law (PDPL) had introduced strict requirements around consent, data residency, and user tracking — requirements that the existing client-side tag architecture could not meet.
+
+The brief to Emerge Digital was clear: build an analytics foundation we can trust, make it PDPL-compliant from day one, and ensure it integrates with our commerce platform without slowing it down.
+
+## Our Approach
+
+We opened with a four-week **Crawl phase** — a structured analytics audit that mapped every data touchpoint across the customer journey: paid search, social, on-site behaviour, checkout, in-store scan, and post-purchase. We assessed PDPL compliance gaps, documented the tag sprawl across the existing GTM container, and sized the revenue impact of the attribution blind spots.
+
+The audit surfaced a critical finding: approximately 38% of converting sessions were unattributed, most of them originating from WhatsApp referrals — a dominant but unmeasured channel for Saudi shoppers. That single insight justified the rebuild.
+
+The **Walk phase** ran for ten weeks across four workstreams:
+
+1. **GA4 migration and BigQuery integration** — A clean-sheet GA4 property configured for Arabic-first e-commerce, with enhanced e-commerce events, cross-domain tracking across the loyalty sub-domain, and a live BigQuery export for warehouse-level analysis.
+
+2. **Server-side GTM migration** — We moved the entire tag architecture to a server-side container hosted in a KSA-resident cloud environment. This eliminated third-party cookie dependency, reduced page-load impact from tracking scripts by 340ms, and created a clean PDPL-compliant data pipeline.
+
+3. **Consent management platform** — An Arabic/English bilingual consent layer, designed to PDPL specifications, with preference storage, audit logging, and downstream signal suppression for opted-out users.
+
+4. **Attribution modelling** — A data-driven attribution model built in BigQuery, incorporating paid media spend from Google, Meta, and Snapchat, organic search, and WhatsApp referrals (via UTM-tagged link shorteners). Modelled weekly, surfaced in Looker Studio dashboards the commercial team could action without analyst support.
+
+## The Outcomes
+
+Within eight months of go-live, the results were clear:
+
+- **+54% increase in attributable digital revenue** — not by generating new revenue, but by measuring revenue that was already there. The WhatsApp channel alone accounted for 22% of total digital conversion once properly tracked.
+- **340ms reduction in page load time** from tag consolidation and server-side migration — a direct Lighthouse Core Web Vitals improvement.
+- **Full PDPL compliance** across all tracking, consent, and data-residency requirements — confirmed by a third-party compliance review.
+- **4.2× improvement in media attribution accuracy**, enabling the team to reallocate budget from underperforming paid channels to WhatsApp-driven retargeting sequences.
+- **Zero disruption to trading** — the entire migration was executed in parallel with the existing stack, with a clean cutover timed to a low-traffic window.
+
+The Alsaif Gallery marketing team now runs weekly attribution reviews against a single dashboard. Media budget decisions are made on data, not instinct.
+
+> "Emerge Digital understood our market — the WhatsApp-first customer behaviour, the Mada payment patterns, the PDPL requirements — in a way that our previous analytics partners never had. The rebuild paid for itself in the first quarter."
+>
+> — Head of E-commerce, Alsaif Gallery

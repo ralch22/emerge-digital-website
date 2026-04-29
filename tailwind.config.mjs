@@ -3,6 +3,10 @@ export default {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,ts,tsx}'],
   theme: {
     extend: {
+      opacity: {
+        '8': '0.08',
+        '15': '0.15',
+      },
       colors: {
         navy: {
           DEFAULT: '#0A1F3D',

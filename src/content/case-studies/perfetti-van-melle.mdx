@@ -1,0 +1,58 @@
+---
+title: "Perfetti van Melle Establishes PDPL-Compliant Analytics Governance Across Six MEA Markets"
+summary: "With GCC data protection regulations tightening and a fragmented MEA marketing tech stack showing compliance gaps across six markets, Perfetti van Melle engaged Emerge Digital to design and implement a regional analytics governance framework — without disrupting live campaign operations."
+outcome: "Full PDPL and regional data compliance achieved across 6 MEA markets; media cost-per-acquisition reduced 34%"
+industry: Retail
+region: MEA
+capabilities:
+  - Data & Tag Governance
+  - Digital Analytics & Data Science
+  - Media & AdTech Excellence
+year: 2025
+anonymized: false
+client: "Perfetti van Melle"
+published: true
+---
+
+## The Challenge
+
+Perfetti van Melle's MEA business spans six markets — UAE, KSA, Egypt, Kuwait, Bahrain, and Oman — running a portfolio of brands including Mentos, Chupa Chups, and Alpenliebe across digital, retail media, and influencer channels.
+
+The marketing technology stack had grown organically over several years: a different GTM configuration per market, inconsistent GA4 event schemas, no centralised consent management, and client-side tags firing without systematic governance. In markets with different privacy postures — PDPL in KSA, evolving frameworks in Egypt, UAE Federal Decree-Law No. 45 — the compliance picture was fragmented and difficult to audit.
+
+Two specific pressures brought the governance question to a head:
+
+1. **GCC PDPL enforcement** — Saudi Arabia's PDPL had moved from enforcement-light to active. The existing tracking infrastructure could not demonstrate consent collection, data residency, or processor agreements at the level regulators expected.
+2. **Media efficiency** — without clean, consented, well-attributed data, programmatic campaigns were optimising on noisy signals. CPAs were rising and the team had limited confidence in the attribution numbers.
+
+Emerge Digital was brought in to solve both — compliance and performance — as a unified program.
+
+## Our Approach
+
+We structured the engagement as a five-month **Walk phase**, preceded by a three-week **Crawl** that produced a market-by-market compliance and analytics maturity map. The map scored each market across six dimensions: consent architecture, tag governance, data residency, attribution model quality, media signal quality, and reporting consistency.
+
+The results established a clear prioritisation: KSA was the highest compliance risk; Egypt and UAE had the greatest media efficiency opportunity; Kuwait, Bahrain, and Oman could be rolled out from a template once the lead markets were done.
+
+The Walk phase ran in three concurrent workstreams:
+
+1. **Consent and data governance layer** — We deployed a server-side GTM architecture in a UAE and KSA-resident cloud environment, eliminating client-side third-party data egress. A centralised Consent Management Platform was configured with Arabic and English variants for each market, storing consent records in a PDPL-compliant audit log. All downstream tags — Google, Meta, TikTok, Snapchat, DV360 — were wired through the server-side container, with consent signals enforced at the pipeline level.
+
+2. **GA4 and analytics normalisation** — We rebuilt the GA4 implementation across all six markets to a single, versioned event schema. Custom dimensions mapped brand, market, campaign type, and product category consistently — enabling cross-market reporting for the first time. BigQuery export and a Looker Studio cross-market dashboard replaced six disconnected local reports.
+
+3. **Media signal quality and attribution** — With clean, consented data flowing, we rebuilt the enhanced conversions configuration across Google and Meta, restoring signal quality that had degraded as cookies declined. We implemented a data-driven attribution model in BigQuery, calibrated to the FMCG purchase cycle (consideration-to-shelf periods of 2–8 weeks depending on market and SKU category). Channel-level CPAs were recalculated on the new model.
+
+## The Outcomes
+
+Twelve months after the program concluded:
+
+- **Full PDPL compliance** achieved across all six MEA markets — confirmed by an independent legal and technical review. No enforcement exposure at go-live of the new architecture.
+- **34% reduction in media cost-per-acquisition**, driven by improved signal quality, enhanced conversions, and reallocation of budget from misattributed channels. The largest gains were in KSA and Egypt programmatic.
+- **Cross-market reporting deployed for the first time** — the regional marketing director can now review brand performance across all six markets in a single dashboard, segmented by brand, channel, and market.
+- **Data latency reduced from 48 hours to under 30 minutes** across all markets — enabling same-day campaign adjustments rather than next-day.
+- **Tag container bloat reduced by 61%** — the server-side migration eliminated redundant client-side scripts, improving Lighthouse performance scores across all six market websites.
+
+The governance framework is now the regional standard for all new Perfetti van Melle MEA market activations, with a playbook enabling each new market to be onboarded in under three weeks.
+
+> "We needed a partner who understood both the GCC regulatory environment and the realities of running a multi-market, multi-brand FMCG stack. Emerge Digital delivered on both."
+>
+> — MEA Digital Marketing Director, Perfetti van Melle

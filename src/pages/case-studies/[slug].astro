@@ -1,0 +1,340 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Container from '../../components/Container.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import Button from '../../components/Button.astro';
+
+export async function getStaticPaths() {
+  const studies = await getCollection('case-studies', ({ data }) => data.published);
+  return studies.map((study) => ({
+    params: { slug: study.slug },
+    props: { study },
+  }));
+}
+
+const { study } = Astro.props;
+const { Content } = await study.render();
+
+const {
+  title,
+  summary,
+  outcome,
+  industry,
+  region,
+  capabilities,
+  year,
+  client,
+  anonymized,
+} = study.data;
+
+// Related studies (same industry, excluding self)
+const allStudies = await getCollection('case-studies', ({ data }) => data.published);
+const related = allStudies
+  .filter((s) => s.slug !== study.slug && s.data.industry === industry)
+  .slice(0, 2);
+---
+
+<BaseLayout
+  title={`${client ?? 'Case Study'} — ${title} | Emerge Digital`}
+  description={summary}
+>
+  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <section class="relative overflow-hidden bg-gradient-hero pb-0 pt-section-sm md:pt-section">
+    <div class="pointer-events-none absolute inset-0 bg-grid bg-grid-fade" aria-hidden="true"></div>
+    <div class="aurora pointer-events-none absolute inset-0 opacity-50" aria-hidden="true"></div>
+
+    <Container>
+      <!-- Breadcrumb -->
+      <nav aria-label="Breadcrumb" class="mb-8">
+        <ol class="flex items-center gap-2 text-sm text-cool">
+          <li><a href="/" class="hover:text-teal">Home</a></li>
+          <li aria-hidden="true" class="text-cool/40">›</li>
+          <li><a href="/case-studies" class="hover:text-teal">Case Studies</a></li>
+          <li aria-hidden="true" class="text-cool/40">›</li>
+          <li class="truncate text-platinum/70" aria-current="page">{client ?? 'Case Study'}</li>
+        </ol>
+      </nav>
+
+      <!-- Tags -->
+      <div class="flex flex-wrap gap-2">
+        <span class="rounded-pill border border-teal/25 bg-teal/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-teal">
+          {industry}
+        </span>
+        <span class="rounded-pill border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-platinum/60">
+          {region}
+        </span>
+        <span class="rounded-pill border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-platinum/60">
+          {year}
+        </span>
+      </div>
+
+      {!anonymized && client && (
+        <p class="mt-5 text-eyebrow uppercase text-cool">{client}</p>
+      )}
+
+      <h1 class="mt-3 max-w-4xl text-display-xl text-white">{title}</h1>
+
+      <p class="mt-6 max-w-2xl text-lead text-platinum/70">{summary}</p>
+
+      <!-- Outcome hero callout -->
+      <div class="mt-10 inline-flex items-start gap-4 rounded-2xl border border-teal/30 bg-teal/8 p-6">
+        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-teal/15">
+          <svg class="h-5 w-5 text-teal" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M3 12 L7 8 L11 11 L17 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-widest text-cool">Key Outcome</p>
+          <p class="mt-1 text-lg font-semibold leading-snug text-teal">{outcome}</p>
+        </div>
+      </div>
+    </Container>
+
+    <!-- Hairline divider at bottom of hero -->
+    <div class="hairline mt-16" aria-hidden="true"></div>
+  </section>
+
+  <!-- ── Body ──────────────────────────────────────────────── -->
+  <div class="bg-ink">
+    <Container>
+      <div class="py-section-sm md:py-section">
+        <div class="grid gap-16 lg:grid-cols-[1fr_280px]">
+          <!-- Main prose -->
+          <article class="prose-case-study prose max-w-none">
+            <Content />
+          </article>
+
+          <!-- Sidebar -->
+          <aside class="space-y-8 lg:pt-2">
+            <!-- Capabilities -->
+            <div class="rounded-2xl border border-white/8 bg-white/[0.02] p-6">
+              <h3 class="text-eyebrow uppercase text-cool">Capabilities</h3>
+              <ul class="mt-4 space-y-2">
+                {capabilities.map((cap) => (
+                  <li class="flex items-center gap-2.5 text-sm text-platinum/80">
+                    <span class="h-1 w-1 shrink-0 rounded-full bg-teal" aria-hidden="true"></span>
+                    {cap}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <!-- Meta -->
+            <div class="rounded-2xl border border-white/8 bg-white/[0.02] p-6 text-sm">
+              <dl class="space-y-4">
+                {client && !anonymized && (
+                  <div>
+                    <dt class="text-eyebrow uppercase text-cool">Client</dt>
+                    <dd class="mt-1 font-medium text-white">{client}</dd>
+                  </div>
+                )}
+                <div>
+                  <dt class="text-eyebrow uppercase text-cool">Industry</dt>
+                  <dd class="mt-1 font-medium text-white">{industry}</dd>
+                </div>
+                <div>
+                  <dt class="text-eyebrow uppercase text-cool">Region</dt>
+                  <dd class="mt-1 font-medium text-white">{region}</dd>
+                </div>
+                <div>
+                  <dt class="text-eyebrow uppercase text-cool">Year</dt>
+                  <dd class="mt-1 font-medium text-white">{year}</dd>
+                </div>
+              </dl>
+            </div>
+
+            <!-- CTA -->
+            <div class="rounded-2xl border border-teal/20 bg-teal/5 p-6">
+              <h3 class="text-sm font-semibold text-white">Start a similar program</h3>
+              <p class="mt-2 text-sm leading-relaxed text-platinum/65">
+                Book a 30-minute Readiness Briefing with our founder to map your priorities.
+              </p>
+              <Button href="/contact" size="md" class="mt-5 w-full justify-center">
+                Book a Briefing
+              </Button>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </Container>
+  </div>
+
+  <!-- ── Related ────────────────────────────────────────── -->
+  {related.length > 0 && (
+    <section class="border-t border-white/8 bg-navy py-section-sm md:py-section">
+      <Container>
+        <Eyebrow class="mb-8">Related case studies</Eyebrow>
+        <div class="grid gap-6 sm:grid-cols-2">
+          {related.map((s) => (
+            <a
+              href={`/case-studies/${s.slug}`}
+              class="card-surface group flex flex-col gap-4 p-8 no-underline"
+            >
+              <div class="flex flex-wrap gap-2">
+                <span class="rounded-pill border border-teal/20 bg-teal/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-teal">
+                  {s.data.industry}
+                </span>
+                <span class="rounded-pill border border-white/10 bg-white/5 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-platinum/60">
+                  {s.data.region}
+                </span>
+              </div>
+              {s.data.client && (
+                <p class="text-eyebrow uppercase text-cool">{s.data.client}</p>
+              )}
+              <h3 class="text-display-md text-white transition group-hover:text-teal">
+                {s.data.title}
+              </h3>
+              <p class="text-sm font-medium text-teal">{s.data.outcome}</p>
+              <div class="mt-auto flex items-center gap-1.5 text-sm font-semibold text-teal transition group-hover:gap-3">
+                Read the full story <span aria-hidden="true">→</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </Container>
+    </section>
+  )}
+
+  <!-- ── Bottom CTA ──────────────────────────────────────── -->
+  <section class="border-t border-white/8 bg-ink py-section-sm md:py-section">
+    <Container>
+      <div class="flex flex-col items-center gap-6 text-center">
+        <Eyebrow>All case studies</Eyebrow>
+        <h2 class="text-display-lg max-w-xl text-white">
+          See the full proof library.
+        </h2>
+        <div class="flex flex-wrap justify-center gap-4">
+          <Button href="/case-studies" size="lg">View all case studies</Button>
+          <Button href="/contact" variant="secondary" size="lg">Book a briefing</Button>
+        </div>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>
+
+<style is:global>
+  /* Prose styling for case study body — dark surface */
+  .prose-case-study {
+    color: rgba(232, 238, 245, 0.80);
+    line-height: 1.75;
+    font-size: 1.0625rem;
+  }
+
+  .prose-case-study h2 {
+    color: #fff;
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .prose-case-study h2:first-child {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .prose-case-study p {
+    margin-top: 0;
+    margin-bottom: 1.25rem;
+  }
+
+  .prose-case-study strong {
+    color: #e8eef5;
+    font-weight: 600;
+  }
+
+  .prose-case-study ul {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .prose-case-study ul li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.9375rem;
+  }
+
+  .prose-case-study ul li::before {
+    content: '';
+    display: inline-block;
+    flex-shrink: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #00C2C7;
+    margin-top: 0.55em;
+  }
+
+  .prose-case-study ol {
+    list-style: none;
+    counter-reset: ol-counter;
+    padding: 0;
+    margin: 1rem 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .prose-case-study ol li {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    counter-increment: ol-counter;
+    font-size: 0.9375rem;
+  }
+
+  .prose-case-study ol li::before {
+    content: counter(ol-counter);
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(0, 194, 199, 0.15);
+    border: 1px solid rgba(0, 194, 199, 0.25);
+    color: #00C2C7;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    margin-top: 0.15em;
+  }
+
+  .prose-case-study blockquote {
+    border-left: 2px solid #00C2C7;
+    margin: 2rem 0;
+    padding: 1.25rem 1.5rem;
+    background: rgba(0, 194, 199, 0.05);
+    border-radius: 0 0.75rem 0.75rem 0;
+  }
+
+  .prose-case-study blockquote p {
+    color: rgba(232, 238, 245, 0.90);
+    font-style: italic;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .prose-case-study blockquote p:last-child {
+    color: #6B7A90;
+    font-style: normal;
+    font-size: 0.875rem;
+    margin-bottom: 0;
+  }
+
+  .prose-case-study a {
+    color: #00C2C7;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .prose-case-study a:hover { color: #3DDCE3; }
+</style>

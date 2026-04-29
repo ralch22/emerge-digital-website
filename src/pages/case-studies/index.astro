@@ -1,0 +1,226 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Container from '../../components/Container.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import Button from '../../components/Button.astro';
+
+const allStudies = await getCollection('case-studies', ({ data }) => data.published);
+
+// Sort by year descending
+const studies = allStudies.sort((a, b) => b.data.year - a.data.year);
+
+// Build filter options
+const industries = ['All', ...Array.from(new Set(studies.map((s) => s.data.industry)))];
+const capabilitySet = new Set<string>();
+studies.forEach((s) => s.data.capabilities.forEach((c) => capabilitySet.add(c)));
+const capabilities = ['All', ...Array.from(capabilitySet)].slice(0, 6); // cap for UI
+---
+
+<BaseLayout
+  title="Case Studies — Emerge Digital"
+  description="Enterprise outcomes delivered across MEA — Government, BFSI, and Retail programs led by Emerge Digital as Dubai Mainland local prime."
+>
+  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <section class="relative overflow-hidden bg-gradient-hero py-section-sm md:py-section">
+    <!-- Background layers -->
+    <div class="pointer-events-none absolute inset-0 bg-grid bg-grid-fade" aria-hidden="true"></div>
+    <div class="aurora pointer-events-none absolute inset-0 opacity-60" aria-hidden="true"></div>
+
+    <Container>
+      <div class="max-w-3xl">
+        <div class="chip-eyebrow mb-6">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          Proof
+        </div>
+        <h1 class="text-display-xl text-white">
+          Enterprise outcomes,<br />
+          <span class="text-gradient-accent">delivered across MEA.</span>
+        </h1>
+        <p class="mt-6 max-w-2xl text-lead text-platinum/75">
+          Selected programs led by Emerge Digital as Dubai Mainland local prime. Where engagement
+          terms require it, client names have been anonymised.
+        </p>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── Filter bar ──────────────────────────────────────── -->
+  <div class="sticky top-[72px] z-30 border-b border-white/8 bg-ink/90 backdrop-blur-md">
+    <Container>
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-3 py-4" role="group" aria-label="Filter case studies">
+        <!-- Industry filter -->
+        <div class="flex flex-wrap items-center gap-2" data-filter-group="industry">
+          <span class="text-eyebrow uppercase text-cool">Industry</span>
+          {industries.map((ind) => (
+            <button
+              class="filter-btn rounded-pill border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-platinum/70 transition hover:border-teal/50 hover:text-teal data-[active]:border-teal data-[active]:bg-teal/10 data-[active]:text-teal"
+              data-filter="industry"
+              data-value={ind}
+              data-active={ind === 'All' ? '' : undefined}
+              aria-pressed={ind === 'All' ? 'true' : 'false'}
+            >
+              {ind}
+            </button>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </div>
+
+  <!-- ── Case study grid ────────────────────────────────── -->
+  <section class="bg-ink py-section-sm md:py-section">
+    <Container>
+      <ul
+        id="case-study-grid"
+        class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+        aria-label="Case studies"
+      >
+        {studies.map((study) => (
+          <li
+            data-industry={study.data.industry}
+            data-capabilities={study.data.capabilities.join('|')}
+            class="study-card"
+          >
+            <a
+              href={`/case-studies/${study.slug}`}
+              class="card-surface group flex h-full flex-col p-8 no-underline"
+              aria-label={`Read case study: ${study.data.title}`}
+            >
+              <!-- Tags -->
+              <div class="flex flex-wrap gap-2">
+                <span class="rounded-pill border border-teal/20 bg-teal/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-teal">
+                  {study.data.industry}
+                </span>
+                <span class="rounded-pill border border-white/10 bg-white/5 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-platinum/60">
+                  {study.data.region}
+                </span>
+                <span class="rounded-pill border border-white/10 bg-white/5 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-platinum/60">
+                  {study.data.year}
+                </span>
+              </div>
+
+              <!-- Client name (if named) -->
+              {study.data.client && (
+                <p class="mt-4 text-eyebrow uppercase text-cool">{study.data.client}</p>
+              )}
+
+              <!-- Title -->
+              <h2 class="mt-2 text-display-md text-white transition group-hover:text-teal">
+                {study.data.title}
+              </h2>
+
+              <!-- Outcome callout -->
+              <div class="mt-5 flex items-start gap-3 rounded-xl border border-teal/20 bg-teal/5 p-4">
+                <svg class="mt-0.5 h-4 w-4 shrink-0 text-teal" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M2 10 L6 6 L10 9 L14 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <p class="text-sm font-medium leading-snug text-teal">{study.data.outcome}</p>
+              </div>
+
+              <!-- Summary -->
+              <p class="mt-4 flex-1 text-sm leading-relaxed text-platinum/60">{study.data.summary}</p>
+
+              <!-- Capability chips -->
+              <div class="mt-6 flex flex-wrap gap-1.5">
+                {study.data.capabilities.slice(0, 3).map((cap) => (
+                  <span class="rounded border border-white/8 bg-white/[0.03] px-2 py-0.5 text-[10px] uppercase tracking-wide text-cool">
+                    {cap}
+                  </span>
+                ))}
+                {study.data.capabilities.length > 3 && (
+                  <span class="rounded border border-white/8 bg-white/[0.03] px-2 py-0.5 text-[10px] uppercase tracking-wide text-cool">
+                    +{study.data.capabilities.length - 3}
+                  </span>
+                )}
+              </div>
+
+              <!-- Read more -->
+              <div class="mt-6 flex items-center gap-1.5 text-sm font-semibold text-teal transition group-hover:gap-3">
+                Read the full story <span aria-hidden="true">→</span>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <!-- Empty state (shown by JS when filters return nothing) -->
+      <p id="no-results" class="hidden py-20 text-center text-cool">
+        No case studies match the selected filter. <button class="text-teal underline" id="reset-filters">Clear filters</button>
+      </p>
+    </Container>
+  </section>
+
+  <!-- ── Final CTA ─────────────────────────────────────── -->
+  <section class="border-t border-white/8 bg-navy py-section-sm md:py-section">
+    <Container>
+      <div class="flex flex-col items-center gap-6 text-center">
+        <Eyebrow>Start your program</Eyebrow>
+        <h2 class="text-display-lg max-w-2xl text-white">
+          Ready to be the next case study?
+        </h2>
+        <p class="max-w-xl text-lead text-platinum/70">
+          Book a 30-minute Readiness Briefing and we'll map your priorities to the 2026–2027
+          procurement window.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <Button href="/contact" size="lg">Book a Vision 2030 Readiness Briefing</Button>
+          <Button href="/services" variant="secondary" size="lg">Explore the capability stack</Button>
+        </div>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>
+
+<!-- Filter interaction -->
+<script>
+  const filterBtns = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const cards = document.querySelectorAll<HTMLLIElement>('.study-card');
+  const noResults = document.getElementById('no-results');
+  const resetBtn = document.getElementById('reset-filters');
+
+  let activeIndustry = 'All';
+
+  function applyFilters() {
+    let visible = 0;
+    cards.forEach((card) => {
+      const industry = card.dataset.industry ?? '';
+      const matchIndustry = activeIndustry === 'All' || industry === activeIndustry;
+      const show = matchIndustry;
+      card.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    if (noResults) noResults.style.display = visible === 0 ? '' : 'none';
+    if (noResults) noResults.classList.toggle('hidden', visible !== 0);
+  }
+
+  filterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const group = btn.dataset.filter;
+      const value = btn.dataset.value ?? 'All';
+
+      if (group === 'industry') {
+        activeIndustry = value;
+        document.querySelectorAll<HTMLButtonElement>('[data-filter="industry"]').forEach((b) => {
+          const active = b.dataset.value === value;
+          b.setAttribute('aria-pressed', active ? 'true' : 'false');
+          if (active) b.dataset.active = '';
+          else delete b.dataset.active;
+        });
+      }
+
+      applyFilters();
+    });
+  });
+
+  resetBtn?.addEventListener('click', () => {
+    activeIndustry = 'All';
+    filterBtns.forEach((b) => {
+      const isAll = b.dataset.value === 'All';
+      b.setAttribute('aria-pressed', isAll ? 'true' : 'false');
+      if (isAll) b.dataset.active = '';
+      else delete b.dataset.active;
+    });
+    applyFilters();
+  });
+</script>

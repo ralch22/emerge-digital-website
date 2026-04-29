@@ -1,0 +1,263 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Container from '../components/Container.astro';
+import Eyebrow from '../components/Eyebrow.astro';
+import Button from '../components/Button.astro';
+
+interface Service {
+  title: string;
+  body: string;
+  platforms?: string[];
+}
+
+interface Pillar {
+  id: string;
+  eyebrow: string;
+  headline: string;
+  lead: string;
+  note?: string;
+  services: Service[];
+}
+
+const pillars: Pillar[] = [
+  {
+    id: 'cx',
+    eyebrow: 'Customer Experience · CX Division',
+    headline: 'Customer Experience',
+    lead: 'The pillar Rami leads personally. Where we believe the next decade of competitive advantage is won — and where Emerge Digital has the deepest conviction.',
+    note: 'Led by Rami, Founder',
+    services: [
+      {
+        title: 'CX Strategy & Design',
+        body: 'CX vision setting, journey design, service blueprints, voice-of-customer frameworks, and CX operating models. We build the strategy layer before a single technology is deployed.',
+      },
+      {
+        title: 'MarTech & Customer Data Orchestration (CDP)',
+        body: 'CDP selection and implementation across Salesforce Data Cloud, Adobe Real-Time CDP, Tealium, mParticle, and Treasure Data. Identity resolution, real-time activation, consent and preference management.',
+        platforms: ['Salesforce', 'Adobe', 'Tealium', 'mParticle'],
+      },
+      {
+        title: 'Commerce & Platform Development',
+        body: 'Headless and composable commerce architectures. Salesforce Commerce Cloud, Adobe Commerce, Shopify Plus enterprise builds. Marketplace strategy and digital retail operations.',
+        platforms: ['Salesforce', 'Adobe Commerce', 'Shopify Plus'],
+      },
+    ],
+  },
+  {
+    id: 'data',
+    eyebrow: 'Data & Analytics',
+    headline: 'Data & Analytics',
+    lead: 'Where our 23 years of regional analytics heritage shows up. From tag governance to predictive models — the data foundation that makes every other capability work.',
+    services: [
+      {
+        title: 'Digital Analytics & Data Science',
+        body: 'GA4 and GTM programs, BigQuery and Snowflake architectures, marketing mix modelling, attribution, predictive analytics, and customer lifetime value modelling. Built for MEA data volumes and GCC PDPL requirements.',
+        platforms: ['GA4', 'BigQuery', 'Snowflake', 'Looker'],
+      },
+      {
+        title: 'Data & Tag Governance',
+        body: 'Tag management strategy, server-side tagging, consent frameworks (GCC PDPL, GDPR, CCPA), data lineage, and data quality programs. We build governance layers that hold up under regulatory scrutiny.',
+        platforms: ['GTM Server-Side', 'OneTrust', 'Cookiebot'],
+      },
+      {
+        title: 'Media & AdTech Excellence',
+        body: 'Google Marketing Platform implementations — DV360, SA360, CM360 — leveraging our standing as one of only four Global GMP Partners worldwide. Trade-desk strategies, retail media networks, and MarTech–AdTech integration.',
+        platforms: ['DV360', 'SA360', 'CM360', 'Meta', 'Snap'],
+      },
+    ],
+  },
+  {
+    id: 'ai',
+    eyebrow: 'AI & Generative Solutions',
+    headline: 'AI & Generative Solutions',
+    lead: 'Built into every engagement, not bolted on. We apply AI where it generates measurable commercial or operational outcomes — not as a positioning statement.',
+    services: [
+      {
+        title: 'Enterprise GenAI',
+        body: 'Use-case discovery, RAG architectures, LLM evaluation frameworks, and copilot development for customer service, marketing operations, and internal productivity. Arabic and English LLM support.',
+      },
+      {
+        title: 'AI for CX & Personalisation',
+        body: 'AI-driven segmentation, real-time next-best-action engines, generative content systems, and conversational AI in Arabic and English. Deployed into CDP and CRM activation layers.',
+      },
+      {
+        title: 'AI Governance & Trust',
+        body: 'Responsible AI frameworks, model risk management, GCC-aligned policy design, and hallucination and bias control. The governance layer that gives enterprise boards confidence to deploy.',
+      },
+    ],
+  },
+  {
+    id: 'transformation',
+    eyebrow: 'Digital Transformation',
+    headline: 'Digital Transformation',
+    lead: 'The 80,000-engineer global network behind enterprise-scale modernisation. From legacy-to-cloud migrations to managed services that run at production scale.',
+    services: [
+      {
+        title: 'Enterprise Application Modernisation',
+        body: 'Legacy mainframe and ERP modernisation, microservices migrations, cloud-native rebuilds, and API-led architectures. Sequenced for zero-disruption to live operations.',
+      },
+      {
+        title: 'Cloud & Platform Engineering',
+        body: 'Hyperscaler migrations and builds on AWS, Azure, and GCP. Platform engineering, DevSecOps, FinOps, and regional data residency programs aligned to GCC regulatory requirements.',
+        platforms: ['AWS', 'Azure', 'GCP'],
+      },
+      {
+        title: 'Managed Services & Run',
+        body: '24/7 operations across MarTech, analytics, and application estates. AIOps-enabled service delivery, evergreen modernisation, and run-state governance — delivered under the local-prime accountability model.',
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Services — Emerge Digital Capability Stack"
+  description="From CX strategy to enterprise modernisation — Emerge Digital's full capability stack across Customer Experience, Data & Analytics, AI, and Digital Transformation. All under one Dubai Mainland contract."
+>
+  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <section class="relative overflow-hidden bg-gradient-hero py-section-sm md:py-section">
+    <div class="pointer-events-none absolute inset-0 bg-grid bg-grid-fade" aria-hidden="true"></div>
+    <div class="aurora pointer-events-none absolute inset-0 opacity-60" aria-hidden="true"></div>
+
+    <Container>
+      <div class="max-w-3xl">
+        <div class="chip-eyebrow mb-6">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          The Full Capability Stack
+        </div>
+        <h1 class="text-display-xl text-white">
+          From CX strategy to<br />
+          <span class="text-gradient-accent">enterprise modernisation</span> —<br />
+          under one local prime.
+        </h1>
+        <p class="mt-6 max-w-2xl text-lead text-platinum/75">
+          Emerge Digital structures and delivers programs across four capability pillars. Our
+          founder personally leads the CX Division. The remaining pillars are delivered through our
+          23-year regional bench and global engineering network — all under a single Dubai Mainland
+          contract.
+        </p>
+      </div>
+
+      <!-- Pillar nav -->
+      <nav class="mt-12 flex flex-wrap gap-3" aria-label="Jump to capability pillar">
+        {pillars.map((p) => (
+          <a
+            href={`#${p.id}`}
+            class="rounded-pill border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-platinum/70 transition hover:border-teal/40 hover:text-teal"
+          >
+            {p.headline}
+          </a>
+        ))}
+      </nav>
+    </Container>
+  </section>
+
+  <!-- ── Pillars ───────────────────────────────────────────── -->
+  {pillars.map((pillar, i) => (
+    <section
+      id={pillar.id}
+      class:list={['border-t border-white/8 py-section-sm md:py-section', i % 2 === 0 ? 'bg-ink' : 'bg-navy']}
+    >
+      <Container>
+        <div class="mb-12 grid gap-8 lg:grid-cols-[1fr_2fr]">
+          <!-- Label column -->
+          <div class="lg:pt-1">
+            <Eyebrow class="mb-3">{pillar.eyebrow}</Eyebrow>
+            <h2 class="text-display-lg text-white">{pillar.headline}</h2>
+            {pillar.note && (
+              <span class="mt-4 inline-flex items-center gap-2 rounded-pill border border-teal/20 bg-teal/8 px-3 py-1.5 text-xs font-semibold text-teal">
+                <svg class="h-3 w-3" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
+                  <circle cx="6" cy="6" r="3"/>
+                </svg>
+                {pillar.note}
+              </span>
+            )}
+          </div>
+          <!-- Lead text -->
+          <p class="self-start text-lead text-platinum/70 lg:pt-1">{pillar.lead}</p>
+        </div>
+
+        <!-- Service cards -->
+        <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {pillar.services.map((svc) => (
+            <div class="card-surface flex flex-col gap-4 p-7">
+              <h3 class="text-lg font-semibold leading-snug text-white">{svc.title}</h3>
+              <p class="flex-1 text-sm leading-relaxed text-platinum/65">{svc.body}</p>
+              {svc.platforms && (
+                <div class="flex flex-wrap gap-1.5 pt-2">
+                  {svc.platforms.map((plat) => (
+                    <span class="rounded border border-white/8 bg-white/[0.03] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-cool">
+                      {plat}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </Container>
+    </section>
+  ))}
+
+  <!-- ── Crawl–Walk–Run callout ────────────────────────────── -->
+  <section class="border-t border-white/8 bg-ink py-section-sm md:py-section">
+    <Container>
+      <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
+        <div>
+          <Eyebrow class="mb-4">How we engage</Eyebrow>
+          <h2 class="text-display-lg text-white">
+            A risk-managed path from ambition to enterprise outcome.
+          </h2>
+          <p class="mt-4 text-lead text-platinum/70">
+            Every engagement, regardless of capability pillar, follows the Crawl–Walk–Run model.
+            Low-risk entry. Defined gates. Founder-level oversight at every phase.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-4">
+            <Button href="/contact">Start with a Crawl-phase Diagnostic</Button>
+            <Button href="/#crawl-walk-run" variant="secondary">See the model</Button>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          {[
+            { phase: 'Crawl', duration: '4–8 weeks', body: 'A focused, fixed-scope diagnostic. Maturity assessment, opportunity sizing, business case, and a Vision 2030-aligned roadmap. Built so procurement can sign in days, not months.' },
+            { phase: 'Walk', duration: '3–6 months', body: 'A defined transformation phase against a prioritised opportunity. Clear gates, named KPIs, founder-level oversight throughout.' },
+            { phase: 'Run', duration: '12+ months', body: 'A long-term, multi-workstream program managed through the local prime, with managed services providing run-state operations and continuous modernisation.' },
+          ].map((step, idx) => (
+            <div class="flex gap-5 rounded-2xl border border-white/8 bg-white/[0.02] p-6">
+              <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-teal/10 text-teal">
+                <span class="font-mono text-xs font-bold">0{idx + 1}</span>
+              </div>
+              <div>
+                <div class="flex items-baseline gap-3">
+                  <h3 class="font-semibold text-white">{step.phase}</h3>
+                  <span class="text-xs text-cool">{step.duration}</span>
+                </div>
+                <p class="mt-1.5 text-sm leading-relaxed text-platinum/65">{step.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── Don't see your need ───────────────────────────────── -->
+  <section class="border-t border-white/8 bg-navy py-section-sm md:py-section">
+    <Container>
+      <div class="mx-auto max-w-2xl text-center">
+        <Eyebrow class="mb-4">Let's talk</Eyebrow>
+        <h2 class="text-display-lg text-white">Don't see your need on this list?</h2>
+        <p class="mt-4 text-lead text-platinum/70">
+          It probably still fits. The four pillars above are the structure we use — not a ceiling
+          on what we can deliver. If you're facing an enterprise CX, data, AI, or transformation
+          challenge in the MEA region, book a Readiness Briefing and let's map it together.
+        </p>
+        <div class="mt-10 flex flex-wrap justify-center gap-4">
+          <Button href="/contact" size="lg">Book a Vision 2030 Readiness Briefing</Button>
+          <Button href="/case-studies" variant="secondary" size="lg">See the proof</Button>
+        </div>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>
