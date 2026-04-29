@@ -7,58 +7,104 @@ import Button from '../Button.astro';
 const families = [
   {
     title: 'Customer Data & MarTech',
-    body:
-      'CDP, identity, real-time activation, and consent — implemented in production across BFSI, Retail, and Government.',
+    body:  'CDP, identity, real-time activation, and consent — implemented in production across BFSI, Retail, and Government.',
     items: ['Salesforce Data Cloud', 'Adobe Real-Time CDP', 'Tealium', 'mParticle', 'Treasure Data'],
+    icon: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="7" cy="6" r="3"/>
+      <path d="M1 18c0-4 3-5.5 6-5.5s6 1.5 6 5.5"/>
+      <path d="M14 6h5M14 10h5M14 14h3"/>
+    </svg>`,
   },
   {
     title: 'Analytics & Media',
-    body:
-      'Standing as one of only four Global Google Marketing Platform Partners worldwide, with deep MarTech-AdTech integration capability.',
+    body:  'One of only four Global Google Marketing Platform Partners worldwide, with deep MarTech–AdTech integration.',
     items: ['Google Marketing Platform', 'GA4 / GTM', 'BigQuery', 'Snowflake', 'DV360 / SA360'],
+    icon: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 14l4-4 3 3 4-6 3 2"/>
+      <rect x="3" y="3" width="14" height="14" rx="1.5"/>
+    </svg>`,
+    badge: '1 of 4 Global GMP Partners',
   },
   {
     title: 'Cloud, AI & Engineering',
-    body:
-      'Hyperscaler-certified cloud, modernization, and AI engineering capacity at enterprise scale — across all three major hyperscalers.',
+    body:  'Hyperscaler-certified cloud, modernisation, and AI engineering capacity at enterprise scale across all three major clouds.',
     items: ['AWS', 'Microsoft Azure', 'Google Cloud', 'OpenAI / Anthropic', 'Databricks'],
+    icon: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 14H4a3 3 0 0 1 0-6 4 4 0 0 1 7.8-1A3.5 3.5 0 0 1 16 10.5"/>
+      <path d="M13 14l2 2 2-2M15 12v4"/>
+    </svg>`,
   },
 ];
 ---
 
-<Section tone="dark">
-  <Container>
+<Section tone="dark" class="relative overflow-hidden">
+  <!-- Background -->
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0">
+    <div
+      class="absolute left-1/2 bottom-0 h-[400px] w-[800px] -translate-x-1/2"
+      style="background: radial-gradient(ellipse, rgba(0,194,199,0.07) 0%, transparent 70%); filter: blur(70px);"
+    ></div>
+  </div>
+
+  <Container class="relative">
     <div class="max-w-3xl">
       <Eyebrow data-reveal>Technology Credentials</Eyebrow>
       <h2 class="mt-4 text-display-lg" data-reveal data-reveal-delay="1">
-        The platforms we deploy. The credentials we hold.
+        The platforms we deploy.
+        <span class="text-gradient-accent">The credentials we hold.</span>
       </h2>
-      <p class="mt-6 max-w-prose text-lead text-platinum/80" data-reveal data-reveal-delay="2">
-        Vendor-certified across the stacks enterprise buyers actually run — from CDP and
-        commerce to hyperscaler cloud and AI. Built on a foundation of proven regional
-        delivery and global engineering capacity.
+      <p class="mt-6 max-w-prose text-lead text-platinum/75" data-reveal data-reveal-delay="2">
+        Vendor-certified across the stacks enterprise buyers actually run — from CDP and commerce
+        to hyperscaler cloud and AI. Built on 23 years of proven regional delivery.
       </p>
     </div>
 
     <div class="mt-14 grid gap-6 lg:grid-cols-3">
-      {
-        families.map((f, i) => (
-          <article class="partner-card group relative overflow-hidden rounded-card border border-white/10 bg-navy/40 p-8 transition duration-300 hover:-translate-y-1 hover:border-teal/40" data-reveal data-reveal-delay={String(i + 1)}>
-            <h3 class="text-display-md text-white">{f.title}</h3>
-            <p class="mt-4 text-platinum/85">{f.body}</p>
-            <ul class="mt-6 flex flex-wrap gap-2">
-              {f.items.map((item) => (
-                <li class="rounded-pill border border-white/10 bg-white/5 px-3 py-1 font-mono text-xs text-platinum/90 transition group-hover:border-teal/30 group-hover:text-white">
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </article>
-        ))
-      }
+      {families.map((f, i) => (
+        <article
+          class="partner-card group relative rounded-card border border-white/8 p-8 transition-all duration-400 hover:-translate-y-1"
+          style="background: rgba(255,255,255,0.025); backdrop-filter: blur(12px);"
+          data-reveal
+          data-reveal-delay={String(i + 1)}
+        >
+          <!-- Hover glow -->
+          <div class="pointer-events-none absolute inset-0 rounded-card opacity-0 transition-opacity duration-400 group-hover:opacity-100"
+            style="background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,194,199,0.12), transparent 80%);"
+          ></div>
+
+          <!-- Top border accent -->
+          <div class="absolute inset-x-0 top-0 h-[1.5px] rounded-t-card origin-left scale-x-0 bg-gradient-accent transition-transform duration-500 ease-out-quint group-hover:scale-x-100"></div>
+
+          <!-- Icon -->
+          <div class="icon-wrap relative z-10 mb-5" set:html={f.icon}></div>
+
+          <div class="relative z-10">
+            <div class="flex items-start justify-between gap-3">
+              <h3 class="text-display-sm text-white transition-colors duration-300 group-hover:text-teal">{f.title}</h3>
+              {f.badge && (
+                <span class="shrink-0 rounded-pill border border-teal/25 bg-teal/[0.08] px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-teal">
+                  {f.badge}
+                </span>
+              )}
+            </div>
+            <p class="mt-3 text-sm leading-relaxed text-platinum/65 transition-colors duration-300 group-hover:text-platinum/85">
+              {f.body}
+            </p>
+          </div>
+
+          <!-- Platform chips -->
+          <ul class="relative z-10 mt-6 flex flex-wrap gap-2">
+            {f.items.map((item) => (
+              <li class="rounded-pill border border-white/8 bg-white/[0.03] px-3 py-1 font-mono text-[11px] text-platinum/75 transition-all duration-300 group-hover:border-teal/20 group-hover:text-white">
+                {item}
+              </li>
+            ))}
+          </ul>
+        </article>
+      ))}
     </div>
 
-    <div class="mt-12">
+    <div class="mt-12" data-reveal>
       <Button variant="ghost" href="/services/">See the full capability stack</Button>
     </div>
   </Container>

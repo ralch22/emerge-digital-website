@@ -7,59 +7,91 @@ import Button from '../Button.astro';
 const reasons = [
   {
     title: 'One Mainland counterparty.',
-    body:
-      'A single Dubai Mainland legal entity owns your contract, your invoices, and your compliance obligations across the GCC. No offshore proxies, no ambiguity for procurement or legal.',
+    body:  'A single Dubai Mainland legal entity owns your contract, your invoices, and your compliance obligations across the GCC. No offshore proxies, no ambiguity for procurement or legal.',
   },
   {
     title: 'Founder-level account ownership.',
-    body:
-      'Every engagement is structured and led at founder level. You get senior judgment from day one — not the second-tier account staffing typical of large global SIs.',
+    body:  'Every engagement is structured and led at founder level. You get senior judgment from day one — not the second-tier account staffing typical of large global SIs.',
   },
   {
     title: 'Crawl-Walk-Run engagement model.',
-    body:
-      'We start with a focused, low-risk diagnostic ("Crawl"), expand to a defined transformation phase ("Walk"), and scale into a long-term program ("Run") — each phase with clear gates and outcomes.',
+    body:  'We start with a focused, low-risk diagnostic, expand to a defined transformation phase, and scale into a long-term program — each phase with clear gates and measurable outcomes.',
   },
   {
     title: 'Vision 2030 procurement readiness.',
-    body:
-      'We are pre-aligned to GCC procurement, ESR/UBO, and in-country compliance frameworks. Programs that take 9 months to mobilize with offshore vendors mobilize with us in 6 weeks.',
+    body:  'Pre-aligned to GCC procurement, ESR/UBO, and in-country compliance frameworks. Programs that take 9 months to mobilise with offshore vendors mobilise with us in 6 weeks.',
   },
   {
     title: 'Global muscle behind every program.',
-    body:
-      'Tap into a 23-year MEA delivery heritage and an 80,000-engineer global bench — at local-prime accountability and pricing.',
+    body:  'Tap into a 23-year MEA delivery heritage and an 80,000-engineer global bench — at local-prime accountability and pricing.',
   },
 ];
 ---
 
-<Section tone="dark">
-  <Container>
+<Section tone="dark" class="relative overflow-hidden">
+  <!-- Background -->
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0">
+    <div
+      class="absolute right-0 top-1/2 h-[700px] w-[700px] -translate-y-1/2 translate-x-1/3"
+      style="background: radial-gradient(circle, rgba(0,194,199,0.06) 0%, transparent 70%); filter: blur(80px);"
+    ></div>
+  </div>
+
+  <Container class="relative">
     <div class="max-w-3xl">
       <Eyebrow data-reveal>Why Emerge</Eyebrow>
-      <h2 class="mt-4 text-display-lg" data-reveal data-reveal-delay="1">Five reasons enterprise buyers choose a local prime.</h2>
+      <h2 class="mt-4 text-display-lg" data-reveal data-reveal-delay="1">
+        Five reasons enterprise buyers
+        <span class="text-gradient-accent">choose a local prime.</span>
+      </h2>
     </div>
 
-    <ol class="mt-14 grid gap-px overflow-hidden rounded-card border border-white/10 bg-white/5 lg:grid-cols-2">
-      {
-        reasons.map((r, i) => (
-          <li class="reason-cell group relative bg-ink p-8 transition duration-300 hover:bg-navy/60 lg:p-10" data-reveal data-reveal-delay={String((i % 2) + 1)}>
-            <div aria-hidden="true" class="reason-marker absolute left-0 top-0 h-full w-[3px] origin-top scale-y-0 bg-gradient-to-b from-teal to-cyan transition-transform duration-500 group-hover:scale-y-100" />
-            <p class="font-mono text-display-md text-teal">{String(i + 1).padStart(2, '0')}</p>
-            <h3 class="mt-3 text-display-md">{r.title}</h3>
-            <p class="mt-3 text-platinum/80">{r.body}</p>
-          </li>
-        ))
-      }
-      <li class="flex flex-col justify-center bg-ink p-8 lg:p-10">
-        <p class="text-platinum/85">
-          The local-prime model is how we turn "global SI scale" into "in-country
-          accountability" — without losing either side of the equation.
-        </p>
-        <div class="mt-5">
-          <Button variant="ghost" href="/about/">See how the local-prime model works</Button>
+    <!-- Reasons grid -->
+    <div class="mt-14 grid gap-px overflow-hidden rounded-card border border-white/8 bg-white/6 lg:grid-cols-2">
+      {reasons.map((r, i) => (
+        <div
+          class="reason-cell group relative bg-ink p-8 transition-all duration-300 hover:bg-navy/60 lg:p-10"
+          data-reveal
+          data-reveal-delay={String((i % 2) + 1)}
+        >
+          <!-- Left accent bar -->
+          <div class="absolute left-0 top-0 h-full w-[3px] origin-top scale-y-0 bg-gradient-to-b from-teal to-cyan transition-transform duration-500 ease-out-quint group-hover:scale-y-100"></div>
+
+          <!-- Top glow on hover -->
+          <div class="pointer-events-none absolute inset-x-0 top-0 h-[1px] origin-left scale-x-0 bg-gradient-accent transition-transform duration-500 group-hover:scale-x-100"></div>
+
+          <div class="flex items-start gap-5">
+            <!-- Number -->
+            <div class="shrink-0">
+              <span class="font-mono text-display-md font-bold leading-none text-gradient-accent">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+            </div>
+            <!-- Text -->
+            <div>
+              <h3 class="text-display-sm text-white transition-colors duration-300 group-hover:text-teal">
+                {r.title}
+              </h3>
+              <p class="mt-3 text-sm leading-relaxed text-platinum/65 transition-colors duration-300 group-hover:text-platinum/85">
+                {r.body}
+              </p>
+            </div>
+          </div>
         </div>
-      </li>
-    </ol>
+      ))}
+
+      <!-- Sixth cell — CTA -->
+      <div class="relative flex flex-col justify-between gap-6 bg-ink p-8 lg:p-10">
+        <div>
+          <div class="chip-eyebrow-teal mb-4">The local-prime difference</div>
+          <p class="text-sm leading-relaxed text-platinum/70">
+            The local-prime model turns "global SI scale" into "in-country accountability" —
+            without losing either side of the equation. See it in action across our
+            published programs.
+          </p>
+        </div>
+        <Button variant="ghost" href="/about/">See how the local-prime model works</Button>
+      </div>
+    </div>
   </Container>
 </Section>

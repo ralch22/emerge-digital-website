@@ -2,44 +2,130 @@
 import Section from '../Section.astro';
 import Container from '../Container.astro';
 import Eyebrow from '../Eyebrow.astro';
-import Stat from '../Stat.astro';
 
 const stats = [
-  { value: '23 yrs', label: 'Regional consulting heritage' },
-  { value: '7', label: 'MEA offices · UAE, KSA, Egypt and beyond' },
-  { value: '4', label: 'Global Google Marketing Platform Partners — we are one' },
-  { value: '80,000+', label: 'Engineers across our global delivery network' },
+  { value: 23,    suffix: '',    label: 'Years of regional\nconsulting heritage', mono: 'yrs' },
+  { value: 7,     suffix: '',    label: 'MEA offices · UAE,\nKSA, Egypt and beyond', mono: 'offices' },
+  { value: 4,     suffix: '',    label: 'Global GMP Partners\nworldwide — we are one', mono: 'GMP partners' },
+  { value: 80000, suffix: '+',   label: 'Engineers across our\nglobal delivery network', mono: 'engineers' },
 ];
 ---
 
-<Section tone="dark">
+<Section tone="dark" class="relative overflow-hidden section-glow-bottom">
+  <!-- Background accents -->
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0">
+    <div class="absolute inset-0 bg-grid-sm opacity-30"></div>
+    <div
+      class="absolute -right-64 top-0 h-[600px] w-[600px] rounded-full"
+      style="background: radial-gradient(circle, rgba(0,194,199,0.08) 0%, transparent 70%); filter: blur(60px);"
+    ></div>
+    <div
+      class="absolute -left-32 bottom-0 h-[400px] w-[400px] rounded-full"
+      style="background: radial-gradient(circle, rgba(61,220,227,0.06) 0%, transparent 70%); filter: blur(60px);"
+    ></div>
+  </div>
+
   <Container>
+    <!-- Two-column header -->
     <div class="grid gap-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-24">
       <div>
         <Eyebrow data-reveal>The 2026–2027 Window</Eyebrow>
         <h2 class="mt-4 text-display-lg" data-reveal data-reveal-delay="1">
-          The next 18 months will define the next decade of MEA digital transformation.
+          The next 18 months will define the next
+          <span class="text-gradient-accent">decade of MEA</span> digital transformation.
         </h2>
       </div>
-      <div class="space-y-6 text-platinum/85">
+      <div class="space-y-5 text-platinum/80">
         <p class="text-lead" data-reveal data-reveal-delay="2">
           Government, BFSI, and Retail leaders across the UAE, KSA, and Egypt are entering
           the most concentrated procurement window in the region's history. Vision 2030,
           the UAE's We the UAE 2031 agenda, and Egypt's Vision 2030 are converging into a
-          single inflection point — and the partners who win will be the ones who combine
-          in-country accountability with proven global delivery muscle.
+          single inflection point.
         </p>
         <p data-reveal data-reveal-delay="3">
-          Emerge Digital was built for exactly this moment. We are the Dubai Mainland prime
+          Emerge Digital was built for exactly this moment — the Dubai Mainland prime
           that owns your contract, structures your program, and stands accountable in your
-          jurisdiction — backed by 23 years of regional CX, data, and analytics leadership
-          and 80,000+ engineers of global delivery capacity behind every engagement.
+          jurisdiction, backed by 23 years of regional leadership and 80,000+ engineers.
         </p>
       </div>
     </div>
 
-    <div class="mt-20 grid grid-cols-2 gap-x-8 gap-y-12 border-t border-white/8 pt-12 md:grid-cols-4">
-      {stats.map((s, i) => <Stat value={s.value} label={s.label} data-reveal data-reveal-delay={String(i + 1)} />)}
+    <!-- Stats grid -->
+    <div class="mt-20 grid grid-cols-2 gap-px overflow-hidden rounded-card border border-white/8 bg-white/6 md:grid-cols-4">
+      {stats.map((s, i) => (
+        <div
+          class="stat-cell group relative flex flex-col gap-3 bg-ink p-8 transition-colors duration-300 hover:bg-navy/50"
+          data-reveal
+          data-reveal-delay={String(i + 1)}
+        >
+          <!-- Top accent line -->
+          <div class="stat-accent absolute left-0 top-0 h-[2px] w-0 bg-gradient-accent transition-all duration-500 group-hover:w-full"></div>
+
+          <p class="font-mono text-[10px] font-semibold uppercase tracking-widest text-cool/60">
+            {s.mono}
+          </p>
+
+          <div class="flex items-baseline gap-1">
+            <span
+              class="stat-value text-display-lg"
+              data-counter={s.value}
+              data-suffix={s.suffix}
+            >0</span>
+          </div>
+
+          <p class="whitespace-pre-line text-sm leading-relaxed text-platinum/55 transition-colors duration-300 group-hover:text-platinum/80">
+            {s.label}
+          </p>
+        </div>
+      ))}
     </div>
   </Container>
 </Section>
+
+<style>
+  .stat-value {
+    font-variant-numeric: tabular-nums;
+    background: linear-gradient(135deg, #FFFFFF 20%, #3DDCE3 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+</style>
+
+<script>
+  // Count-up animation when stats enter viewport
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const counters = document.querySelectorAll<HTMLElement>('[data-counter]');
+  if (!reduced && counters.length) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const el     = entry.target as HTMLElement;
+        const target = parseInt(el.dataset.counter ?? '0', 10);
+        const suffix = el.dataset.suffix ?? '';
+        const dur    = 1800;
+        const start  = performance.now();
+
+        const tick = (now: number) => {
+          const t = Math.min((now - start) / dur, 1);
+          const eased = 1 - Math.pow(1 - t, 4); // ease-out-quart
+          const v = Math.round(target * eased);
+          el.textContent = (v >= 1000 ? (v / 1000).toFixed(0) + 'K' : String(v)) + suffix;
+          if (t < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+        observer.unobserve(el);
+      });
+    }, { threshold: 0.6 });
+
+    counters.forEach((el) => observer.observe(el));
+  } else {
+    // Static fallback for reduced motion
+    counters.forEach((el) => {
+      const v = parseInt(el.dataset.counter ?? '0', 10);
+      const s = el.dataset.suffix ?? '';
+      el.textContent = (v >= 1000 ? (v / 1000).toFixed(0) + 'K' : String(v)) + s;
+    });
+  }
+</script>

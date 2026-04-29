@@ -7,64 +7,101 @@ import Button from '../Button.astro';
 const pillars = [
   {
     eyebrow: 'The Local Prime',
-    title: 'In-country accountability',
+    title:   'In-country accountability',
     tagline: 'Dubai Mainland · Commercial owner · Single contract',
-    body:
-      'Emerge Digital is the independently registered Dubai Mainland entity that owns the client relationship, structures the engagement, signs the contract, and carries full commercial and compliance responsibility. One throat to choke. One MEA-licensed counterparty. Zero ambiguity for procurement.',
-    accent: true,
+    body:    'Emerge Digital is the independently registered Dubai Mainland entity that owns the client relationship, structures the engagement, signs the contract, and carries full commercial and compliance responsibility. One throat to choke. One MEA-licensed counterparty. Zero ambiguity for procurement.',
+    accent:  true,
+    icon: `<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M11 2L3 7v8l8 5 8-5V7z"/>
+      <path d="M11 7v8M7 9.5l4 2.5 4-2.5"/>
+    </svg>`,
   },
   {
     eyebrow: 'The Regional Heritage',
-    title: '23 years of MEA delivery',
+    title:   '23 years of MEA delivery',
     tagline: '7 offices · CX, data, analytics, MarTech leadership',
-    body:
-      'A deep, GCC-native delivery bench built across two decades. Recognized leadership in digital analytics, customer experience, and growth — including standing as one of only four Global Google Marketing Platform Partners worldwide. Already operating across Dubai, Riyadh, Cairo, and beyond.',
-    accent: false,
+    body:    'A deep, GCC-native delivery bench built across two decades. Recognised leadership in digital analytics, customer experience, and growth — including standing as one of only four Global Google Marketing Platform Partners worldwide. Already operating across Dubai, Riyadh, Cairo, and beyond.',
+    accent:  false,
+    icon: `<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="9"/>
+      <path d="M2 11h18M11 2a15 15 0 0 1 0 18M11 2a15 15 0 0 0 0 18"/>
+    </svg>`,
   },
   {
     eyebrow: 'The Global Engine',
-    title: '80,000+ engineers behind every program',
+    title:   '80,000+ engineers behind every program',
     tagline: 'Worldwide network · Modernization · Cloud · AI · Run',
-    body:
-      'A global engineering footprint spanning Asia, Europe, and the Americas plugs in behind every engagement — bringing enterprise-grade application modernization, cloud, AI engineering, and managed services capacity to MEA programs at the scale only a true global SI can offer.',
-    accent: false,
+    body:    'A global engineering footprint spanning Asia, Europe, and the Americas plugs in behind every engagement — bringing enterprise-grade application modernisation, cloud, AI engineering, and managed services capacity to MEA programs at the scale only a true global SI can offer.',
+    accent:  false,
+    icon: `<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="2" width="7" height="7" rx="1.5"/>
+      <rect x="13" y="2" width="7" height="7" rx="1.5"/>
+      <rect x="2" y="13" width="7" height="7" rx="1.5"/>
+      <rect x="13" y="13" width="7" height="7" rx="1.5"/>
+    </svg>`,
   },
 ];
 ---
 
-<Section tone="dark" id="why-emerge">
-  <Container>
+<Section tone="dark" id="why-emerge" class="relative overflow-hidden">
+  <!-- Background decoration -->
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0">
+    <div class="absolute inset-0 bg-navy opacity-60"></div>
+    <div
+      class="absolute left-1/2 top-0 h-[500px] w-[900px] -translate-x-1/2"
+      style="background: radial-gradient(ellipse, rgba(0,194,199,0.08) 0%, transparent 70%); filter: blur(70px);"
+    ></div>
+  </div>
+
+  <Container class="relative">
+    <!-- Header -->
     <div class="max-w-3xl">
       <Eyebrow data-reveal>The Operating Model</Eyebrow>
       <h2 class="mt-4 text-display-lg" data-reveal data-reveal-delay="1">
-        One commercial engine. Three sources of unfair advantage.
+        One commercial engine.
+        <span class="text-gradient-accent">Three sources</span>
+        of unfair advantage.
       </h2>
-      <p class="mt-6 max-w-prose text-lead text-platinum/80" data-reveal data-reveal-delay="2">
+      <p class="mt-6 max-w-prose text-lead text-platinum/75" data-reveal data-reveal-delay="2">
         We combine the speed of a local prime, the depth of a 23-year regional bench,
-        and the muscle of a global engineering network — under a single Dubai Mainland
-        contract.
+        and the muscle of a global engineering network — under a single Dubai Mainland contract.
       </p>
     </div>
 
+    <!-- Pillar cards -->
     <div class="mt-14 grid gap-6 lg:grid-cols-3">
-      {
-        pillars.map((p, i) => (
-          <article
-            class:list={[
-              'pillar-card group relative overflow-hidden rounded-card border border-white/10 bg-navy/40 p-8 transition duration-300 hover:-translate-y-1 hover:border-teal/40 hover:bg-navy/60',
-              p.accent && 'pillar-accent',
-            ]}
-            data-reveal
-            data-reveal-delay={String(i + 1)}
-          >
-            <div aria-hidden="true" class="pillar-glow pointer-events-none absolute inset-0 opacity-0 transition duration-500 group-hover:opacity-100" />
-            <p class="text-eyebrow uppercase font-semibold text-teal">{p.eyebrow}</p>
-            <h3 class="mt-3 text-display-md text-white">{p.title}</h3>
-            <p class="mt-3 font-mono text-xs uppercase tracking-wider text-cyan/90">{p.tagline}</p>
-            <p class="mt-5 text-platinum/85">{p.body}</p>
-          </article>
-        ))
-      }
+      {pillars.map((p, i) => (
+        <article
+          class:list={[
+            'pillar-card group relative flex flex-col gap-5 rounded-card p-8 transition-all duration-400',
+            p.accent ? 'pillar-accent' : 'bg-white/[0.025] border border-white/8',
+          ]}
+          data-reveal
+          data-reveal-delay={String(i + 1)}
+        >
+          <!-- Hover glow -->
+          <div class="pointer-events-none absolute inset-0 rounded-card opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+            style="background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,194,199,0.14), transparent 80%);"
+          ></div>
+
+          <!-- Icon -->
+          <div class="icon-wrap icon-wrap-lg relative z-10" set:html={p.icon}></div>
+
+          <!-- Content -->
+          <div class="relative z-10">
+            <p class="text-[10px] font-semibold uppercase tracking-eyebrow text-teal/70">{p.eyebrow}</p>
+            <h3 class="mt-2 text-display-md text-white transition-colors duration-300 group-hover:text-teal">{p.title}</h3>
+            <p class="mt-1.5 font-mono text-[10px] uppercase tracking-wider text-cyan/75">{p.tagline}</p>
+          </div>
+
+          <p class="relative z-10 flex-1 text-sm leading-relaxed text-platinum/70 transition-colors duration-300 group-hover:text-platinum/90">
+            {p.body}
+          </p>
+
+          <!-- Bottom connector line -->
+          <div class="relative z-10 h-px w-0 bg-gradient-accent transition-all duration-500 group-hover:w-full"></div>
+        </article>
+      ))}
     </div>
 
     <div class="mt-12">
@@ -74,15 +111,47 @@ const pillars = [
 </Section>
 
 <style>
+  /* Accent card — gradient border + teal tint */
   .pillar-accent {
-    border-color: rgba(0, 194, 199, 0.45);
-    box-shadow:
-      0 0 0 1px rgba(0, 194, 199, 0.18),
-      0 20px 60px -20px rgba(0, 194, 199, 0.25);
+    background: rgba(0, 194, 199, 0.04);
+    position: relative;
+  }
+  .pillar-accent::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg,
+      rgba(0,194,199,0.75) 0%,
+      rgba(61,220,227,0.35) 35%,
+      rgba(0,194,199,0.05) 60%,
+      rgba(61,220,227,0.4) 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: destination-out;
+    animation: border-glow-cycle 4s ease-in-out infinite;
+  }
+  .pillar-accent .icon-wrap {
+    background: linear-gradient(135deg, rgba(0,194,199,0.22), rgba(61,220,227,0.08));
+    border-color: rgba(0, 194, 199, 0.35);
+    box-shadow: 0 0 16px rgba(0, 194, 199, 0.18);
   }
 
-  .pillar-glow {
-    background:
-      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0, 194, 199, 0.18), transparent 70%);
+  .pillar-card:not(.pillar-accent):hover {
+    border-color: rgba(0, 194, 199, 0.32);
+    box-shadow: 0 0 0 1px rgba(0,194,199,0.18), 0 20px 60px rgba(0,194,199,0.1), 0 40px 80px rgba(3,8,26,0.45);
+    transform: translateY(-4px);
+  }
+  .pillar-accent:hover {
+    box-shadow: 0 0 0 1px rgba(0,194,199,0.45), 0 24px 70px rgba(0,194,199,0.18), 0 40px 80px rgba(3,8,26,0.45);
+    transform: translateY(-4px);
+  }
+
+  @keyframes border-glow-cycle {
+    0%, 100% { opacity: 0.6; }
+    50%       { opacity: 1; }
   }
 </style>

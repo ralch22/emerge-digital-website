@@ -15,11 +15,11 @@ const studies = (await getCollection('case-studies', ({ data }) => data.publishe
     <div class="max-w-3xl">
       <Eyebrow tone="cool" data-reveal>Proof</Eyebrow>
       <h2 class="mt-4 text-display-lg text-slate" data-reveal data-reveal-delay="1">
-        What enterprise outcomes look like in practice.
+        What enterprise outcomes look like
+        <span class="text-teal">in practice.</span>
       </h2>
-      <p class="mt-6 text-lead text-slate/80" data-reveal data-reveal-delay="2">
-        A selection of programs we've led for Government, BFSI, and Retail leaders across
-        the MEA region.
+      <p class="mt-6 text-lead text-slate/75" data-reveal data-reveal-delay="2">
+        A selection of programs we've led for Government, BFSI, and Retail leaders across the MEA region.
       </p>
     </div>
 
@@ -27,59 +27,97 @@ const studies = (await getCollection('case-studies', ({ data }) => data.publishe
       {studies.map((study, i) => (
         <a
           href={`/case-studies/${study.slug}/`}
-          class="group flex h-full flex-col rounded-card border border-platinum bg-white p-8 no-underline shadow-sm transition duration-300 hover:-translate-y-1 hover:border-teal/40 hover:shadow-elevated"
+          class="proof-card group flex h-full flex-col rounded-card border border-platinum/80 bg-white no-underline shadow-sm transition-all duration-400"
           data-reveal
           data-reveal-delay={String(i + 1)}
         >
-          <!-- Tags -->
-          <div class="flex flex-wrap gap-2">
-            <span class="rounded-pill border border-teal/20 bg-teal/8 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-teal">
-              {study.data.industry}
-            </span>
-            <span class="rounded-pill border border-slate/10 bg-slate/5 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-slate/50">
-              {study.data.region}
-            </span>
+          <!-- Card header -->
+          <div class="relative overflow-hidden rounded-t-card p-7 pb-5">
+            <!-- Top accent line -->
+            <div class="absolute inset-x-0 top-0 h-[2px] origin-left scale-x-0 bg-gradient-accent transition-transform duration-500 ease-out-quint group-hover:scale-x-100"></div>
+
+            <!-- Tags -->
+            <div class="flex flex-wrap gap-2">
+              <span class="rounded-pill border border-teal/20 bg-teal/[0.08] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-teal">
+                {study.data.industry}
+              </span>
+              <span class="rounded-pill border border-slate/10 bg-slate/[0.04] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate/45">
+                {study.data.region}
+              </span>
+              <span class="rounded-pill border border-slate/10 bg-slate/[0.04] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate/45">
+                {study.data.year}
+              </span>
+            </div>
+
+            <!-- Client -->
+            {study.data.client && (
+              <p class="mt-4 text-[11px] font-semibold uppercase tracking-eyebrow text-slate/40">
+                {study.data.client}
+              </p>
+            )}
+
+            <!-- Title -->
+            <h3 class="mt-1.5 text-display-md text-slate transition-colors duration-300 group-hover:text-teal">
+              {study.data.title}
+            </h3>
           </div>
-
-          <!-- Client name -->
-          {study.data.client && (
-            <p class="mt-4 text-eyebrow uppercase text-slate/50">{study.data.client}</p>
-          )}
-
-          <!-- Title -->
-          <h3 class="mt-2 text-display-md text-slate transition group-hover:text-teal">
-            {study.data.title}
-          </h3>
 
           <!-- Outcome callout -->
-          <div class="mt-5 flex items-start gap-2.5 rounded-xl border border-teal/15 bg-teal/[0.06] p-4">
-            <svg class="mt-0.5 h-3.5 w-3.5 shrink-0 text-teal" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-              <path d="M1.5 8.5 L4.5 5.5 L7.5 8 L12.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <p class="text-xs font-semibold leading-snug text-teal">{study.data.outcome}</p>
+          <div class="mx-7 rounded-xl border border-teal/15 bg-gradient-to-br from-teal/[0.07] to-teal/[0.03] p-4">
+            <div class="flex items-start gap-2.5">
+              <svg
+                class="mt-0.5 h-3.5 w-3.5 shrink-0 text-teal"
+                viewBox="0 0 14 14"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path d="M1.5 8.5L4.5 5.5L7.5 8L12.5 2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <p class="text-xs font-semibold leading-snug text-teal">{study.data.outcome}</p>
+            </div>
           </div>
 
-          <!-- Capabilities -->
-          <div class="mt-5 flex flex-1 flex-wrap gap-1.5">
-            {study.data.capabilities.slice(0, 2).map((cap) => (
-              <span class="rounded border border-slate/10 bg-slate/5 px-2 py-0.5 text-[10px] uppercase tracking-wide text-slate/50">
-                {cap}
-              </span>
-            ))}
-          </div>
+          <!-- Body -->
+          <div class="flex flex-1 flex-col p-7 pt-5">
+            <!-- Capabilities -->
+            <div class="flex flex-wrap gap-1.5">
+              {study.data.capabilities.slice(0, 2).map((cap) => (
+                <span class="rounded border border-slate/10 bg-slate/[0.04] px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-slate/45">
+                  {cap}
+                </span>
+              ))}
+            </div>
 
-          <!-- Read more -->
-          <div class="mt-6 flex items-center gap-1.5 text-sm font-semibold text-teal transition group-hover:gap-3">
-            Read the full story <span aria-hidden="true">→</span>
+            <!-- Spacer -->
+            <div class="flex-1"></div>
+
+            <!-- Read more -->
+            <div class="mt-5 flex items-center gap-1.5 text-sm font-semibold text-teal transition-all duration-300 group-hover:gap-3">
+              Read the full story <span aria-hidden="true">→</span>
+            </div>
           </div>
         </a>
       ))}
     </div>
 
     <div class="mt-12">
-      <Button variant="secondary" surface="light" href="/case-studies/" size="lg">
+      <Button variant="secondary" surface="light" href="/case-studies/" size="lg" data-reveal>
         See all case studies
       </Button>
     </div>
   </Container>
 </Section>
+
+<style>
+  .proof-card {
+    box-shadow: 0 2px 12px rgba(31, 42, 60, 0.06);
+  }
+  .proof-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(0, 194, 199, 0.3);
+    box-shadow:
+      0 0 0 1px rgba(0, 194, 199, 0.15),
+      0 16px 48px rgba(0, 194, 199, 0.1),
+      0 32px 64px rgba(31, 42, 60, 0.08);
+  }
+</style>

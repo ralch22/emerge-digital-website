@@ -1,61 +1,75 @@
 ---
 /**
- * Footer — premium 4-column layout with marquee word and compliance line.
+ * Footer — premium dark treatment with gradient wordmark, glow effects, and teal accents.
  */
 
 const year = new Date().getFullYear();
 
 const company = [
-  { href: '/about/', label: 'About' },
+  { href: '/about/',    label: 'About' },
   { href: '/services/', label: 'Capabilities' },
-  { href: '/contact/', label: 'Contact' },
+  { href: '/contact/',  label: 'Contact' },
 ];
 const capabilities = [
   { href: '/case-studies/', label: 'Case Studies' },
-  { href: '/insights/', label: 'Insights' },
-  { href: '/services/#cx', label: 'CX Division' },
-  { href: '/services/#data', label: 'Data & Analytics' },
+  { href: '/insights/',     label: 'Insights' },
+  { href: '/services/#cx',  label: 'CX Division' },
+  { href: '/services/#data',label: 'Data & Analytics' },
 ];
 const legal = [
   { href: '/legal/privacy/', label: 'Privacy' },
   { href: '/legal/cookies/', label: 'Cookies' },
-  { href: '/legal/terms/', label: 'Terms' },
+  { href: '/legal/terms/',   label: 'Terms' },
 ];
 ---
 
 <footer class="footer-surface relative isolate overflow-hidden border-t border-white/5">
-  <div aria-hidden="true" class="footer-glow pointer-events-none absolute inset-0"></div>
-  <div aria-hidden="true" class="footer-grid pointer-events-none absolute inset-0"></div>
+  <!-- Decorative layers -->
+  <div aria-hidden="true" class="footer-glow  pointer-events-none absolute inset-0"></div>
+  <div aria-hidden="true" class="footer-grid  pointer-events-none absolute inset-0"></div>
+  <div aria-hidden="true" class="footer-noise pointer-events-none absolute inset-0"></div>
 
   <!-- Big oversized wordmark -->
-  <div aria-hidden="true" class="relative pt-20 sm:pt-24">
+  <div aria-hidden="true" class="relative select-none overflow-hidden pt-20 sm:pt-24">
     <div class="mx-auto max-w-wide px-6 sm:px-8 lg:px-12">
-      <div class="font-display text-[18vw] sm:text-[14vw] leading-[0.9] font-semibold tracking-tightest text-white/[0.04] select-none">
+      <div class="footer-wordmark font-display text-[17vw] sm:text-[13vw] font-bold leading-[0.9] tracking-tighter">
         Emerge.
       </div>
     </div>
   </div>
 
-  <div class="relative mx-auto max-w-wide px-6 pb-12 pt-10 text-sm text-cool sm:px-8 lg:px-12">
+  <!-- Main content -->
+  <div class="relative mx-auto max-w-wide px-6 pb-12 pt-10 text-sm sm:px-8 lg:px-12">
     <div class="grid gap-12 md:grid-cols-12">
+
+      <!-- Brand column -->
       <div class="md:col-span-4">
-        <a href="/" class="font-display text-lg font-semibold tracking-tight text-white">
-          Emerge<span class="text-teal">.</span>
+        <a href="/" class="group inline-flex items-center gap-2.5 font-display text-lg font-semibold tracking-tight text-white">
+          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-accent text-ink transition-all duration-300 group-hover:shadow-glow">
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M3 4h12M3 9h8M3 14h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Emerge<span class="text-teal transition-colors group-hover:text-cyan">.</span>
         </a>
-        <p class="mt-4 max-w-xs text-platinum/70">
-          The Dubai Mainland local prime for enterprise CX, Data, AI, and digital transformation across the MEA region.
+
+        <p class="mt-4 max-w-[28ch] text-sm leading-relaxed text-platinum/55">
+          The Dubai Mainland local prime for enterprise CX, Data, AI, and digital
+          transformation across the MEA region.
         </p>
+
         <a
           href="/contact/"
-          class="mt-6 inline-flex items-center gap-2 rounded-pill border border-teal/40 bg-teal/10 px-4 py-2 text-[13px] font-semibold text-white transition hover:bg-teal/20 hover:border-teal/60"
+          class="mt-6 inline-flex items-center gap-2 rounded-pill border border-teal/35 bg-teal/[0.08] px-4 py-2.5 text-[13px] font-semibold text-white transition-all duration-300 hover:bg-teal/[0.14] hover:border-teal/55 hover:shadow-glow-sm"
         >
           Book a Vision 2030 Briefing
-          <span aria-hidden="true">→</span>
+          <span aria-hidden="true" class="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
         </a>
       </div>
 
+      <!-- Company -->
       <div class="md:col-span-2">
-        <h4 class="text-[12px] font-semibold uppercase tracking-eyebrow text-white/90">Company</h4>
+        <h4 class="footer-heading">Company</h4>
         <ul class="mt-4 space-y-2.5">
           {company.map((item) => (
             <li><a href={item.href} class="footer-link">{item.label}</a></li>
@@ -63,8 +77,9 @@ const legal = [
         </ul>
       </div>
 
+      <!-- Capabilities -->
       <div class="md:col-span-3">
-        <h4 class="text-[12px] font-semibold uppercase tracking-eyebrow text-white/90">Capabilities</h4>
+        <h4 class="footer-heading">Capabilities</h4>
         <ul class="mt-4 space-y-2.5">
           {capabilities.map((item) => (
             <li><a href={item.href} class="footer-link">{item.label}</a></li>
@@ -72,20 +87,31 @@ const legal = [
         </ul>
       </div>
 
+      <!-- Compliance -->
       <div class="md:col-span-3">
-        <h4 class="text-[12px] font-semibold uppercase tracking-eyebrow text-white/90">Compliance</h4>
-        <p class="mt-4 leading-relaxed text-platinum/70">
-          Emerge Digital FZ-LLC<br />
-          Dubai, United Arab Emirates<br />
-          ESR &amp; UBO Compliant · GCC PDPL Aligned
-        </p>
+        <h4 class="footer-heading">Compliance</h4>
+        <div class="mt-4 space-y-3">
+          <p class="text-sm leading-relaxed text-platinum/55">
+            Emerge Digital FZ-LLC<br/>
+            Dubai, United Arab Emirates
+          </p>
+          <div class="flex flex-wrap gap-2">
+            {['ESR & UBO Compliant', 'GCC PDPL Aligned'].map((badge) => (
+              <span class="rounded-pill border border-teal/15 bg-teal/[0.06] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-teal/80">
+                {badge}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="mt-14 hairline"></div>
+    <!-- Divider -->
+    <div class="mt-14 hairline-teal"></div>
 
+    <!-- Bottom bar -->
     <div class="mt-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
-      <p class="text-[12px] text-cool">© {year} Emerge Digital. All rights reserved.</p>
+      <p class="text-[12px] text-cool/60">© {year} Emerge Digital. All rights reserved.</p>
       <ul class="flex gap-6 text-[12px]">
         {legal.map((item) => (
           <li><a href={item.href} class="footer-link">{item.label}</a></li>
@@ -99,18 +125,38 @@ const legal = [
       background: linear-gradient(180deg, #06122A 0%, #03081A 100%);
     }
     .footer-glow {
-      background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(0, 194, 199, 0.08), transparent 70%);
+      background: radial-gradient(ellipse 70% 45% at 50% 0%, rgba(0,194,199,0.09), transparent 70%);
     }
     .footer-grid {
       background-image:
-        linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+        linear-gradient(to right, rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.022) 1px, transparent 1px);
       background-size: 64px 64px;
-      mask-image: linear-gradient(180deg, transparent, black 30%, black 60%, transparent);
-      -webkit-mask-image: linear-gradient(180deg, transparent, black 30%, black 60%, transparent);
+      mask-image: linear-gradient(180deg, transparent, black 25%, black 65%, transparent);
+      -webkit-mask-image: linear-gradient(180deg, transparent, black 25%, black 65%, transparent);
+    }
+    .footer-noise {
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.03 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+      mix-blend-mode: overlay;
+      opacity: 0.5;
+    }
+    .footer-wordmark {
+      background: linear-gradient(110deg, rgba(255,255,255,0.05) 0%, rgba(0,194,199,0.04) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255,255,255,0.03);
+      user-select: none;
+    }
+    .footer-heading {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: rgba(255, 255, 255, 0.75);
     }
     .footer-link {
-      @apply inline-flex items-center text-platinum/65 transition-colors duration-300 hover:text-white;
+      @apply inline-flex items-center text-platinum/50 transition-colors duration-300;
     }
     .footer-link:hover {
       color: var(--color-cyan);

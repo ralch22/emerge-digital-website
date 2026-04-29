@@ -1,150 +1,327 @@
 ---
 /**
- * HeroHome — premium Arooth-inspired hero with scroll-linked timeline.
- *
- * Composition:
- *  - Layered backdrop (mesh, grid, aurora, noise)
- *  - Floating data orb on the right (continuous CSS animation, does not depend on JS)
- *  - Eyebrow chip + word-by-word headline reveal on load
- *  - Scroll indicator that fades as the user scrolls past the hero
+ * HeroHome — premium hero with:
+ *  - Build-time neural-network SVG background (zero runtime cost)
+ *  - Three-layer aurora effect
+ *  - Subtle Dubai skyline silhouette
+ *  - Beam scan overlay
+ *  - Motion One word-reveal + scroll-linked parallax
  */
 
 import Container from '../Container.astro';
 import Button from '../Button.astro';
 import TrustStrip from '../TrustStrip.astro';
 
-interface HeadlineLine {
-  words: string[];
-  accent?: boolean;
+/* ─── Build-time neural network generation ─── */
+interface NNode { x: number; y: number; r: number; op: number }
+interface NEdge { x1: number; y1: number; x2: number; y2: number; op: number }
+
+// Deterministic seeded random (LCG)
+function makeRng(seed: number) {
+  let s = seed >>> 0;
+  return () => { s = Math.imul(s, 1664525) + 1013904223 >>> 0; return s / 0xFFFFFFFF; };
+}
+const rng = makeRng(2030);
+
+// 36 nodes across a 1440×680 canvas
+const RAW: [number, number][] = [
+  // Row 0 (y 40-110)
+  [  65,  78], [195,  48], [355, 112], [520,  58], [670,  92],
+  [ 810,  44], [960, 102], [1110,  62], [1270,  98], [1410,  52],
+  // Row 1 (y 190-260)
+  [ 120, 224], [295, 192], [450, 248], [620, 202], [762, 244],
+  [ 912, 196], [1062, 238], [1220, 208],
+  // Row 2 (y 330-410)
+  [  82, 374], [242, 342], [420, 392], [582, 354], [742, 402],
+  [ 902, 358], [1082, 388], [1302, 362],
+  // Row 3 (y 480-560)
+  [ 162, 514], [362, 482], [562, 526], [752, 492],
+  [ 982, 518], [1182, 494], [1370, 530],
+  // Extra accent nodes
+  [ 700, 310], [480, 130], [1050, 440],
+];
+
+const NODES: NNode[] = RAW.map(([x, y]) => ({
+  x, y,
+  r: 1.4 + rng() * 2.8,
+  op: 0.12 + rng() * 0.38,
+}));
+
+// Hub nodes (larger, glowing)
+const HUB_INDICES = [4, 10, 14, 16, 20, 23, 27, 33];
+
+// Connections within 215px
+const MAX_D = 215;
+const EDGES: NEdge[] = [];
+for (let i = 0; i < NODES.length; i++) {
+  for (let j = i + 1; j < NODES.length; j++) {
+    const dx = NODES[i].x - NODES[j].x;
+    const dy = NODES[i].y - NODES[j].y;
+    const d  = Math.sqrt(dx * dx + dy * dy);
+    if (d <= MAX_D) {
+      EDGES.push({
+        x1: NODES[i].x, y1: NODES[i].y,
+        x2: NODES[j].x, y2: NODES[j].y,
+        op: Math.max(0.04, 0.22 * (1 - d / MAX_D)),
+      });
+    }
+  }
 }
 
-const headlineLines: HeadlineLine[] = [
+// 5 highlighted "data-flow" edges (indices into EDGES)
+const FLOW_PATHS = [
+  // top-left to bottom-right diagonal
+  [[195,48],[295,192],[450,248],[582,354],[752,492]],
+  // right side cascade
+  [[960,102],[912,196],[902,358],[982,518]],
+  // centre diagonal
+  [[520,58],[620,202],[700,310],[562,526]],
+  // left arc
+  [[65,78],[120,224],[82,374],[162,514]],
+  // top-right down
+  [[1110,62],[1220,208],[1302,362],[1182,494]],
+] as Array<[number,number][]>;
+
+/* ─── Headline ─── */
+interface HLine { words: string[]; accent?: boolean }
+const headlineLines: HLine[] = [
   { words: ['Local', 'Prime.'] },
   { words: ['Global', 'Power.'] },
   { words: ['Enterprise', 'Outcomes.'], accent: true },
 ];
 ---
 
-<section
-  data-hero
-  class="hero-section relative isolate overflow-hidden text-white"
->
-  <!-- Layered backdrop -->
-  <div aria-hidden="true" class="bg-grid bg-grid-fade pointer-events-none absolute inset-0"></div>
-  <div aria-hidden="true" class="aurora hero-aurora pointer-events-none absolute inset-0"></div>
-  <div aria-hidden="true" class="noise pointer-events-none absolute inset-0"></div>
-  <div aria-hidden="true" class="hero-vignette pointer-events-none absolute inset-0"></div>
+<section data-hero class="hero-section relative isolate overflow-hidden text-white">
 
-  <!-- Floating data orb -->
-  <div aria-hidden="true" class="data-orb pointer-events-none absolute right-[-12%] top-1/2 hidden -translate-y-1/2 lg:block">
-    <svg viewBox="0 0 600 600" width="700" height="700" fill="none" stroke-linecap="round">
+  <!-- ── Layer 0: deep gradient bg ── -->
+  <div aria-hidden="true" class="absolute inset-0 bg-gradient-hero-premium"></div>
+
+  <!-- ── Layer 1: neural network SVG (build-time, zero JS) ── -->
+  <div aria-hidden="true" class="neural-net pointer-events-none absolute inset-0 overflow-hidden">
+    <svg
+      viewBox="0 0 1440 680"
+      width="100%"
+      height="100%"
+      preserveAspectRatio="xMidYMid slice"
+      fill="none"
+      class="absolute inset-0"
+    >
       <defs>
-        <radialGradient id="orb-glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#00C2C7" stop-opacity="0.5" />
-          <stop offset="60%" stop-color="#00C2C7" stop-opacity="0.05" />
-          <stop offset="100%" stop-color="#00C2C7" stop-opacity="0" />
-        </radialGradient>
-        <linearGradient id="orb-stroke" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#3DDCE3" stop-opacity="0.6" />
-          <stop offset="100%" stop-color="#00C2C7" stop-opacity="0.1" />
+        <linearGradient id="nn-flow-1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%"   stop-color="#3DDCE3" stop-opacity="0.0" />
+          <stop offset="40%"  stop-color="#00C2C7" stop-opacity="0.7" />
+          <stop offset="100%" stop-color="#3DDCE3" stop-opacity="0.0" />
         </linearGradient>
-        <linearGradient id="orb-ring-faint" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#3DDCE3" stop-opacity="0.25" />
-          <stop offset="100%" stop-color="#00C2C7" stop-opacity="0.04" />
+        <linearGradient id="nn-flow-2" x1="0%" y1="0%" x2="80%" y2="100%">
+          <stop offset="0%"   stop-color="#00C2C7" stop-opacity="0.0" />
+          <stop offset="50%"  stop-color="#3DDCE3" stop-opacity="0.65" />
+          <stop offset="100%" stop-color="#00C2C7" stop-opacity="0.0" />
         </linearGradient>
+        <filter id="nn-blur-sm">
+          <feGaussianBlur stdDeviation="0.8" />
+        </filter>
+        <filter id="nn-node-glow">
+          <feGaussianBlur stdDeviation="2.5" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
       </defs>
 
-      <!-- Outer glow disk -->
-      <circle cx="300" cy="300" r="300" fill="url(#orb-glow)" />
+      <!-- Static connection lines -->
+      {EDGES.map((e) => (
+        <line
+          x1={e.x1} y1={e.y1} x2={e.x2} y2={e.y2}
+          stroke="#3DDCE3"
+          stroke-opacity={e.op}
+          stroke-width="0.8"
+          filter="url(#nn-blur-sm)"
+        />
+      ))}
 
-      <!-- Concentric rings -->
-      <circle class="orb-ring orb-ring-1" cx="300" cy="300" r="120" stroke="url(#orb-stroke)" stroke-width="1" />
-      <circle class="orb-ring orb-ring-2" cx="300" cy="300" r="170" stroke="url(#orb-ring-faint)" stroke-width="1" stroke-dasharray="2 6" />
-      <circle class="orb-ring orb-ring-3" cx="300" cy="300" r="225" stroke="url(#orb-ring-faint)" stroke-width="1" />
-      <circle class="orb-ring orb-ring-4" cx="300" cy="300" r="285" stroke="url(#orb-ring-faint)" stroke-width="1" stroke-dasharray="1 8" />
+      <!-- Animated data-flow paths -->
+      {FLOW_PATHS.map((pts, fi) => {
+        const d = 'M ' + pts.map(([x,y]) => `${x} ${y}`).join(' L ');
+        const len = pts.reduce((acc, [x,y], i) => {
+          if (i === 0) return 0;
+          const [px,py] = pts[i-1];
+          return acc + Math.hypot(x-px, y-py);
+        }, 0);
+        const delays = [0, 2.5, 4.8, 7.1, 9.4];
+        return (
+          <path
+            d={d}
+            stroke={fi % 2 === 0 ? '#3DDCE3' : '#00C2C7'}
+            stroke-width={fi === 0 ? '1.2' : '0.9'}
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            fill="none"
+            stroke-dasharray={`${len * 0.18} ${len}`}
+            style={`animation: data-flow-loop ${6.5 + fi * 1.1}s ease-in-out ${delays[fi]}s infinite`}
+            opacity="0.6"
+          />
+        );
+      })}
 
-      <!-- Orbiting nodes -->
-      <g class="orb-orbit-a">
-        <circle cx="300" cy="180" r="4" fill="#3DDCE3" />
-        <circle cx="300" cy="180" r="9" fill="#3DDCE3" opacity="0.18" />
-      </g>
-      <g class="orb-orbit-b">
-        <circle cx="525" cy="300" r="3" fill="#00C2C7" />
-        <circle cx="525" cy="300" r="7" fill="#00C2C7" opacity="0.18" />
-      </g>
-      <g class="orb-orbit-c">
-        <circle cx="300" cy="75" r="2.5" fill="#FFFFFF" opacity="0.7" />
-      </g>
+      <!-- Regular nodes -->
+      {NODES.map((n, i) => (
+        <circle
+          cx={n.x} cy={n.y} r={n.r}
+          fill={i % 3 === 0 ? '#3DDCE3' : '#00C2C7'}
+          opacity={n.op}
+        />
+      ))}
 
-      <!-- Data points scattered -->
-      <g opacity="0.7">
-        <circle cx="190" cy="220" r="1.5" fill="#3DDCE3" class="orb-point orb-point-1" />
-        <circle cx="430" cy="230" r="1.5" fill="#00C2C7" class="orb-point orb-point-2" />
-        <circle cx="220" cy="400" r="1.5" fill="#3DDCE3" class="orb-point orb-point-3" />
-        <circle cx="380" cy="420" r="1.5" fill="#00C2C7" class="orb-point orb-point-4" />
-        <circle cx="300" cy="450" r="1.2" fill="#FFFFFF" opacity="0.6" />
-      </g>
+      <!-- Hub nodes (glowing, animated) -->
+      {HUB_INDICES.map((hi, i) => {
+        const n = NODES[hi];
+        return (
+          <>
+            {/* Outer glow ring */}
+            <circle
+              cx={n.x} cy={n.y} r={n.r * 3.5}
+              fill="#00C2C7"
+              opacity="0.06"
+              style={`animation: neural-pulse ${2.8 + i * 0.4}s ease-in-out ${i * 0.5}s infinite`}
+            />
+            {/* Core dot */}
+            <circle
+              cx={n.x} cy={n.y} r={n.r * 1.6}
+              fill="#3DDCE3"
+              opacity="0.5"
+              filter="url(#nn-node-glow)"
+              style={`animation: neural-pulse ${2.8 + i * 0.4}s ease-in-out ${i * 0.5}s infinite`}
+            />
+          </>
+        );
+      })}
+    </svg>
+  </div>
 
-      <!-- Connecting lines -->
-      <g stroke="url(#orb-stroke)" stroke-width="0.6" opacity="0.35">
-        <line x1="190" y1="220" x2="430" y2="230" />
-        <line x1="220" y1="400" x2="380" y2="420" />
-        <line x1="190" y1="220" x2="220" y2="400" />
-        <line x1="430" y1="230" x2="380" y2="420" />
+  <!-- ── Layer 2: triple aurora ── -->
+  <div aria-hidden="true" class="aurora-layer-1 pointer-events-none absolute inset-0"></div>
+  <div aria-hidden="true" class="aurora-layer-2 pointer-events-none absolute inset-0"></div>
+  <div aria-hidden="true" class="aurora-layer-3 pointer-events-none absolute inset-0"></div>
+
+  <!-- ── Layer 3: grid overlay ── -->
+  <div aria-hidden="true" class="bg-grid bg-grid-fade pointer-events-none absolute inset-0 opacity-40"></div>
+
+  <!-- ── Layer 4: noise texture ── -->
+  <div aria-hidden="true" class="noise pointer-events-none absolute inset-0"></div>
+
+  <!-- ── Layer 5: beam scan ── -->
+  <div aria-hidden="true" class="beam-scan absolute inset-0"></div>
+
+  <!-- ── Layer 6: vignette ── -->
+  <div aria-hidden="true" class="hero-vignette pointer-events-none absolute inset-0"></div>
+
+  <!-- ── Layer 7: Dubai skyline silhouette ── -->
+  <div aria-hidden="true" class="dubai-skyline absolute bottom-0 left-0 right-0 overflow-hidden">
+    <svg viewBox="0 0 1440 220" preserveAspectRatio="xMidYMax slice" class="w-full h-[220px]" fill="none">
+      <defs>
+        <linearGradient id="skyline-fade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#00C2C7" stop-opacity="0.07"/>
+          <stop offset="100%" stop-color="#00C2C7" stop-opacity="0.02"/>
+        </linearGradient>
+        <linearGradient id="skyline-h-fade" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%"   stop-color="white" stop-opacity="0"/>
+          <stop offset="15%"  stop-color="white" stop-opacity="1"/>
+          <stop offset="85%"  stop-color="white" stop-opacity="1"/>
+          <stop offset="100%" stop-color="white" stop-opacity="0"/>
+        </linearGradient>
+        <mask id="skyline-mask">
+          <rect width="1440" height="220" fill="url(#skyline-h-fade)"/>
+        </mask>
+      </defs>
+      <g fill="url(#skyline-fade)" mask="url(#skyline-mask)">
+        <!-- Burj Khalifa — central spire -->
+        <path d="M697 0 L699 44 L701 82 L703 112 L705 132 L707 152 L709 166 L711 178 L713 190 L717 202 L722 220 L678 220 L682 202 L687 190 L689 178 L691 166 L693 152 L695 132 L697 112 L699 82 Z"/>
+        <!-- Spiral / twisted tower left -->
+        <rect x="618" y="55" width="20" height="165" rx="2"/>
+        <rect x="634" y="42" width="13" height="178" rx="1"/>
+        <!-- Twin spire towers (Emirates-style) -->
+        <path d="M508 68 L510 68 L511 82 L512 220 L504 220 L505 82 Z"/>
+        <path d="M522 84 L524 84 L525 96 L526 220 L518 220 L519 96 Z"/>
+        <!-- Modern glass towers right of Burj -->
+        <rect x="758" y="76" width="22" height="144" rx="2"/>
+        <rect x="796" y="92" width="17" height="128" rx="1"/>
+        <rect x="828" y="62" width="18" height="158" rx="1"/>
+        <rect x="862" y="108" width="14" height="112" rx="1"/>
+        <!-- Mid-left towers -->
+        <rect x="342" y="92" width="20" height="128" rx="2"/>
+        <rect x="378" y="78" width="16" height="142" rx="2"/>
+        <rect x="412" y="104" width="15" height="116" rx="1"/>
+        <rect x="448" y="118" width="18" height="102" rx="1"/>
+        <!-- Far right cluster -->
+        <rect x="958" y="98" width="22" height="122" rx="2"/>
+        <rect x="996" y="118" width="16" height="102" rx="1"/>
+        <rect x="1036" y="82" width="20" height="138" rx="2"/>
+        <rect x="1074" y="112" width="14" height="108" rx="1"/>
+        <rect x="1106" y="88" width="18" height="132" rx="2"/>
+        <!-- Far left cluster -->
+        <rect x="148" y="118" width="16" height="102" rx="1"/>
+        <rect x="180" y="102" width="20" height="118" rx="2"/>
+        <rect x="218" y="128" width="14" height="92" rx="1"/>
+        <rect x="252" y="108" width="18" height="112" rx="1"/>
+        <!-- Ground plane & low-rise podiums -->
+        <rect x="0"    y="182" width="130"  height="38"/>
+        <rect x="108"  y="172" width="160"  height="48"/>
+        <rect x="1310" y="172" width="130"  height="48"/>
+        <rect x="1200" y="185" width="244"  height="35"/>
+        <rect x="0"    y="205" width="1440" height="15"/>
       </g>
     </svg>
   </div>
 
+  <!-- ────────────── CONTENT ────────────── -->
   <Container class="relative">
-    <div class="hero-grid-layout grid min-h-[calc(100vh-72px)] grid-cols-1 items-center pt-12 sm:pt-16 lg:grid-cols-12 lg:pt-20">
-      <div class="relative z-10 lg:col-span-9 xl:col-span-8">
-        <!-- Eyebrow chip -->
-        <div data-hero-eyebrow class="chip-eyebrow">
+    <div class="grid min-h-[calc(100vh-72px)] grid-cols-1 items-center pt-12 sm:pt-16 lg:grid-cols-12 lg:pt-20">
+
+      <div class="relative z-10 pb-16 lg:col-span-9 xl:col-span-8">
+
+        <!-- Eyebrow -->
+        <div data-hero-eyebrow class="chip-eyebrow opacity-0">
           <span class="pulse-dot" aria-hidden="true"></span>
           <span>Local Prime · Dubai Mainland · MEA-Wide Delivery</span>
         </div>
 
-        <!-- Headline — word reveal -->
+        <!-- Headline -->
         <h1
           class="mt-8 font-display text-display-2xl text-white"
           aria-label="Local Prime. Global Power. Enterprise Outcomes."
         >
-          {headlineLines.map((line, lineIdx) => (
+          {headlineLines.map((line, li) => (
             <span class="block">
-              {line.words.map((word, wordIdx) => (
+              {line.words.map((word, wi) => (
                 <>
                   <span class="reveal-mask">
                     <span
                       class:list={['reveal-word', line.accent && 'text-gradient-accent']}
                       data-hero-word
-                      data-line={lineIdx}
-                      data-index={wordIdx}
-                    >
-                      {word}
-                    </span>
+                      data-line={li}
+                      data-index={wi}
+                    >{word}</span>
                   </span>
-                  {wordIdx < line.words.length - 1 && ' '}
+                  {wi < line.words.length - 1 && ' '}
                 </>
               ))}
-              {/* Underline only on the accent line */}
               {line.accent && (
                 <svg
                   data-hero-underline
                   aria-hidden="true"
-                  viewBox="0 0 600 12"
-                  class="hero-underline mt-1 block h-2 w-[min(100%,30ch)]"
+                  viewBox="0 0 600 14"
+                  class="hero-underline mt-2 block h-[10px] w-[min(100%,28ch)]"
                   preserveAspectRatio="none"
                 >
                   <defs>
-                    <linearGradient id="hero-underline-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stop-color="#00C2C7" />
-                      <stop offset="100%" stop-color="#3DDCE3" />
+                    <linearGradient id="ul-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%"   stop-color="#00C2C7"/>
+                      <stop offset="60%"  stop-color="#3DDCE3"/>
+                      <stop offset="100%" stop-color="#00F5FF"/>
                     </linearGradient>
                   </defs>
                   <path
-                    d="M 2 6 L 598 6"
-                    stroke="url(#hero-underline-grad)"
-                    stroke-width="3"
+                    d="M 2 7 Q 150 3 300 7 Q 450 11 598 7"
+                    stroke="url(#ul-grad)"
+                    stroke-width="2.5"
                     stroke-linecap="round"
                     fill="none"
                     pathLength="200"
@@ -156,41 +333,47 @@ const headlineLines: HeadlineLine[] = [
           ))}
         </h1>
 
-        <p data-hero-sub class="mt-8 max-w-prose text-lead text-platinum/80">
+        <!-- Sub-headline -->
+        <p data-hero-sub class="mt-8 max-w-[56ch] text-lead text-platinum/80 opacity-0">
           Emerge Digital is the agile Dubai Mainland prime for enterprise Customer
           Experience, Data, AI, and digital transformation programs across the
           MEA region — pairing in-country accountability with 23 years of regional
           heritage and a global delivery network of 80,000+ engineers.
         </p>
 
-        <div data-hero-ctas class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
-          <Button href="/contact/" size="lg">Book a Vision 2030 Readiness Briefing</Button>
-          <Button variant="ghost" href="/services/" size="lg">Explore the Capability Stack</Button>
+        <!-- CTAs -->
+        <div data-hero-ctas class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4 opacity-0">
+          <Button href="/contact/" size="lg" class="btn-shimmer">
+            Book a Vision 2030 Readiness Briefing
+          </Button>
+          <Button variant="ghost" href="/services/" size="lg">
+            Explore the Capability Stack
+          </Button>
         </div>
 
-        <!-- Inline KPI strip — adds density without a separate section -->
-        <dl data-hero-kpis class="mt-14 grid max-w-2xl grid-cols-3 gap-8 border-t border-white/8 pt-8">
-          <div>
-            <dt class="text-[11px] font-semibold uppercase tracking-eyebrow text-cool">Heritage</dt>
-            <dd class="mt-2 font-display text-2xl font-semibold text-white">23 yrs</dd>
-            <dd class="mt-1 text-xs text-platinum/55">MEA delivery</dd>
-          </div>
-          <div>
-            <dt class="text-[11px] font-semibold uppercase tracking-eyebrow text-cool">Footprint</dt>
-            <dd class="mt-2 font-display text-2xl font-semibold text-white">7 offices</dd>
-            <dd class="mt-1 text-xs text-platinum/55">UAE · KSA · Egypt +</dd>
-          </div>
-          <div>
-            <dt class="text-[11px] font-semibold uppercase tracking-eyebrow text-cool">Engine</dt>
-            <dd class="mt-2 font-display text-2xl font-semibold text-white">80,000+</dd>
-            <dd class="mt-1 text-xs text-platinum/55">global engineers</dd>
-          </div>
+        <!-- KPI strip -->
+        <dl data-hero-kpis class="mt-14 grid max-w-xl grid-cols-3 gap-8 border-t border-white/8 pt-8 opacity-0">
+          {[
+            { term: 'Heritage',   value: '23',     suffix: ' yrs', sub: 'MEA delivery' },
+            { term: 'Footprint',  value: '7',       suffix: ' offices', sub: 'UAE · KSA · Egypt +' },
+            { term: 'Engine',     value: '80,000+', suffix: '',    sub: 'global engineers' },
+          ].map(({ term, value, suffix, sub }) => (
+            <div class="group">
+              <dt class="text-[10px] font-semibold uppercase tracking-eyebrow text-cool transition-colors group-hover:text-teal/70">
+                {term}
+              </dt>
+              <dd class="mt-2 font-display text-2xl font-bold leading-none text-gradient-accent">
+                {value}<span class="text-lg font-semibold text-white/70">{suffix}</span>
+              </dd>
+              <dd class="mt-1 text-xs text-platinum/45">{sub}</dd>
+            </div>
+          ))}
         </dl>
       </div>
     </div>
 
     <!-- Trust strip + scroll indicator -->
-    <div data-hero-bottom class="relative z-10 pb-12 pt-16 sm:pt-24">
+    <div data-hero-bottom class="relative z-10 pb-12 pt-4 opacity-0">
       <div class="hairline"></div>
       <div class="mt-8 flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
         <TrustStrip
@@ -199,9 +382,9 @@ const headlineLines: HeadlineLine[] = [
         />
         <a
           href="#what-we-do"
-          class="hero-scroll group inline-flex items-center gap-3 text-[12px] font-semibold uppercase tracking-eyebrow text-platinum/65 transition-colors hover:text-white"
+          class="hero-scroll group inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-eyebrow text-platinum/55 transition-colors hover:text-teal"
         >
-          <span class="hero-scroll-line h-px w-8 bg-platinum/30 transition-colors group-hover:bg-teal"></span>
+          <span class="hero-scroll-line h-px w-8 bg-platinum/25 transition-all duration-500 group-hover:w-14 group-hover:bg-teal"></span>
           Scroll to explore
         </a>
       </div>
@@ -210,102 +393,95 @@ const headlineLines: HeadlineLine[] = [
 </section>
 
 <style>
+  /* ── Section base ── */
   .hero-section {
-    background:
-      radial-gradient(ellipse 90% 60% at 80% -10%, rgba(0, 194, 199, 0.18), transparent 60%),
-      radial-gradient(ellipse 70% 60% at 10% 110%, rgba(61, 220, 227, 0.10), transparent 65%),
-      linear-gradient(160deg, #06122A 0%, #0A1F3D 55%, #06122A 100%);
-    /* Pull the section under the fixed header so the spacer (h-[72px]) overlay sits
-       on top of the gradient. */
     margin-top: -72px;
     padding-top: 72px;
+    min-height: 100vh;
   }
 
-  /* Subtle vignette to focus on the content */
+  /* ── Vignette ── */
   .hero-vignette {
-    background: radial-gradient(ellipse 70% 50% at 50% 50%, transparent 50%, rgba(3, 8, 26, 0.35));
+    background: radial-gradient(
+      ellipse 75% 55% at 50% 50%,
+      transparent 45%,
+      rgba(3, 8, 26, 0.3) 100%
+    );
   }
 
-  /* Aurora override for hero — slower, larger */
-  .hero-aurora {
+  /* ── Triple aurora layers ── */
+  .aurora-layer-1 {
+    background:
+      radial-gradient(ellipse 85% 65% at 78% -8%, rgba(0,194,199,0.26), transparent 56%),
+      radial-gradient(ellipse 55% 45% at 5% 108%, rgba(61,220,227,0.18), transparent 55%);
+    filter: blur(50px);
     animation: aurora-drift 22s ease-in-out infinite;
-    will-change: transform, opacity;
+    will-change: transform;
+  }
+  .aurora-layer-2 {
+    background:
+      radial-gradient(ellipse 60% 50% at 85% 60%, rgba(0,194,199,0.12), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 15% 40%, rgba(61,220,227,0.09), transparent 55%);
+    filter: blur(70px);
+    animation: aurora-drift-alt 18s ease-in-out 4s infinite;
+    will-change: transform;
+  }
+  .aurora-layer-3 {
+    background:
+      radial-gradient(ellipse 40% 35% at 50% 40%, rgba(0,194,199,0.06), transparent 65%);
+    filter: blur(90px);
+    animation: aurora-drift 28s ease-in-out 8s infinite reverse;
+    will-change: transform;
   }
 
-  /* Headline underline draw — animated by Motion */
-  .hero-underline {
-    margin-left: -2px;
+  /* ── Neural net ── */
+  .neural-net {
+    opacity: 0.85;
+    mask-image: radial-gradient(ellipse 95% 80% at 60% 40%, black 30%, transparent 78%);
+    -webkit-mask-image: radial-gradient(ellipse 95% 80% at 60% 40%, black 30%, transparent 78%);
   }
 
-  /* Data orb — continuous CSS animation, no JS dependency */
-  .data-orb {
-    opacity: 0;
-    transform: translate(0, -50%) scale(0.92);
-    animation: orb-in 1.6s var(--ease-out-expo) 0.4s forwards,
-               orb-float 18s ease-in-out 2s infinite;
-    filter: drop-shadow(0 30px 80px rgba(0, 194, 199, 0.18));
-  }
-  .orb-ring-1 { animation: orb-spin 22s linear infinite; transform-origin: 300px 300px; }
-  .orb-ring-2 { animation: orb-spin 28s linear infinite reverse; transform-origin: 300px 300px; }
-  .orb-ring-3 { animation: orb-spin 34s linear infinite; transform-origin: 300px 300px; }
-  .orb-ring-4 { animation: orb-spin 40s linear infinite reverse; transform-origin: 300px 300px; }
-  .orb-orbit-a { animation: orb-spin 16s linear infinite; transform-origin: 300px 300px; }
-  .orb-orbit-b { animation: orb-spin 20s linear infinite reverse; transform-origin: 300px 300px; }
-  .orb-orbit-c { animation: orb-spin 12s linear infinite; transform-origin: 300px 300px; }
-  .orb-point { animation: orb-twinkle 3s ease-in-out infinite; }
-  .orb-point-2 { animation-delay: 0.6s; }
-  .orb-point-3 { animation-delay: 1.2s; }
-  .orb-point-4 { animation-delay: 1.8s; }
-
-  /* Scroll indicator subtle bob */
-  .hero-scroll-line {
-    animation: line-pulse 2.4s var(--ease-out-quint) infinite;
-    transform-origin: left center;
+  /* ── Dubai skyline ── */
+  .dubai-skyline {
+    mask-image: linear-gradient(180deg, transparent 0%, black 40%);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 40%);
   }
 
-  @keyframes orb-in {
-    to { opacity: 1; transform: translate(0, -50%) scale(1); }
-  }
-  @keyframes orb-float {
-    0%, 100% { transform: translate(0, -50%) scale(1); }
-    50% { transform: translate(-1.5%, calc(-50% - 12px)) scale(1.02); }
-  }
-  @keyframes orb-spin {
-    to { transform: rotate(360deg); }
-  }
-  @keyframes orb-twinkle {
-    0%, 100% { opacity: 0.35; }
-    50% { opacity: 1; }
-  }
+  /* ── Underline ── */
+  .hero-underline { margin-left: -2px; }
+
+  /* ── Scroll indicator line bob ── */
   @keyframes aurora-drift {
     0%, 100% { transform: translate3d(0,0,0) scale(1); opacity: 0.85; }
-    50% { transform: translate3d(2%, -3%, 0) scale(1.06); opacity: 1; }
+    50%       { transform: translate3d(2%,-3%,0) scale(1.06); opacity: 1; }
   }
-  @keyframes line-pulse {
-    0%, 100% { transform: scaleX(0.7); opacity: 0.6; }
-    50% { transform: scaleX(1); opacity: 1; }
+  @keyframes aurora-drift-alt {
+    0%, 100% { transform: translate3d(0,0,0) scale(1); opacity: 0.7; }
+    33%      { transform: translate3d(-2%,2%,0) scale(1.04); opacity: 0.9; }
+    66%      { transform: translate3d(1%,-1%,0) scale(0.97); opacity: 0.75; }
+  }
+  @keyframes data-flow-loop {
+    0%   { stroke-dashoffset: 600; opacity: 0; }
+    8%   { opacity: 0.7; }
+    90%  { opacity: 0.7; }
+    100% { stroke-dashoffset: 0; opacity: 0; }
+  }
+  @keyframes neural-pulse {
+    0%, 100% { opacity: 0.25; }
+    50%      { opacity: 0.88; }
+  }
+  @keyframes beam-sweep {
+    0%         { transform: translateX(-120%) skewX(-10deg); opacity: 0; }
+    5%         { opacity: 1; }
+    92%        { opacity: 0.5; }
+    100%       { transform: translateX(120%) skewX(-10deg); opacity: 0; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .data-orb {
-      opacity: 1;
-      animation: none;
-      transform: translate(0, -50%);
-    }
-    .orb-ring-1, .orb-ring-2, .orb-ring-3, .orb-ring-4,
-    .orb-orbit-a, .orb-orbit-b, .orb-orbit-c, .orb-point,
-    .hero-aurora, .hero-scroll-line {
-      animation: none !important;
-    }
-    /* When the user prefers reduced motion the JS entrance script bails,
-       so we must make sure the elements are visible without animation. */
-    :global(.reveal-word) {
-      opacity: 1 !important;
-      transform: none !important;
-    }
-    :global(.stroke-draw) {
-      stroke-dashoffset: 0 !important;
-    }
+    .aurora-layer-1, .aurora-layer-2, .aurora-layer-3 { animation: none !important; }
+    .beam-scan::after { animation: none !important; }
+    :global(.reveal-word) { opacity: 1 !important; transform: none !important; }
+    :global(.stroke-draw) { stroke-dashoffset: 0 !important; }
   }
 </style>
 
@@ -314,80 +490,64 @@ const headlineLines: HeadlineLine[] = [
 
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!reduced) {
-    const eyebrow = document.querySelector('[data-hero-eyebrow]');
-    const words = document.querySelectorAll<HTMLElement>('[data-hero-word]');
-    const underlinePath = document.querySelector<SVGPathElement>('[data-hero-underline] path');
-    const sub = document.querySelector('[data-hero-sub]');
-    const ctas = document.querySelectorAll<HTMLElement>('[data-hero-ctas] > *');
-    const kpis = document.querySelectorAll<HTMLElement>('[data-hero-kpis] > *');
-    const bottom = document.querySelector('[data-hero-bottom]');
+    const eyebrow  = document.querySelector<HTMLElement>('[data-hero-eyebrow]');
+    const words    = document.querySelectorAll<HTMLElement>('[data-hero-word]');
+    const ulPath   = document.querySelector<SVGPathElement>('[data-hero-underline] path');
+    const sub      = document.querySelector<HTMLElement>('[data-hero-sub]');
+    const ctas     = document.querySelectorAll<HTMLElement>('[data-hero-ctas] > *');
+    const kpis     = document.querySelectorAll<HTMLElement>('[data-hero-kpis] > *');
+    const bottom   = document.querySelector<HTMLElement>('[data-hero-bottom]');
 
-    // Sequential entrance: eyebrow → headline words → underline → sub → ctas → kpis → bottom
-    if (eyebrow) {
-      animate(eyebrow, { opacity: [0, 1], y: [12, 0] }, { duration: 0.7, easing: [0.16, 1, 0.3, 1] });
-    }
+    const E = [0.16, 1, 0.3, 1] as const;
 
-    if (words.length) {
-      animate(
-        words,
-        { opacity: [0, 1], y: ['110%', '0%'] },
-        {
-          delay: stagger(0.08, { start: 0.25 }),
-          duration: 0.95,
-          easing: [0.16, 1, 0.3, 1],
-        },
-      );
-    }
+    if (eyebrow)
+      animate(eyebrow, { opacity: [0,1], y: [10,0] },
+        { duration: 0.65, easing: E });
 
-    if (underlinePath) {
-      animate(
-        underlinePath,
-        { strokeDashoffset: [200, 0] },
-        { delay: 0.25 + words.length * 0.08 + 0.1, duration: 1.1, easing: [0.16, 1, 0.3, 1] },
-      );
-    }
+    if (words.length)
+      animate(words,
+        { opacity: [0,1], y: ['110%','0%'] },
+        { delay: stagger(0.075, { start: 0.22 }), duration: 0.9, easing: E });
 
-    if (sub) {
-      animate(sub, { opacity: [0, 1], y: [16, 0] }, { delay: 0.85, duration: 0.7, easing: [0.16, 1, 0.3, 1] });
-    }
+    const wordDelay = 0.22 + words.length * 0.075 + 0.05;
+    if (ulPath)
+      animate(ulPath, { strokeDashoffset: [200, 0] },
+        { delay: wordDelay, duration: 1.1, easing: E });
 
-    if (ctas.length) {
-      animate(
-        ctas,
-        { opacity: [0, 1], y: [12, 0] },
-        { delay: stagger(0.08, { start: 1.0 }), duration: 0.6, easing: [0.16, 1, 0.3, 1] },
-      );
-    }
+    if (sub)
+      animate(sub, { opacity: [0,1], y: [14,0] },
+        { delay: 0.78, duration: 0.7, easing: E });
 
-    if (kpis.length) {
-      animate(
-        kpis,
-        { opacity: [0, 1], y: [12, 0] },
-        { delay: stagger(0.08, { start: 1.1 }), duration: 0.6, easing: [0.16, 1, 0.3, 1] },
-      );
-    }
+    if (ctas.length)
+      animate(ctas, { opacity: [0,1], y: [10,0] },
+        { delay: stagger(0.08, { start: 0.92 }), duration: 0.6, easing: E });
 
-    if (bottom) {
-      animate(bottom, { opacity: [0, 1], y: [16, 0] }, { delay: 1.3, duration: 0.7, easing: [0.16, 1, 0.3, 1] });
-    }
+    if (kpis.length)
+      animate(kpis, { opacity: [0,1], y: [10,0] },
+        { delay: stagger(0.08, { start: 1.04 }), duration: 0.6, easing: E });
 
-    // Scroll-linked: as you scroll past the hero, fade headline + push it up gently
+    if (bottom)
+      animate(bottom, { opacity: [0,1], y: [12,0] },
+        { delay: 1.22, duration: 0.7, easing: E });
+
+    // Scroll-linked: headline drifts up + fades as section scrolls out
     const heroSection = document.querySelector<HTMLElement>('[data-hero]');
-    const headline = document.querySelector<HTMLElement>('[data-hero] h1');
-    if (heroSection && headline) {
+    const headline    = document.querySelector<HTMLElement>('[data-hero] h1');
+    if (heroSection && headline)
       scroll(
-        animate(headline, { opacity: [1, 0.45], y: [0, -32] }, { easing: 'linear' }),
+        animate(headline, { opacity: [1, 0.4], y: [0, -40] }, { easing: 'linear' }),
         { target: heroSection, offset: ['start start', 'end start'] },
       );
-    }
 
-    // Parallax orb
-    const orb = document.querySelector<HTMLElement>('.data-orb');
-    if (orb && heroSection) {
-      scroll(
-        animate(orb, { y: [0, -120] }, { easing: 'linear' }),
-        { target: heroSection, offset: ['start start', 'end start'] },
-      );
-    }
+    // Card mouse-tracked glow on service/pillar cards
+    document.querySelectorAll<HTMLElement>('.service-card-premium, .tilt-card').forEach((card) => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top)  / rect.height) * 100;
+        card.style.setProperty('--mx', `${x}%`);
+        card.style.setProperty('--my', `${y}%`);
+      });
+    });
   }
 </script>

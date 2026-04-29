@@ -1,13 +1,14 @@
 ---
-interface Props {
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'a'> {
   variant?: 'primary' | 'secondary' | 'ghost';
   href?: string;
-  size?: 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg';
   arrow?: boolean;
   as?: 'a' | 'button';
   surface?: 'dark' | 'light';
   type?: 'button' | 'submit' | 'reset';
-  class?: string;
 }
 
 const {
@@ -25,36 +26,60 @@ const {
 const Tag = as ?? (href ? 'a' : 'button');
 
 const base =
-  'inline-flex items-center justify-center gap-1 rounded-pill font-semibold tracking-tight transition duration-200 ease-out';
+  'relative inline-flex items-center justify-center gap-1.5 rounded-pill font-semibold tracking-tight transition-all duration-300 ease-out-quint select-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-ink';
 
-const sizeCls =
-  variant === 'ghost'
-    ? size === 'lg'
-      ? 'text-base'
-      : 'text-sm'
-    : size === 'lg'
-      ? 'px-8 py-4 text-base'
-      : 'px-5 py-2.5 text-sm';
+const sizes: Record<string, string> = {
+  ghost: {
+    sm: 'text-xs',
+    md: 'text-sm',
+    lg: 'text-base',
+  }[size] ?? 'text-sm',
+  sm:  'px-4 py-2 text-xs',
+  md:  'px-5 py-2.5 text-sm',
+  lg:  'px-7 py-3.5 text-[0.9375rem]',
+};
 
-const variants = {
-  primary: 'bg-gradient-accent text-ink hover:-translate-y-0.5 hover:shadow-glow',
+const sizeCls = variant === 'ghost' ? sizes.ghost : sizes[size] ?? sizes.md;
+
+const primaryCls =
+  'bg-gradient-accent text-ink font-semibold overflow-hidden ' +
+  'hover:-translate-y-0.5 hover:shadow-glow-lg active:translate-y-0 active:shadow-glow ' +
+  'after:content-[\'\'] after:absolute after:inset-0 after:rounded-pill ' +
+  'after:bg-gradient-to-r after:from-transparent after:via-white/25 after:to-transparent ' +
+  'after:translate-x-[-200%] after:skew-x-[-12deg] hover:after:translate-x-[200%] after:transition-transform after:duration-500';
+
+const variants: Record<string, string> = {
+  primary: primaryCls,
   secondary:
     surface === 'light'
-      ? 'border border-slate/20 bg-transparent text-slate hover:border-teal hover:text-teal'
-      : 'border border-white/20 bg-transparent text-white hover:border-teal hover:text-teal',
+      ? 'border border-slate/20 bg-transparent text-slate hover:border-teal hover:text-teal hover:bg-teal/5'
+      : 'border border-white/18 bg-white/[0.04] text-white backdrop-blur-sm hover:border-teal/60 hover:text-teal hover:bg-teal/[0.06] hover:shadow-glow-sm',
   ghost:
     surface === 'light'
       ? 'text-slate/80 hover:text-teal'
-      : 'text-white/80 hover:text-teal',
-} as const;
+      : 'text-white/75 hover:text-teal',
+};
 ---
 
 <Tag
-  class:list={[base, sizeCls, variants[variant], className]}
+  class:list={[base, sizeCls, variants[variant] ?? variants.ghost, className]}
   href={href}
   type={Tag === 'button' ? type : undefined}
   {...rest}
 >
   <slot />
-  {arrow && <span aria-hidden="true">→</span>}
+  {arrow && (
+    <span
+      aria-hidden="true"
+      class="arrow-icon inline-block transition-transform duration-300 group-hover:translate-x-0.5"
+    >→</span>
+  )}
 </Tag>
+
+<style>
+  /* Primary button shimmer handled via Tailwind after: utilities above */
+  /* Arrow nudge on any wrapping .group hover */
+  :global(.group):hover .arrow-icon {
+    transform: translateX(3px);
+  }
+</style>

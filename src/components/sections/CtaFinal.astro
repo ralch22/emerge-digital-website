@@ -5,60 +5,147 @@ import Button from '../Button.astro';
 ---
 
 <Section tone="gradient" class="relative isolate overflow-hidden">
-  <div aria-hidden="true" class="cta-aurora pointer-events-none absolute inset-0"></div>
+  <!-- Aurora layers -->
+  <div aria-hidden="true" class="cta-aurora-1 pointer-events-none absolute inset-0"></div>
+  <div aria-hidden="true" class="cta-aurora-2 pointer-events-none absolute inset-0"></div>
+
+  <!-- Grid -->
   <div aria-hidden="true" class="cta-grid pointer-events-none absolute inset-0"></div>
 
+  <!-- Neural nodes decoration -->
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 overflow-hidden">
+    <svg viewBox="0 0 800 400" class="absolute inset-0 h-full w-full opacity-20" fill="none">
+      <circle cx="100" cy="80"  r="3" fill="#3DDCE3" style="animation: neural-pulse 3s ease-in-out 0s infinite;"/>
+      <circle cx="700" cy="320" r="3" fill="#00C2C7" style="animation: neural-pulse 3s ease-in-out 1s infinite;"/>
+      <circle cx="400" cy="40"  r="2" fill="#3DDCE3" style="animation: neural-pulse 3s ease-in-out 0.5s infinite;"/>
+      <circle cx="650" cy="100" r="2" fill="#00C2C7" style="animation: neural-pulse 3s ease-in-out 2s infinite;"/>
+      <circle cx="150" cy="360" r="2.5" fill="#3DDCE3" style="animation: neural-pulse 3s ease-in-out 1.5s infinite;"/>
+      <line x1="100" y1="80"  x2="400" y2="40"  stroke="#3DDCE3" stroke-width="0.6" opacity="0.3"/>
+      <line x1="400" y1="40"  x2="650" y2="100" stroke="#00C2C7" stroke-width="0.6" opacity="0.3"/>
+      <line x1="100" y1="80"  x2="150" y2="360" stroke="#3DDCE3" stroke-width="0.6" opacity="0.2"/>
+      <line x1="650" y1="100" x2="700" y2="320" stroke="#00C2C7" stroke-width="0.6" opacity="0.25"/>
+    </svg>
+  </div>
+
   <Container class="relative">
-    <div class="relative mx-auto max-w-3xl rounded-card border border-white/10 bg-white/[0.03] px-8 py-16 text-center backdrop-blur-sm md:px-16" data-reveal>
-      <p class="text-eyebrow uppercase font-semibold text-teal" data-reveal data-reveal-delay="1">2026–2027 Window</p>
-      <h2 class="mt-4 text-display-lg text-white" data-reveal data-reveal-delay="2">
-        Ready to talk
-        <span class="text-gradient-accent">Vision 2030?</span>
-      </h2>
-      <p class="mx-auto mt-6 max-w-prose text-lead text-platinum/85" data-reveal data-reveal-delay="3">
-        Book a 30-minute Readiness Briefing with our founder. We'll map your priorities to
-        the 2026–2027 procurement window, walk you through the local-prime model, and show
-        you which capabilities best fit your program.
-      </p>
-      <div class="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-4" data-reveal data-reveal-delay="4">
-        <Button href="/contact/" size="lg">Book a Vision 2030 Readiness Briefing</Button>
-        <Button variant="ghost" href="/contact/?intent=brief" size="lg">Or send us a brief</Button>
+    <div
+      class="cta-card relative mx-auto max-w-3xl rounded-card px-8 py-16 text-center md:px-16"
+      data-reveal
+    >
+      <!-- Gradient border -->
+      <div class="cta-border pointer-events-none absolute inset-0 rounded-card"></div>
+
+      <div class="relative z-10">
+        <p class="chip-eyebrow-teal mx-auto mb-4 w-fit">2026–2027 Procurement Window</p>
+
+        <h2 class="text-display-lg text-white" data-reveal data-reveal-delay="1">
+          Ready to talk
+          <span class="text-gradient-glow">Vision 2030?</span>
+        </h2>
+
+        <p class="mx-auto mt-6 max-w-prose text-lead text-platinum/80" data-reveal data-reveal-delay="2">
+          Book a 30-minute Readiness Briefing with our founder. We'll map your priorities to
+          the 2026–2027 procurement window, walk you through the local-prime model, and show
+          you which capabilities best fit your program.
+        </p>
+
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-4" data-reveal data-reveal-delay="3">
+          <Button href="/contact/" size="lg" class="btn-shimmer">
+            Book a Vision 2030 Readiness Briefing
+          </Button>
+          <Button variant="ghost" href="/contact/?intent=brief" size="lg">
+            Or send us a brief
+          </Button>
+        </div>
+
+        <!-- Trust indicators -->
+        <div class="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3" data-reveal data-reveal-delay="4">
+          {[
+            'Dubai Mainland · ESR & UBO Compliant',
+            'GCC PDPL Aligned',
+            '23 years regional heritage',
+          ].map((t) => (
+            <div class="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-eyebrow text-platinum/45">
+              <div class="h-1 w-1 rounded-full bg-teal/50"></div>
+              {t}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   </Container>
 </Section>
 
 <style>
-  .cta-aurora {
+  /* Aurora layers */
+  .cta-aurora-1 {
     background:
-      radial-gradient(ellipse 70% 60% at 50% 100%, rgba(0, 194, 199, 0.28), transparent 65%),
-      radial-gradient(ellipse 40% 50% at 20% 0%, rgba(61, 220, 227, 0.16), transparent 60%);
+      radial-gradient(ellipse 75% 65% at 50% 110%, rgba(0,194,199,0.30), transparent 65%),
+      radial-gradient(ellipse 45% 55% at 18% 0%, rgba(61,220,227,0.18), transparent 60%);
     filter: blur(60px);
-    animation: cta-drift 18s ease-in-out infinite;
-    will-change: transform, opacity;
+    animation: aurora-drift 18s ease-in-out infinite;
+    will-change: transform;
   }
+  .cta-aurora-2 {
+    background:
+      radial-gradient(ellipse 55% 45% at 82% 0%, rgba(0,194,199,0.14), transparent 60%);
+    filter: blur(80px);
+    animation: aurora-drift-alt 22s ease-in-out 5s infinite;
+    will-change: transform;
+  }
+
+  /* Grid */
   .cta-grid {
     background-image:
-      linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      linear-gradient(to right, rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.025) 1px, transparent 1px);
     background-size: 56px 56px;
     mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 80%);
     -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 80%);
   }
-  @keyframes cta-drift {
-    0%,
-    100% {
-      transform: translate3d(0, 0, 0);
-      opacity: 0.85;
-    }
-    50% {
-      transform: translate3d(-2%, 4%, 0);
-      opacity: 1;
-    }
+
+  /* CTA card surface */
+  .cta-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+  }
+
+  /* Gradient border */
+  .cta-border {
+    padding: 1px;
+    background: linear-gradient(135deg,
+      rgba(0,194,199,0.7) 0%,
+      rgba(61,220,227,0.3) 30%,
+      rgba(0,194,199,0.05) 60%,
+      rgba(61,220,227,0.5) 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: destination-out;
+    animation: border-glow-cycle 4s ease-in-out infinite;
+  }
+
+  @keyframes aurora-drift {
+    0%, 100% { transform: translate3d(0,0,0) scale(1); opacity: 0.85; }
+    50%       { transform: translate3d(2%,-3%,0) scale(1.06); opacity: 1; }
+  }
+  @keyframes aurora-drift-alt {
+    0%, 100% { transform: translate3d(0,0,0) scale(1); opacity: 0.7; }
+    33%      { transform: translate3d(-2%,2%,0) scale(1.04); opacity: 0.9; }
+    66%      { transform: translate3d(1%,-1%,0) scale(0.97); opacity: 0.75; }
+  }
+  @keyframes neural-pulse {
+    0%, 100% { opacity: 0.25; }
+    50%      { opacity: 0.9; }
+  }
+  @keyframes border-glow-cycle {
+    0%, 100% { opacity: 0.6; }
+    50%      { opacity: 1; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .cta-aurora {
-      animation: none;
-    }
+    .cta-aurora-1, .cta-aurora-2 { animation: none !important; }
+    .cta-border { animation: none !important; }
   }
 </style>
