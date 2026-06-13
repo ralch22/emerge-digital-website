@@ -1,5 +1,6 @@
 {
   "name": "emerge-digital-website",
+  "account_id": "4a75e91d6fca8bc58467fb80ce1b9c2e",
   "main": "worker.ts",
   "compatibility_date": "2026-04-29",
   "assets": {

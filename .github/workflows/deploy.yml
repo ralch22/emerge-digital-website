@@ -1,0 +1,43 @@
+name: Deploy to Cloudflare Workers
+
+# Keep production in sync with the repo: every push to `main` builds the
+# Astro site and deploys the Worker (which serves ./dist via the ASSETS
+# binding). Requires repo secret CLOUDFLARE_API_TOKEN (account-scoped,
+# "Edit Cloudflare Workers"). The Worker's runtime secrets
+# (RESEND_API_KEY / TO_EMAIL / FROM_EMAIL) live in the Cloudflare dashboard
+# and persist across deploys — they are not managed here.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+# Never run two deploys at once; cancel an in-flight deploy if a newer
+# push lands.
+concurrency:
+  group: deploy-main
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          command: deploy
