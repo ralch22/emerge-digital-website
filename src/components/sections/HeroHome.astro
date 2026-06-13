@@ -646,77 +646,65 @@ const marqueeChunks = [
 </style>
 
 <script>
-  import { animate, scroll } from 'motion';
-
   const reduced  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isMobile = window.matchMedia('(max-width: 768px)').matches;
 
-  /* ── Scroll-driven cinematic O-reveal (desktop / tablet only) ── */
+  /* ── Scroll-driven cinematic O-reveal (desktop / tablet only) ──
+   * Progress is derived explicitly from the hero's own scroll position and
+   * clamped to [0, 1]. This guarantees the resting state at the top of the
+   * page is progress 0 — "VISION" fully on-screen — instead of relying on a
+   * scroll-library offset that could resolve mid-animation on load and drag
+   * the leftmost "V" off the left edge. */
   if (!reduced && !isMobile) {
     const heroSection = document.querySelector<HTMLElement>('[data-hero]');
     const oFrame      = document.querySelector<HTMLElement>('[data-o-frame]');
     const oInner      = document.querySelector<HTMLElement>('[data-o-inner]');
     const oRing       = document.querySelector<HTMLElement>('[data-o-ring]');
-    const oContent    = document.querySelector<HTMLElement>('[data-o-content]');
     const oStack      = document.querySelector<HTMLElement>('[data-o-inner-stack]');
-    const letters     = document.querySelectorAll<HTMLElement>('[data-letter]');
+    const letters     = Array.from(document.querySelectorAll<HTMLElement>('[data-letter]'));
 
-    if (heroSection && oFrame && oRing && oContent && oStack) {
-      const range = ['start start', 'end end'] as const;
+    if (heroSection && oFrame && oRing && oStack) {
+      const lerp  = (a: number, b: number, t: number) => a + (b - a) * t;
+      const clamp = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
-      /* The O frame expands width × height to fill the viewport.
-       * Letters in the flex row are pushed sideways by the growing O,
-       * with extra translateX to ensure they exit the screen cleanly. */
-      scroll(
-        animate(oFrame, {
-          width:        ['38vw', '100vw'],
-          height:       ['32vh', '100vh'],
-          borderRadius: ['9999px', '0px'],
-          margin:       ['0 0.6vw', '0 0vw'],
-        }, { easing: 'linear' }),
-        { target: heroSection, offset: range }
-      );
+      let ticking = false;
+      const render = () => {
+        ticking = false;
+        const total = heroSection.offsetHeight - window.innerHeight; // scrubbable distance
+        const p = total > 0 ? clamp(-heroSection.getBoundingClientRect().top / total) : 0;
 
-      /* Inner mirrors border-radius so the clip path matches the frame */
-      if (oInner)
-        scroll(
-          animate(oInner, { borderRadius: ['9999px', '0px'] }, { easing: 'linear' }),
-          { target: heroSection, offset: range }
-        );
+        /* O frame expands to fill the viewport */
+        oFrame.style.width        = `${lerp(38, 100, p)}vw`;
+        oFrame.style.height       = `${lerp(32, 100, p)}vh`;
+        oFrame.style.borderRadius = `${lerp(9999, 0, p)}px`;
+        oFrame.style.margin       = `0 ${lerp(0.6, 0, p)}vw`;
+        if (oInner) oInner.style.borderRadius = `${lerp(9999, 0, p)}px`;
 
-      /* Ring fades and thins as the O reveals — disappears entirely at end */
-      scroll(
-        animate(oRing, {
-          opacity:    [1, 1, 0],
-          borderWidth:['3px', '3px', '0px'],
-        }, { easing: 'linear' }),
-        { target: heroSection, offset: range }
-      );
+        /* Ring holds, then fades + thins over the final half */
+        const ringP = clamp((p - 0.5) / 0.5);
+        oRing.style.opacity     = `${1 - ringP}`;
+        oRing.style.borderWidth = `${lerp(3, 0, ringP)}px`;
 
-      /* Letters scatter outward and fade.
-       * Layout already pushes them aside as the O grows (1fr columns
-       * shrink); we add explicit translateX for stronger scatter. */
-      letters.forEach((l) => {
-        const pos = parseFloat(l.dataset.pos ?? '0');
-        const x   = pos * 14;       // vw — additional scatter on top of layout shift
+        /* Letters scatter outward and fade out over the final ~60% */
+        const fade = clamp((p - 0.4) / 0.6);
+        letters.forEach((l) => {
+          const pos = parseFloat(l.dataset.pos ?? '0');
+          l.style.transform = `translateX(${pos * 14 * p}vw)`;
+          l.style.opacity   = `${1 - fade}`;
+        });
 
-        scroll(
-          animate(l, {
-            x:       ['0vw', `${x}vw`],
-            opacity: [1, 1, 0.2, 0],
-          }, { easing: 'linear' }),
-          { target: heroSection, offset: range }
-        );
-      });
+        /* Content stack scales up + sharpens over the first ~60% */
+        const sp = clamp(p / 0.6);
+        oStack.style.transform = `scale(${lerp(0.65, 1, sp)})`;
+        oStack.style.opacity   = `${lerp(0.7, 1, sp)}`;
+      };
 
-      /* Content stack inside the O · scale up + sharpen as the O grows */
-      scroll(
-        animate(oStack, {
-          scale:   [0.65, 0.85, 1],
-          opacity: [0.7, 0.92, 1],
-        }, { easing: 'linear' }),
-        { target: heroSection, offset: range }
-      );
+      const onScroll = () => {
+        if (!ticking) { ticking = true; requestAnimationFrame(render); }
+      };
+      render();                                              // set progress-0 state on load
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', render);
     }
   }
 
