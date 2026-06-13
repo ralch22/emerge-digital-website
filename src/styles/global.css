@@ -21,7 +21,7 @@
   --color-platinum:   #E8EEF5;
   --color-offwhite:   #F7F9FC;
   --color-slate:      #1F2A3C;
-  --color-cool:       #6B7A90;
+  --color-cool:       #7E8CA3; /* AA-compliant: 5.5:1 on ink, 4.8:1 on navy. Was #6B7A90 (~4.27:1, failed AA). */
 
   --gradient-accent:   linear-gradient(90deg, #00C2C7 0%, #3DDCE3 100%);
   --gradient-text:     linear-gradient(110deg, #FFFFFF 0%, #E8EEF5 40%, #3DDCE3 100%);
@@ -192,6 +192,7 @@
     box-shadow: var(--shadow-card-hover);
   }
   .card-surface:hover::before { opacity: 1; }
+  .card-surface:active { transform: translateY(-1px); }
 
   /* ── Icon container for service / feature cards ── */
   .icon-wrap {
@@ -245,6 +246,7 @@
     border-color: rgba(0, 194, 199, 0.38) !important;
     box-shadow: var(--shadow-card-hover);
   }
+  .service-card-premium:active { transform: translateY(-2px); }
   .service-card-premium > * { position: relative; z-index: 1; }
 
   /* ── Hairline divider ── */

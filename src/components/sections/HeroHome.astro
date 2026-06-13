@@ -226,15 +226,16 @@ const marqueeChunks = [
         Vision 2030 · {monthsRemaining}mo window
       </p>
 
-      <!-- VISION wordmark -->
-      <h1 class="hero-mobile-vision">VISION</h1>
-      <p class="hero-mobile-year">2030</p>
+      <!-- VISION wordmark — decorative lockup; hidden from the a11y/SEO tree so
+           the headline below is the single H1 on this (mobile/reduced-motion) layout -->
+      <div class="hero-mobile-vision" aria-hidden="true">VISION</div>
+      <p class="hero-mobile-year" aria-hidden="true">2030</p>
 
-      <h2 class="hero-mobile-headline">
+      <h1 class="hero-mobile-headline">
         Local Prime.<br/>
         Global Power.<br/>
         <span class="text-gradient-glow">Enterprise Outcomes.</span>
-      </h2>
+      </h1>
 
       <p class="hero-mobile-sub">
         The agile Dubai Mainland prime for enterprise CX, Data, AI, and

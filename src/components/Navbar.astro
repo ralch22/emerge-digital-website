@@ -52,7 +52,7 @@ const currentPath = Astro.url.pathname;
                 href={item.href}
                 aria-current={isActive ? 'page' : undefined}
                 class:list={[
-                  'nav-link relative inline-flex px-3.5 py-2 transition-colors duration-300 hover:text-white rounded-lg hover:bg-white/5',
+                  'nav-link relative inline-flex px-3.5 py-2 transition-colors duration-300 hover:text-white rounded-lg hover:bg-white/5 active:bg-white/10',
                   isActive ? 'text-white' : 'text-platinum/70',
                 ]}
               >
@@ -140,7 +140,7 @@ const currentPath = Astro.url.pathname;
                 href={item.href}
                 aria-current={isActive ? 'page' : undefined}
                 class:list={[
-                  'mobile-link group flex items-center justify-between rounded-xl px-4 py-3 text-base font-medium transition-all hover:bg-white/6 hover:text-white',
+                  'mobile-link group flex items-center justify-between rounded-xl px-4 py-3 text-base font-medium transition-all hover:bg-white/6 hover:text-white active:bg-white/10',
                   isActive ? 'bg-teal/8 text-white border border-teal/15' : 'text-platinum/80 border border-transparent',
                 ]}
               >
@@ -167,7 +167,7 @@ const currentPath = Astro.url.pathname;
 
     <!-- Sheet footer -->
     <div class="absolute bottom-0 left-0 right-0 border-t border-white/8 px-6 py-4">
-      <p class="text-[11px] text-cool/60">Emerge Digital FZ-LLC · Dubai Mainland</p>
+      <p class="text-[11px] text-cool">Emerge Digital FZ-LLC · Dubai Mainland</p>
     </div>
   </aside>
 </div>
@@ -288,6 +288,23 @@ const currentPath = Astro.url.pathname;
   sheet?.querySelector('.mobile-sheet-backdrop')?.addEventListener('click', closeSheet);
   sheet?.querySelectorAll<HTMLAnchorElement>('a').forEach((a) => a.addEventListener('click', closeSheet));
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && sheet?.dataset.open === 'true') closeSheet();
+    if (!sheet || sheet.dataset.open !== 'true') return;
+
+    if (e.key === 'Escape') { closeSheet(); return; }
+
+    // Focus trap — keep Tab focus within the open sheet (dialog is aria-modal)
+    if (e.key === 'Tab') {
+      const focusables = sheet.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
+      if (!focusables.length) return;
+      const first = focusables[0];
+      const last  = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
   });
 </script>

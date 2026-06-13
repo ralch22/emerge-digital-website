@@ -54,7 +54,7 @@ export default {
           700: '#374563',
         },
         cool: {
-          DEFAULT: '#6B7A90',
+          DEFAULT: '#7E8CA3',
           400: '#8596AB',
           300: '#9FAFC2',
         },

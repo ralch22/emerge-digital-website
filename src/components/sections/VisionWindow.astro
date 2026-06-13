@@ -9,6 +9,11 @@ const stats = [
   { value: 4,     suffix: '',    label: 'Global GMP Partners\nworldwide — we are one', mono: 'GMP partners' },
   { value: 80000, suffix: '+',   label: 'Engineers across our\nglobal delivery network', mono: 'engineers' },
 ];
+
+// Pre-format the final value (mirrors the count-up script) so the real number is
+// server-rendered — visible without JS and exposed to assistive tech, not "0".
+const fmt = (v: number, suffix: string) =>
+  (v >= 1000 ? (v / 1000).toFixed(0) + 'K' : String(v)) + suffix;
 ---
 
 <Section tone="dark" class="relative overflow-hidden section-glow-bottom">
@@ -61,7 +66,7 @@ const stats = [
           <!-- Top accent line -->
           <div class="stat-accent absolute left-0 top-0 h-[2px] w-0 bg-gradient-accent transition-all duration-500 group-hover:w-full"></div>
 
-          <p class="font-mono text-[10px] font-semibold uppercase tracking-widest text-cool/60">
+          <p class="font-mono text-[10px] font-semibold uppercase tracking-widest text-cool" aria-hidden="true">
             {s.mono}
           </p>
 
@@ -70,7 +75,9 @@ const stats = [
               class="stat-value text-display-lg"
               data-counter={s.value}
               data-suffix={s.suffix}
-            >0</span>
+              aria-hidden="true"
+            >{fmt(s.value, s.suffix)}</span>
+            <span class="sr-only">{fmt(s.value, s.suffix)}</span>
           </div>
 
           <p class="whitespace-pre-line text-sm leading-relaxed text-platinum/55 transition-colors duration-300 group-hover:text-platinum/80">
