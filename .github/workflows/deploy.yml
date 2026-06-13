@@ -40,4 +40,7 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          # v4 is required to read wrangler.jsonc + the `assets`/`main` config.
+          # (the action defaults to wrangler 3.90.0, which ignores .jsonc)
+          wranglerVersion: "4.100.0"
           command: deploy
