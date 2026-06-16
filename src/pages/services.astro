@@ -314,6 +314,41 @@ const pillars: Pillar[] = [
             </div>
           ))}
         </div>
+
+        {pillar.id === 'ai' && (
+          <a
+            href="https://future.emergedigital.com?utm_source=vision&utm_medium=practice"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="agentforce-card group relative mt-5 flex flex-col gap-6 overflow-hidden rounded-card border border-teal/25 p-8 transition-all duration-400 hover:border-teal/50 hover:-translate-y-0.5 md:flex-row md:items-center md:gap-10"
+            style="background: linear-gradient(120deg, rgba(0,194,199,0.10), rgba(61,220,227,0.04));"
+            data-reveal
+          >
+            <!-- Top accent bar -->
+            <div aria-hidden="true" class="absolute inset-x-0 top-0 h-[1.5px] origin-left scale-x-0 bg-gradient-accent transition-transform duration-500 ease-out-quint group-hover:scale-x-100" style="transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);"></div>
+
+            <div class="flex-1">
+              <span class="inline-flex w-fit items-center gap-2 rounded-pill border border-teal/30 bg-teal/[0.10] px-3 py-1 text-[11px] font-semibold uppercase tracking-eyebrow text-teal">
+                Named Practice
+              </span>
+              <h3 class="mt-4 text-display-md text-white">
+                Agentforce <span class="text-gradient-accent">practice</span>
+              </h3>
+              <p class="mt-3 max-w-xl text-base leading-relaxed text-platinum/70">
+                Our dedicated Agentforce practice — the named agentic-AI capability operating under
+                the Emerge Digital corporate umbrella. Forward-deployed agents for enterprise CX,
+                service, and operations, delivered with the same local-prime accountability.
+              </p>
+            </div>
+
+            <div class="flex shrink-0 items-center gap-2 self-start rounded-pill bg-gradient-accent px-5 py-2.5 text-sm font-semibold text-ink transition-all duration-300 group-hover:shadow-glow md:self-auto">
+              Explore the practice
+              <svg width="14" height="14" viewBox="0 0 12 12" fill="none" aria-hidden="true" class="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                <path d="M4 2.5h5.5V8M9.5 2.5 3 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </a>
+        )}
       </Container>
     </section>
   ))}
