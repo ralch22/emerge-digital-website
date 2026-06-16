@@ -2,6 +2,10 @@
 import Section from '../Section.astro';
 import Container from '../Container.astro';
 import Button from '../Button.astro';
+
+// Live platform demo (roai) — vision hub → live demo funnel
+const demoUrl =
+  'https://roai.emergedigital.ae?utm_source=vision&utm_medium=cta&utm_campaign=live-demo';
 ---
 
 <Section tone="gradient" class="relative isolate overflow-hidden">
@@ -55,6 +59,15 @@ import Button from '../Button.astro';
           </Button>
           <Button variant="ghost" href="/contact/?intent=brief" size="lg">
             Or send us a brief
+          </Button>
+          <Button
+            variant="secondary"
+            href={demoUrl}
+            size="lg"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            See the platform live
           </Button>
         </div>
 
