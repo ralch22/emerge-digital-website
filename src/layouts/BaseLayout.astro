@@ -22,6 +22,31 @@ const {
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://emerge-digital-website.emerge-digital.workers.dev').toString();
+
+// Organization + WebSite JSON-LD — corporate-hub structured data for every page.
+const siteBase = (Astro.site ?? new URL('https://vision.emergedigital.ae')).toString().replace(/\/$/, '');
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${siteBase}/#organization`,
+      name: 'Emerge Digital',
+      url: `${siteBase}/`,
+      logo: `${siteBase}/favicon.svg`,
+      description:
+        'The Dubai Mainland local prime for enterprise CX, Data, AI, and digital transformation across the MEA region.',
+      areaServed: ['AE', 'SA', 'EG', 'Middle East & Africa'],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${siteBase}/#website`,
+      name: 'Emerge Digital',
+      url: `${siteBase}/`,
+      publisher: { '@id': `${siteBase}/#organization` },
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -50,6 +75,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://emerge-digi
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#0A1F3D" />
