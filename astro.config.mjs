@@ -5,8 +5,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  // Update to the production domain when you cut over
-  site: 'https://emergedigital.com',
+  site: 'https://vision.emergedigital.ae',
   output: 'static',
   integrations: [
     tailwind({
@@ -14,7 +13,10 @@ export default defineConfig({
       applyBaseStyles: false,
     }),
     mdx(),
-    sitemap(),
+    sitemap({
+      // /styleguide is an internal component gallery — keep it out of the sitemap.
+      filter: (page) => !page.includes('/styleguide'),
+    }),
   ],
   build: {
     inlineStylesheets: 'auto',
