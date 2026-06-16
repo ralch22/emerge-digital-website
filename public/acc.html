@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ACC capability reference — Emerge Digital</title>
+  <meta name="description" content="A live agentic content engine we built end-to-end. Proof of the orchestration behind ACC — your bilingual Arabic/English content agent — plus the exact recipe, ingredients, and compliance posture to make it yours." />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#fbfaf6;
+      --ink:#0e0e0e;
+      --mute:#5a5a55;
+      --line:#e7e4dc;
+      --accent:#1a3a5c;
+      --accent-soft:#dfeaf5;
+      --warm:#a87a3a;
+      --warm-soft:#f3ead9;
+      --code-bg:#f1eee6;
+      --ok:#3ba55d;
+      --max:1180px;
+      --pad:clamp(20px,4vw,56px);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,-apple-system,sans-serif;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+    a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-soft)}
+    a:hover{border-bottom-color:var(--accent)}
+    code,.mono{font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,monospace;font-size:.92em}
+    code{background:var(--code-bg);padding:2px 6px;border-radius:4px}
+    .ar{font-family:'Noto Naskh Arabic','Fraunces',serif;direction:rtl;text-align:right}
+
+    .page{max-width:var(--max);margin:0 auto;padding:var(--pad)}
+    .eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
+    .display{font-family:'Fraunces',Georgia,serif;font-weight:400;font-size:clamp(34px,5vw,62px);line-height:1.05;letter-spacing:-.02em;margin:.5em 0 .35em}
+    h2{font-family:'Fraunces',Georgia,serif;font-weight:400;font-size:clamp(27px,3.4vw,40px);line-height:1.12;letter-spacing:-.015em;margin:0 0 .2em}
+    h3{font-family:'Inter',sans-serif;font-weight:600;font-size:16px;letter-spacing:-.005em;margin:0 0 8px;color:var(--ink)}
+    p.lead{font-size:clamp(18px,1.8vw,21px);line-height:1.5;color:#222;max-width:64ch}
+    p{max-width:66ch}
+
+    .badge-row{display:flex;align-items:center;gap:14px;color:var(--mute);font-size:13px;flex-wrap:wrap}
+    .badge-row .dot{width:6px;height:6px;border-radius:50%;background:var(--ok);display:inline-block;box-shadow:0 0 0 4px rgba(59,165,93,.18)}
+    .pill{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;padding:4px 9px;border-radius:5px;border:1px solid var(--line);color:var(--mute)}
+    .pill.live{border-color:rgba(59,165,93,.4);color:#2c7a47;background:rgba(59,165,93,.08)}
+    .pill.plan{border-color:var(--warm);color:var(--warm);background:var(--warm-soft)}
+
+    /* HERO ---------------------------------------------------------------- */
+    header.hero{padding:clamp(34px,6vw,80px) 0 clamp(48px,6vw,80px);border-bottom:1px solid var(--line)}
+    .hero-grid{display:grid;grid-template-columns:1.4fr .85fr;gap:clamp(28px,5vw,64px);align-items:center}
+    @media(max-width:820px){.hero-grid{grid-template-columns:1fr;gap:36px}}
+    .hero-video{position:relative;justify-self:end}
+    .hero-video video{width:min(270px,66vw);aspect-ratio:9/16;border-radius:18px;display:block;background:#000;box-shadow:0 30px 60px -28px rgba(15,30,55,.45),0 8px 24px -10px rgba(15,30,55,.25)}
+    .hero-video .device-tag{position:absolute;left:-12px;top:-12px;background:var(--ink);color:#fff;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;padding:6px 10px;border-radius:6px;text-transform:uppercase}
+    .hero-video figcaption{margin-top:12px;font-size:11.5px;color:var(--mute);text-align:center;max-width:270px;line-height:1.45}
+
+    /* STAT STRIP ---------------------------------------------------------- */
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:34px}
+    @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+    .stat{background:var(--bg);padding:22px 20px}
+    .stat .v{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(22px,2.6vw,30px);line-height:1.05;letter-spacing:-.01em;margin-bottom:6px}
+    .stat .l{font-size:12px;color:var(--mute);letter-spacing:.02em;line-height:1.4}
+
+    /* SECTION SHELL ------------------------------------------------------- */
+    section{padding:clamp(48px,5.5vw,88px) 0;border-bottom:1px solid var(--line)}
+    section:last-of-type{border-bottom:0}
+    .section-head{display:flex;align-items:baseline;justify-content:space-between;gap:24px;margin-bottom:30px;flex-wrap:wrap}
+    .section-head .number{font-family:'JetBrains Mono',monospace;color:var(--mute);font-size:12px;letter-spacing:.18em;white-space:nowrap}
+    .section-head>div{max-width:64ch}
+
+    /* PIPELINE ------------------------------------------------------------ */
+    .pipeline{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:8px}
+    @media(max-width:920px){.pipeline{grid-template-columns:1fr 1fr}}
+    .step{position:relative;padding:22px 20px 18px;border:1px solid var(--line);border-radius:12px;background:#fff}
+    .step .ix{position:absolute;top:14px;right:16px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mute);letter-spacing:.1em}
+    .step h4{font-family:'Inter',sans-serif;font-size:15px;font-weight:600;margin:0 0 4px;letter-spacing:-.005em}
+    .step .who{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--accent);background:var(--accent-soft);display:inline-block;padding:3px 8px;border-radius:4px;margin-bottom:10px;letter-spacing:.01em}
+    .step p{font-size:13px;color:#3a3a35;line-height:1.5;margin:0 0 12px}
+    .step .foot{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mute);letter-spacing:.03em;padding-top:9px;border-top:1px dashed var(--line)}
+
+    /* SAMPLE / BILINGUAL -------------------------------------------------- */
+    .sample{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:8px}
+    @media(max-width:760px){.sample{grid-template-columns:1fr}}
+    .card{border:1px solid var(--line);border-radius:12px;background:#fff;padding:22px 24px}
+    .card .lang{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+    .card .script{font-size:16px;line-height:1.55;color:var(--ink)}
+    .card.en{border-top:3px solid var(--accent)}
+    .card.ar{border-top:3px solid var(--warm)}
+    .card .ar.script{font-size:19px;line-height:1.8}
+    .card .caption{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);font-size:13px;color:#3a3a35}
+    .card .caption .ar{font-size:15px;line-height:1.7;margin-top:4px}
+
+    .facts-row{display:grid;grid-template-columns:1.1fr 1fr;gap:18px;align-items:start;margin-bottom:18px}
+    @media(max-width:760px){.facts-row{grid-template-columns:1fr}}
+    .facts{border:1px solid var(--line);border-radius:12px;background:#fff;padding:20px 24px}
+    .facts dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:7px 18px}
+    .facts dt{color:var(--mute);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.03em;padding-top:3px}
+    .facts dd{margin:0;font-size:14.5px}
+    .note{font-size:12.5px;color:var(--mute);line-height:1.5;background:var(--warm-soft);border:1px solid #ead9bd;border-radius:10px;padding:14px 16px}
+    .note strong{color:var(--warm)}
+
+    /* MAPPING TABLE ------------------------------------------------------- */
+    .map{margin-top:8px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+    .map .row{display:grid;grid-template-columns:.8fr 1.2fr 1.4fr;gap:0;border-bottom:1px solid var(--line)}
+    .map .row:last-child{border-bottom:0}
+    .map .row.head{background:#f4f1e9;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+    .map .cell{padding:15px 18px;border-right:1px solid var(--line);font-size:14px;line-height:1.5}
+    .map .cell:last-child{border-right:0}
+    .map .cell strong{font-weight:600;color:var(--ink)}
+    .map .cell.soft{color:#3a3a35}
+    @media(max-width:760px){.map .row,.map .row.head{grid-template-columns:1fr}.map .cell{border-right:0;border-bottom:1px solid var(--line)}.map .cell:last-child{border-bottom:0}.map .row.head{display:none}}
+
+    /* GENERIC GRID -------------------------------------------------------- */
+    .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:8px}
+    @media(max-width:760px){.grid3{grid-template-columns:1fr}}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:8px}
+    @media(max-width:760px){.grid2{grid-template-columns:1fr}}
+    .ing{padding:20px 22px;border:1px solid var(--line);border-radius:12px;background:#fff}
+    .ing .tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+    .ing .tag.req{color:var(--accent)}
+    .ing .tag.opt{color:var(--warm)}
+    .ing h4{font-family:'Inter',sans-serif;font-size:15.5px;font-weight:600;margin:0 0 6px}
+    .ing p{font-size:13.5px;color:#3a3a35;line-height:1.55;margin:0}
+
+    /* SOLVED -------------------------------------------------------------- */
+    .solved{margin-top:8px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    @media(max-width:720px){.solved{grid-template-columns:1fr}}
+    .solved .item{display:flex;gap:13px;padding:16px 18px;border:1px solid var(--line);border-radius:10px;background:#fff}
+    .solved .ic{flex:0 0 auto;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;margin-top:1px}
+    .solved .ic.live{background:var(--accent);color:#fff}
+    .solved .ic.plan{background:var(--warm-soft);color:var(--warm);border:1px solid var(--warm)}
+    .solved .item h4{margin:0 0 3px;font-size:14px;font-weight:600}
+    .solved .item p{margin:0;font-size:13px;color:#3a3a35;line-height:1.5}
+
+    /* COMPLIANCE TWO-COL -------------------------------------------------- */
+    .compliance{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:8px}
+    @media(max-width:760px){.compliance{grid-template-columns:1fr}}
+    .panel{border:1px solid var(--line);border-radius:12px;background:#fff;padding:24px 26px}
+    .panel h3{font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+    .panel ul{margin:0;padding:0;list-style:none}
+    .panel li{font-size:13.5px;line-height:1.5;color:#3a3a35;padding:9px 0;border-bottom:1px dashed var(--line);display:flex;gap:10px}
+    .panel li:last-child{border-bottom:0}
+    .panel li::before{content:'→';color:var(--accent);flex:0 0 auto}
+
+    /* COST TABLE ---------------------------------------------------------- */
+    .cost{margin-top:8px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+    .cost table{width:100%;border-collapse:collapse;font-size:14px}
+    .cost th,.cost td{text-align:left;padding:13px 18px;border-bottom:1px solid var(--line)}
+    .cost th{background:#f4f1e9;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);font-weight:500}
+    .cost td.num{font-family:'JetBrains Mono',monospace;text-align:right}
+    .cost tr:last-child td{border-bottom:0}
+    .cost-note{font-size:12px;color:var(--mute);margin-top:12px;line-height:1.5}
+
+    /* TIMELINE ------------------------------------------------------------ */
+    .phase{border-left:2px solid var(--line);padding:0 0 22px 22px;position:relative}
+    .phase:last-child{padding-bottom:0}
+    .phase::before{content:'';position:absolute;left:-6px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--accent)}
+    .phase .when{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;color:var(--accent);text-transform:uppercase;margin-bottom:4px}
+    .phase h4{margin:0 0 4px;font-size:15px;font-weight:600}
+    .phase p{margin:0;font-size:13.5px;color:#3a3a35;line-height:1.5}
+    .excluded{margin-top:18px;font-size:13px;color:#3a3a35;background:var(--code-bg);border-radius:10px;padding:16px 18px;line-height:1.55}
+    .excluded strong{color:var(--ink)}
+
+    /* FOOTER -------------------------------------------------------------- */
+    footer{padding:clamp(36px,5vw,64px) 0;color:var(--mute);font-size:13.5px;border-top:1px solid var(--line);margin-top:clamp(36px,5vw,72px)}
+    footer .row{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap}
+    footer strong{color:var(--ink);font-weight:500}
+
+    @media print{
+      :root{--bg:#fff;--max:none;--pad:12mm}
+      html,body{font-size:10.5pt;color:#000}
+      header.hero,section{break-inside:avoid;page-break-inside:avoid;padding:14mm 0}
+      .hero-video,video{display:none}
+      a{color:#000;border:0}
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HERO ============================================================= -->
+  <header class="hero">
+    <div class="badge-row">
+      <span class="dot" aria-hidden="true"></span>
+      <span>Working reference implementation · deployed &amp; reproducible</span>
+      <span class="pill live">Live engine</span>
+      <span class="pill plan">ACC = roadmap below</span>
+    </div>
+
+    <div class="hero-grid" style="margin-top:20px">
+      <div>
+        <div class="eyebrow">Capability reference · prepared for a Saudi real-estate developer</div>
+        <h1 class="display">Every project, every channel — on-brand Arabic &amp; English sales content, published the same day.</h1>
+        <p class="lead">The video beside this is the real output of an agentic content engine we built and shipped this week for a Dubai property platform. It proves the hard part — autonomous orchestration, grounding, brand-safety, cost control. The next pages are the honest recipe for turning it into <strong>ACC</strong>, your bilingual content agent: what already works, what we'd build, and what we'd need from you.</p>
+      </div>
+
+      <figure class="hero-video">
+        <span class="device-tag">Live · MP4</span>
+        <video src="https://wzn4byw4tfl22gbj.public.blob.vercel-storage.com/listings/PF-102842452/video.mp4"
+               autoplay muted loop playsinline controls preload="metadata"
+               aria-label="Generated presenter video for Oceanz 2, Maritime City.">
+        </video>
+        <figcaption>Real generation. Script written, voiced, rendered &amp; published autonomously from one project's own data &amp; photos.</figcaption>
+      </figure>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="v">~15 sec</div><div class="l">Brief → publish-ready, autonomous</div></div>
+      <div class="stat"><div class="v">EN + AR</div><div class="l">Native parallel output (ACC)</div></div>
+      <div class="stat"><div class="v">5 stages</div><div class="l">Orchestrated, each observable &amp; costed</div></div>
+      <div class="stat"><div class="v">Any channel</div><div class="l">One generation → all aspect ratios</div></div>
+    </div>
+  </header>
+
+
+  <!-- HONEST FRAMING =================================================== -->
+  <section>
+    <div class="section-head">
+      <div>
+        <h2>What this is — and what it isn't</h2>
+      </div>
+      <span class="number">01 / Framing</span>
+    </div>
+    <p class="lead" style="margin-bottom:18px">We're not going to pretend the demo is your finished ACC. It isn't. Here's the honest split:</p>
+    <div class="grid2">
+      <div class="ing" style="border-top:3px solid var(--ok)">
+        <div class="tag req" style="color:var(--ok)">What's already real</div>
+        <h4>The agentic engine</h4>
+        <p>A production pipeline that, on one click, reads a project's structured data, writes a grounded script, narrates it, renders a vertical video from real imagery, publishes to a CDN, and records the cost — with stage-tagged error handling and a live cost dashboard. That orchestration is the expensive 80%, and it's done.</p>
+      </div>
+      <div class="ing" style="border-top:3px solid var(--warm)">
+        <div class="tag opt">What ACC adds</div>
+        <h4>Your brand, your language, your rules</h4>
+        <p>Native Arabic generation &amp; voice, your brand voice &amp; approved imagery, multi-channel formats, REGA / Wafi compliance gates, data-residency, and a human approval loop. Different ingredients into the same machine — scoped, costed, and timelined on the pages that follow.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- BILINGUAL SAMPLE ================================================= -->
+  <section>
+    <div class="section-head">
+      <div>
+        <h2>One generation, in both languages</h2>
+        <p style="margin:8px 0 0;color:var(--mute)">The hero video is the engine's real output, generated live on the Dubai property platform we built it for. Below is the same engine's output shape for a representative Saudi project, in both languages — illustrative, pending native Saudi-Arabic QA (a defined pilot step). For your engagement, the first deliverable is this against <em>your</em> real projects.</p>
+      </div>
+      <span class="number">02 / Bilingual proof</span>
+    </div>
+
+    <div class="facts-row">
+      <div class="facts">
+        <h3>Inputs · structured facts (sanitized)</h3>
+        <dl>
+          <dt>Project</dt><dd>Naseem Residences <span style="color:var(--mute);font-size:12px">(illustrative)</span></dd>
+          <dt>Community</dt><dd>North Riyadh</dd>
+          <dt>Unit</dt><dd>2-bedroom apartment</dd>
+          <dt>View</dt><dd>City skyline</dd>
+          <dt>Handover</dt><dd>2027</dd>
+          <dt>Offer</dt><dd>12% below launch price*</dd>
+        </dl>
+      </div>
+      <div class="note">
+        <strong>* Compliance note.</strong> A price claim like "12% below launch price" is exactly what REGA's advertising rules scrutinise. In ACC this line renders only when the figure is substantiated from a source-of-truth and the asset carries its Real Estate Advertisement License number (issued via REGA's Fal platform). See the Compliance section below — it's a gate, not an afterthought.
+      </div>
+    </div>
+
+    <div class="sample">
+      <div class="card en">
+        <div class="lang"><span>English · illustrative</span><span class="pill plan">Illustrative</span></div>
+        <p class="script">Introducing Naseem Residences in North Riyadh — a spacious two-bedroom apartment with open city-skyline views. Handover is scheduled for 2027, available now at 12% below the launch price.</p>
+        <div class="caption">
+          <strong style="font-size:11px;color:var(--mute);font-family:'JetBrains Mono',monospace;letter-spacing:.1em">SOCIAL CAPTION</strong><br>
+          Two-bedroom living in North Riyadh. Handover 2027. #Riyadh #RealEstate #OffPlan
+        </div>
+      </div>
+      <div class="card ar">
+        <div class="lang"><span>العربية · Arabic (MSA)</span><span class="pill plan">Illustrative</span></div>
+        <p class="script ar">نقدّم لكم مشروع نسيم ريزيدنسز في شمال الرياض — شقة فسيحة بغرفتَي نوم تطل على أفق المدينة. التسليم مقرّر في عام 2027، وهي متاحة الآن بسعرٍ يقلّ بنسبة 12٪ عن سعر الإطلاق.</p>
+        <div class="caption">
+          <strong style="font-size:11px;color:var(--mute);font-family:'JetBrains Mono',monospace;letter-spacing:.1em">التعليق على وسائل التواصل</strong>
+          <div class="ar">سكن بغرفتَي نوم في شمال الرياض. التسليم عام 2027.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- PIPELINE ========================================================== -->
+  <section>
+    <div class="section-head">
+      <div>
+        <h2>The agentic workflow</h2>
+        <p style="margin:8px 0 0;color:var(--mute)">Five deterministic stages. Each has stage-tagged error handling and cost attribution — a failure surfaces the exact stage that died (<code>script</code> / <code>tts</code> / <code>render</code> / <code>upload</code> / <code>db</code>), never an opaque retry. Model choices are swappable behind an abstraction layer (see Model strategy).</p>
+      </div>
+      <span class="number">03 / Architecture</span>
+    </div>
+
+    <div class="pipeline">
+      <div class="step">
+        <span class="ix">01</span>
+        <h4>Grounding</h4>
+        <span class="who">Source-of-truth → facts</span>
+        <p>Pulls verified facts only — community, unit, sqft, offer, handover. Sanitized to strip PII &amp; third-party names before any model sees it. (ACC: from your CRM/PIM, with a freshness gate.)</p>
+        <div class="foot"><span>~50ms</span><span>$0</span></div>
+      </div>
+      <div class="step">
+        <span class="ix">02</span>
+        <h4>Script writer</h4>
+        <span class="who">Frontier LLM</span>
+        <p>Writes a tight 15–45 word presenter script with a fail-closed sanitizer + banned-phrase pass. (ACC: EN + AR generated in parallel, grounded in your brand voice.)</p>
+        <div class="foot"><span>~1.2s</span><span>~$0.0001</span></div>
+      </div>
+      <div class="step">
+        <span class="ix">03</span>
+        <h4>Voice</h4>
+        <span class="who">Premium TTS</span>
+        <p>Natural presenter delivery. 24kHz mono audio streamed in-memory to the renderer — no file on disk. (ACC: Arabic voice in your chosen dialect; see Voice.)</p>
+        <div class="foot"><span>~2s</span><span>~$0.006</span></div>
+      </div>
+      <div class="step">
+        <span class="ix">04</span>
+        <h4>Render</h4>
+        <span class="who">Pluggable generator</span>
+        <p>Demo uses an FFmpeg slideshow — but the generator is swappable: route to Veo / Runway / Kling for cinematic motion (see §04). 9:16 / 1:1 / 16:9 / 4:5 from one generation.</p>
+        <div class="foot"><span>~5–8s</span><span>$0 API</span></div>
+      </div>
+      <div class="step">
+        <span class="ix">05</span>
+        <h4>Publish</h4>
+        <span class="who">CDN + audit</span>
+        <p>Stable path, DB stamped with URL, duration &amp; the script for audit. (ACC: staged to an approval queue before any public post.)</p>
+        <div class="foot"><span>~2s</span><span>~$0.001</span></div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- VISUAL FIDELITY ================================================== -->
+  <section>
+    <div class="section-head">
+      <div>
+        <h2>Visual fidelity is a routing choice, not a ceiling</h2>
+        <p style="margin:8px 0 0;color:var(--mute)">The demo's visual layer is a deliberately simple slideshow — <strong>no generative video model at all</strong> — chosen so the proof runs in ~15 seconds for effectively zero render cost. The generation step is model-agnostic: the same orchestration, the same brand-safety chokepoint and the same approval loop route to <em>any</em> engine. You pick the tier per asset or per channel.</p>
+      </div>
+      <span class="number">04 / Visuals</span>
+    </div>
+
+    <div class="grid2">
+      <div class="ing">
+        <div class="tag req" style="color:var(--ok)">Tier 1 · what the demo uses <span class="pill live" style="margin-left:6px">Live</span></div>
+        <h4>Slideshow render</h4>
+        <p>FFmpeg cross-fade over the project's real photos. Effectively $0, instant, fully autonomous. Ideal for high-volume inventory &amp; daily social where speed beats cinematics.</p>
+      </div>
+      <div class="ing">
+        <div class="tag req">Tier 2 · template motion</div>
+        <h4>Motion graphics</h4>
+        <p>Ken-Burns pans, branded lower-thirds, kinetic type, logo transitions. Still cheap and template-driven — the everyday workhorse for on-brand social at scale.</p>
+      </div>
+      <div class="ing">
+        <div class="tag opt">Tier 3 · generative <span class="pill plan" style="margin-left:6px">Routing</span></div>
+        <h4>Frontier video models</h4>
+        <p>Route to Google <strong>Veo</strong>, <strong>Runway</strong> Gen-4, Kling or Luma for true cinematic animation from a prompt or a still. Dollars per clip, not cents — reserved for hero &amp; launch films.</p>
+      </div>
+      <div class="ing">
+        <div class="tag opt">Tier 4 · hybrid <span class="pill plan" style="margin-left:6px">Routing</span></div>
+        <h4>Presenter / avatar</h4>
+        <p>An AI presenter or your spokesperson's voice-clone over generative b-roll (HeyGen / Synthesia-class) — a branded human face that never needs a shoot.</p>
+      </div>
+    </div>
+
+    <p style="margin-top:18px;font-size:14.5px;color:#3a3a35">Only the generator changes — the orchestration, compliance gates, bilingual script and audit trail stay identical. A <strong>$0.01 slideshow</strong> for a Tuesday inventory post; a <strong>Veo-rendered film</strong> for a tower launch — both governed the same way, both from the same one-click pipeline.</p>
+  </section>
+
+
+  <!-- MAPPING ========================================================== -->
+  <section>
+    <div class="section-head">
+      <div>
+        <h2>BelowOP today → your ACC</h2>
+        <p style="margin:8px 0 0;color:var(--mute)">Same machine, different ingredients. The orchestration, observability, brand-safety chokepoint and bilingual app shell are already in production on this codebase.</p>
+      </div>
+      <span class="number">05 / Translation</span>
+    </div>
+
+    <div class="map">
+      <div class="row head">
+        <div class="cell">Stage</div>
+        <div class="cell">BelowOP (live today)</div>
+        <div class="cell">ACC (your use case)</div>
+      </div>
+      <div class="row">
+        <div class="cell"><strong>Grounding</strong></div>
+        <div class="cell soft">Listing facts from Postgres, DLD-aligned</div>
+        <div class="cell soft">Project facts from your CRM/PIM/DAM via retrieval (RAG), with a freshness gate that pauses an asset if data is stale</div>
+      </div>
+      <div class="row">
+        <div class="cell"><strong>Writing</strong></div>
+        <div class="cell soft">English presenter script, 15–45 words</div>
+        <div class="cell soft">EN + AR generated in parallel; ad copy / caption / script variants, all grounded in your brand voice</div>
+      </div>
+      <div class="row">
+        <div class="cell"><strong>Voice</strong></div>
+        <div class="cell soft">Natural English presenter voice</div>
+        <div class="cell soft">Arabic in your chosen dialect (MSA / Najdi / Hijazi or a Saudi voice clone) — demoed &amp; locked in week 1</div>
+      </div>
+      <div class="row">
+        <div class="cell"><strong>Visual</strong></div>
+        <div class="cell soft">Slideshow over the project's photos, 9:16</div>
+        <div class="cell soft">Multi-format render (9:16 / 1:1 / 16:9 / 4:5) from your approved imagery, art-direction rules per channel</div>
+      </div>
+      <div class="row">
+        <div class="cell"><strong>Brand &amp; compliance</strong></div>
+        <div class="cell soft">Fail-closed sanitizer (no PII, no third-party names, no fabricated figures)</div>
+        <div class="cell soft">Same chokepoint + your brand rules + REGA / Wafi rule set (per-ad license number, escrow disclosure) + named licensed-broker reviewer in the loop</div>
+      </div>
+      <div class="row">
+        <div class="cell"><strong>Distribution</strong></div>
+        <div class="cell soft">Telegram, WhatsApp, Threads, X, Instagram adapters (text + image today)</div>
+        <div class="cell soft">Snapchat &amp; TikTok first (the dominant KSA channels), then Instagram, X &amp; WhatsApp; video extends the same adapter pattern; assets stage as drafts into your social tool/queue — auto-publish opt-in per channel</div>
+      </div>
+      <div class="row">
+        <div class="cell"><strong>Observability</strong></div>
+        <div class="cell soft">Per-asset cost tracking, stage-tagged errors, health probes</div>
+        <div class="cell soft">Identical — every ACC asset gets a cost line + audit trail in the same dashboard</div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- VOICE ============================================================ -->
+  <section>
+    <div class="section-head">
+      <div>
+        <h2>Arabic voice — the decision that defines brand feel</h2>
+        <p style="margin:8px 0 0;color:var(--mute)">For a Saudi developer this is the whole ballgame: dialect, diacritics, and how project &amp; place names ("Diriyah", "Qiddiya", "Roshn") are pronounced. We don't hand-wave it.</p>
+      </div>
+      <span class="number">06 / Voice</span>
+    </div>
+    <div class="grid3">
+      <div class="ing"><div class="tag req">Option A</div><h4>Modern Standard Arabic (الفصحى)</h4><p>Formal Fus'ha for corporate, legal &amp; government-facing copy and pan-Arab reach. Polished and universally understood; available immediately from premium neural TTS.</p></div>
+      <div class="ing"><div class="tag req">Option B</div><h4>Najdi (نجدي)</h4><p>Central / Riyadh dialect — the default national voice for premium KSA brand campaigns; tests as the most widely-liked dialect for pan-Kingdom consumer copy.</p></div>
+      <div class="ing"><div class="tag opt">Option C</div><h4>Hijazi (حجازي) or a Saudi clone</h4><p>Western / Jeddah dialect — many campaigns run a Najdi + Hijazi pair. Or clone your spokesperson's Saudi-accent voice from ~30s of clean samples.</p></div>
+    </div>
+    <p style="margin-top:18px;font-size:14.5px;color:#3a3a35"><strong>Week-1 commitment:</strong> we demo MSA, Najdi and Hijazi on <em>your</em> script — five of your real project names + an SAR price + a handover date — with a native Saudi-Arabic copy lead on the call, before anything is locked.</p>
+  </section>
+
+
+  <!-- COMPLIANCE & DATA ================================================ -->
+  <section>
+    <div class="section-head">
+      <div>
+        <h2>Compliance, data &amp; residency</h2>
+        <p style="margin:8px 0 0;color:var(--mute)">Unreleased pricing, handover dates and renders are sensitive. Two non-negotiables for a UAE developer — regulatory copy and data jurisdiction — handled explicitly.</p>
+      </div>
+      <span class="number">07 / Trust</span>
+    </div>
+    <div class="compliance">
+      <div class="panel">
+        <h3>Regulatory rule set (enforced, not advisory)</h3>
+        <ul>
+          <li>Every ad carries its <strong>Real Estate Advertisement License number</strong> (ترخيص إعلان عقاري) — issued per-ad via REGA's Fal platform &amp; publicly verifiable; distinct from the broker's Fal license</li>
+          <li>Off-plan (البيع على الخارطة) gated to <strong>Wafi</strong>-registered projects with escrow disclosure; pre-license marketing capped at 5%</li>
+          <li>Price / ROI / guaranteed-return claims gated — REGA bans misleading copy &amp; bait pricing (fines to SAR 200k); generate only when substantiated</li>
+          <li>Mandatory disclosures rendered: advertiser name &amp; capacity, location, valid contact, non-misleading price</li>
+          <li>Named <strong>licensed-broker reviewer</strong> in the loop before any public asset</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Data &amp; residency posture</h3>
+        <ul>
+          <li>Aligned to <strong>Saudi PDPL</strong> (enforced by SDAIA, in force Sep 2024) — a cross-border-transfer-restriction regime; documented TRA for sensitive transfers</li>
+          <li>Follows <strong>NDMO</strong> data-classification &amp; <strong>CST</strong> Cloud Computing Regulatory Framework for hosting</li>
+          <li>In-Kingdom processing on live regions — <strong>Google Cloud Dammam</strong> (GA) or Oracle Cloud Riyadh/Jeddah; runs in your tenancy &amp; accounts</li>
+          <li>Sovereign-AI path available: <strong>ALLaM</strong> (SDAIA/NCAI) &amp; <strong>HUMAIN</strong> for in-Kingdom inference where required</li>
+          <li>Per-vendor zero-retention / no-training flags; full audit trail of inputs, model, cost &amp; reviewer</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- MODEL STRATEGY =================================================== -->
+  <section>
+    <div class="section-head">
+      <div>
+        <h2>Model strategy — defensible &amp; portable</h2>
+        <p style="margin:8px 0 0;color:var(--mute)">Models are chosen, not assumed, and swappable behind an abstraction layer so a vendor's pricing or policy change never forces a re-platform.</p>
+      </div>
+      <span class="number">08 / Models</span>
+    </div>
+    <div class="grid3">
+      <div class="ing"><div class="tag req">Script</div><h4>Frontier LLM</h4><p>GPT-4o / GPT-4.1 via <strong>Azure OpenAI / AI Foundry</strong> for a Microsoft-native deployment, plus Claude &amp; Gemini 2.5 — benchmarked for EN + AR. <strong>ALLaM</strong> (SDAIA/NCAI) &amp; <strong>HUMAIN</strong> sovereign models where data-sovereignty leads.</p></div>
+      <div class="ing"><div class="tag req">Voice</div><h4>Premium neural TTS</h4><p><strong>Azure AI Speech</strong> ar-SA neural (Zariyah, Hamed), Gemini TTS or ElevenLabs Arabic — compared on your script. Branded voice clone subject to ar-SA eligibility (ElevenLabs path today). In-Kingdom processing where residency requires.</p></div>
+      <div class="ing"><div class="tag opt">Portability</div><h4>Swap without re-build</h4><p>One gateway abstracts every model call — script, voice <em>and</em> video. Attribution, zero-retention and fallback configured once. Switching Veo for Runway, or GPT-4o for Claude, is a config change, not an engineering project.</p></div>
+    </div>
+  </section>
+
+
+  <!-- DEPLOYMENT / MICROSOFT ========================================== -->
+  <section>
+    <div class="section-head">
+      <div>
+        <h2>Microsoft-native control plane, multicloud model plane</h2>
+        <p style="margin:8px 0 0;color:var(--mute)">The architecture splits into two planes. A stable control &amp; integration plane lives entirely on Microsoft 365 / Azure / Entra — where your teams already work, so identity, approvals and assets never leave your existing surfaces. Behind it sits a swappable model plane spread across clouds, hidden behind one model-agnostic gateway. Multicloud exists only to satisfy two facts you can't change — frontier video (Veo) is Google-only, and an in-Kingdom Azure region isn't live until Q4 2026 — and is invisible to the user.</p>
+      </div>
+      <span class="number">09 / Deployment</span>
+    </div>
+    <div class="grid2">
+      <div class="ing"><div class="tag req">Where you already work</div><h4>M365-native control plane</h4><p>Operators &amp; approvers sign in with their existing <strong>Microsoft Entra ID</strong> — no separate login. Human sign-off happens in <strong>Teams</strong> via Power Automate approval cards; approved assets land in <strong>SharePoint</strong> as the in-tenant asset library, run state logged to Dataverse for audited, resumable runs.</p></div>
+      <div class="ing"><div class="tag req">Models</div><h4>Azure OpenAI model plane</h4><p>EN/AR copy &amp; reasoning on <strong>Azure AI Foundry</strong> (today's Azure OpenAI) — GPT-4o / GPT-4.1 (GA), GPT-5.x at the frontier. OpenAI's <strong>Sora 2</strong> video is on Azure AI Foundry in public preview — a Microsoft-native generative-video option alongside Veo.</p></div>
+      <div class="ing"><div class="tag opt">Routing</div><h4>Multicloud by design</h4><p>Every model is reached through one cloud-agnostic gateway with declarative routing. Nothing is load-bearing: Veo on Google Vertex AI, voice on Azure AI Speech or ElevenLabs, sovereign Arabic on HUMAIN's ALLaM — swappable by config, not re-architecture.</p></div>
+      <div class="ing"><div class="tag opt">Residency</div><h4>Sovereign &amp; in-Kingdom</h4><p>Residency-sensitive Arabic &amp; personal-data workloads route to in-Kingdom inference — Vertex AI in Google's <strong>Dammam</strong> region or HUMAIN's <strong>ALLaM</strong>. A PDPL scrub/redaction gate ensures only de-identified creative content egresses cross-border.</p></div>
+    </div>
+    <div class="note" style="margin-top:18px"><strong>Honest bridge.</strong> Azure has no in-Kingdom region yet — Microsoft confirms <strong>Saudi Arabia East goes live in Q4 2026</strong> — so until then, residency-sensitive inference runs in-Kingdom on Google Cloud Dammam (live today, contracted via CNTXT) or HUMAIN ALLaM, then flips to a native Azure endpoint at GA with no application rewrite. Veo itself isn't hosted in Dammam, so frontier video stays a controlled, consented cross-border path either way.</div>
+  </section>
+
+
+  <!-- WHAT'S SHIPPED =================================================== -->
+  <section>
+    <div class="section-head">
+      <div>
+        <h2>What's already shipped</h2>
+        <p style="margin:8px 0 0;color:var(--mute)">Verifiable in the live engine. <span class="pill live">Live</span> = running in production today · <span class="pill plan">ACC</span> = built during the engagement.</p>
+      </div>
+      <span class="number">10 / Maturity</span>
+    </div>
+    <div class="solved">
+      <div class="item"><span class="ic live">✓</span><div><h4>Multi-stage orchestration, stage-tagged errors</h4><p>Failures name the exact stage; no opaque retries. <span class="pill live">Live</span></p></div></div>
+      <div class="item"><span class="ic live">✓</span><div><h4>Fail-closed brand-safety chokepoint</h4><p>Off-brand or hallucinated figure → asset dropped, never half-published. <span class="pill live">Live</span></p></div></div>
+      <div class="item"><span class="ic live">✓</span><div><h4>Per-asset cost attribution + dashboard</h4><p>Live monthly run-rate, broken out by model &amp; asset. <span class="pill live">Live</span></p></div></div>
+      <div class="item"><span class="ic live">✓</span><div><h4>Bilingual EN + AR app shell with RTL</h4><p>The product already serves a full <code>/ar</code> experience. <span class="pill live">Live</span></p></div></div>
+      <div class="item"><span class="ic live">✓</span><div><h4>Health probes + deploy verification</h4><p>Diagnoses upstream model failures (key, access, quota) without leaking secrets. <span class="pill live">Live</span></p></div></div>
+      <div class="item"><span class="ic plan">+</span><div><h4>Native Arabic generation &amp; compliance gates</h4><p>Arabic copy/voice, REGA / Wafi rule set, approval loop. <span class="pill plan">ACC</span></p></div></div>
+    </div>
+  </section>
+
+
+  <!-- INGREDIENTS ====================================================== -->
+  <section>
+    <div class="section-head">
+      <div>
+        <h2>What we'd need from you</h2>
+        <p style="margin:8px 0 0;color:var(--mute)">None of this requires engineering on your side. We do the extraction; you sign off.</p>
+      </div>
+      <span class="number">11 / Ingredients</span>
+    </div>
+    <div class="grid3">
+      <div class="ing"><div class="tag req">Required</div><h4>2 hours + 10 approved assets</h4><p>A short session with your brand lead and ten existing on-brand pieces. We extract the voice &amp; rules ourselves and you approve — no pre-written brand-voice doc needed.</p></div>
+      <div class="ing"><div class="tag req">Required</div><h4>Approved imagery library</h4><p>Brand-approved renders, photography &amp; lifestyle assets, tagged. The renderer selects per channel &amp; asset type instead of scraping.</p></div>
+      <div class="ing"><div class="tag req">Required</div><h4>Channel &amp; compliance rules</h4><p>Target channels, aspect ratios, hashtag/caption policy, logo lockups — and your REGA advertisement-license data source.</p></div>
+      <div class="ing"><div class="tag opt">Ideal</div><h4>Source-of-truth access</h4><p>Read access to your CRM/PIM (Salesforce, Yardi, in-house PMS) so facts &amp; prices stay live, with a freshness gate.</p></div>
+      <div class="ing"><div class="tag opt">Ideal</div><h4>Custom voice samples</h4><p>~30s of clean voice per language if you want a branded presenter clone.</p></div>
+      <div class="ing"><div class="tag opt">Ideal</div><h4>Approval workflow owner</h4><p>Who signs off before publish — we wire the staging queue &amp; sign-off route (WhatsApp/email) to match.</p></div>
+    </div>
+  </section>
+
+
+  <!-- COST ============================================================= -->
+  <section>
+    <div class="section-head">
+      <div>
+        <h2>Unit economics — honest numbers, all tiers</h2>
+        <p style="margin:8px 0 0;color:var(--mute)">Raw inference / generation cost per asset. Excludes retainer, human review, platform fees &amp; one-off setup. You choose the tier per asset — cents for volume, dollars for generative-video heroes.</p>
+      </div>
+      <span class="number">12 / Cost</span>
+    </div>
+    <div class="cost">
+      <table>
+        <thead><tr><th>Tier</th><th>Per finished asset</th><th>Best for</th></tr></thead>
+        <tbody>
+          <tr><td>Slideshow / Ken-Burns (stills + motion)</td><td class="num">~$0.01–0.02</td><td>Daily inventory &amp; volume social</td></tr>
+          <tr><td>ACC bilingual · premium voice · multi-format</td><td class="num">~$0.05–0.10</td><td>Standard EN + AR campaign assets</td></tr>
+          <tr><td>Veo Fast — generative video + audio</td><td class="num">~$0.80–0.96 / 8s</td><td>Everyday motion &amp; hero b-roll</td></tr>
+          <tr><td>Veo Standard — generative video + audio</td><td class="num">~$3.20 / 8s <span style="color:var(--mute)">(~$4.80 4K)</span></td><td>Premium hero &amp; launch films</td></tr>
+          <tr><td>Alternates — Runway Gen-4 · Sora 2 on Azure</td><td class="num">~$1.50–2.30 / 10s · ~$0.10/sec*</td><td>Swappable in the model plane</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="cost-note">Cost is chosen per asset, not fixed per campaign. The stills-with-motion tiers run in <strong>cents</strong> — imagery is generated once and reused across formats, so spend is dominated by premium voice, not text (≈$10–100/month for 1k–5k bilingual assets). Generative frontier video is a different order of magnitude, priced <strong>per clip</strong>: Veo Fast ~$0.80–0.96 per 8s for everyday motion; Veo Standard with audio ~$3.20 per 8s (720p/1080p), ~$4.80 at 4K — reserved for hero &amp; launch. Default to stills-with-motion for volume; spend dollars-per-clip on Veo (or Runway/Sora) only where a generative hero earns it. <span style="color:var(--mute)">*Sora 2 on Azure AI Foundry is public preview (per-second pricing subject to change). Veo Standard's $0.40/sec is Google's current rate, cut from the 2025 launch price of $0.75/sec. You're billed only for successful generations.</span></p>
+  </section>
+
+
+  <!-- TIMELINE ========================================================= -->
+  <section>
+    <div class="section-head">
+      <h2>How we'd run the engagement</h2>
+      <span class="number">13 / Plan</span>
+    </div>
+    <div class="grid2">
+      <div>
+        <div class="phase">
+          <div class="when">Weeks 1–3 · MVP</div>
+          <h4>Working engine behind a private admin</h4>
+          <p>Brand voice extracted &amp; signed off. EN+AR generation live. Three Arabic voices demoed &amp; one locked. First end-to-end assets — internal only, no public publishing.</p>
+        </div>
+        <div class="phase">
+          <div class="when">Weeks 4–12 · Pilot</div>
+          <h4>One project, end to end</h4>
+          <p>Multi-format render on your imagery. REGA / Wafi gates + licensed-broker approval loop. Source-of-truth integration &amp; freshness gate. Bilingual QA with your team. Legal/DPA, infosec &amp; SSO review. Channel API approvals (Meta/Snapchat/TikTok business verification can take weeks).</p>
+        </div>
+        <div class="phase">
+          <div class="when">Post-pilot · Rollout</div>
+          <h4>Scale across the portfolio</h4>
+          <p>Per-project onboarding, dashboards, and run-rate governance after pilot sign-off.</p>
+        </div>
+      </div>
+      <div>
+        <h3>Deliverables</h3>
+        <p style="font-size:14.5px;color:#3a3a35;line-height:1.7">
+          <strong>Live admin</strong> — generate any asset in one click.<br>
+          <strong>API surface</strong> — trigger from your CRM/CMS.<br>
+          <strong>Approval queue</strong> — staged drafts + sign-off route.<br>
+          <strong>Cost &amp; audit dashboard</strong> — per-asset attribution.<br>
+          <strong>Health monitoring</strong> — model-failure diagnostics.<br>
+          <strong>Code &amp; deployment</strong> — in your tenancy, your accounts.
+        </p>
+        <div class="excluded">
+          <strong>Explicitly not in the 3-week MVP:</strong> public auto-publishing, legal/DPA sign-off, infosec review, SSO, DAM/PIM integration, and channel API approvals. Those land in the pilot — naming them up front is how we keep the timeline honest.
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <footer>
+    <div class="row">
+      <div>
+        <strong>Emerge Digital</strong> — AI content infrastructure for property developers<br>
+        <span style="color:var(--mute)">Live engine demo available under NDA on request (access-gated). 60-second walkthrough on request.</span>
+      </div>
+      <div style="text-align:right">
+        <strong>rami@emergedigital.com</strong><br>
+        <span style="color:var(--mute)">Working reference implementation · compiled June 2026</span>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>
