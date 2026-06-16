@@ -7,6 +7,7 @@ import Button from '../Button.astro';
 const steps = [
   {
     label: 'Crawl',
+    practice: 'Discovery',
     duration: '4–8 weeks',
     risk: 'Low risk',
     body: 'A focused, fixed-scope diagnostic. Maturity assessment, opportunity sizing, business case, and a Vision 2030-aligned roadmap. Low-risk, high-clarity — built so procurement can sign in days, not months.',
@@ -14,6 +15,7 @@ const steps = [
   },
   {
     label: 'Walk',
+    practice: 'Pilot',
     duration: '3–6 months',
     risk: 'Defined gates',
     body: 'A defined transformation phase against a prioritised opportunity (CDP rollout, CX redesign, analytics governance rebuild). Clear gates, clear KPIs, founder-level oversight throughout.',
@@ -21,6 +23,7 @@ const steps = [
   },
   {
     label: 'Run',
+    practice: 'Enterprise',
     duration: '12+ months',
     risk: 'Long-term program',
     body: 'A long-term, multi-workstream program managed through the local prime, with our managed-services bench providing run-state operations, AI ops, and continuous modernisation.',
@@ -42,6 +45,10 @@ const steps = [
         A risk-managed path from
         <span class="text-gradient-accent">ambition to enterprise outcome.</span>
       </h2>
+      <p class="mt-5 max-w-2xl text-lead text-platinum/65" data-reveal data-reveal-delay="2">
+        On our <a href="https://future.emergedigital.com/?utm_source=vision&utm_medium=engagement-map" class="text-teal underline-offset-4 transition-colors hover:text-cyan hover:underline">Agentforce practice</a>
+        these map to <span class="text-platinum/90">Discovery → Pilot → Enterprise</span> — the same journey, packaged for AI delivery.
+      </p>
     </div>
 
     <!-- Connector track -->
@@ -72,9 +79,10 @@ const steps = [
             </div>
 
             <!-- Step info -->
-            <div class="mb-4 flex items-center gap-3">
+            <div class="mb-4 flex flex-wrap items-center gap-2.5">
               <h3 class="text-display-md text-teal">{s.label}</h3>
               <span class="rounded-pill border border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-[10px] text-cool">{s.duration}</span>
+              <span class="rounded-pill border border-teal/20 bg-teal/[0.06] px-2.5 py-0.5 font-mono text-[10px] text-teal/80">≈ {s.practice}</span>
             </div>
 
             <p class="text-sm leading-relaxed text-platinum/70 transition-colors duration-300 group-hover:text-platinum/90">
