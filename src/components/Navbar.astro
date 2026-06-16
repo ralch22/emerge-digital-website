@@ -7,6 +7,10 @@
  *  - Mobile sheet with focus trap
  */
 
+// Live platform demo (roai) — vision hub → live demo funnel
+const demoUrl =
+  'https://roai.emergedigital.ae?utm_source=vision&utm_medium=cta&utm_campaign=live-demo';
+
 const navItems = [
   { href: '/services/',     label: 'Services' },
   { href: '/case-studies/', label: 'Case Studies' },
@@ -16,7 +20,9 @@ const navItems = [
     href: 'https://future.emergedigital.com?utm_source=vision&utm_medium=practice',
     label: 'Agentforce',
     external: true,
+    badge: 'Practice',
   },
+  { href: demoUrl, label: 'See the platform live', external: true, badge: 'Live' },
 ];
 
 const currentPath = Astro.url.pathname;
@@ -55,9 +61,9 @@ const currentPath = Astro.url.pathname;
             <li>
               <a
                 href={item.href}
-                aria-current={isActive ? 'page' : undefined}
                 target={item.external ? '_blank' : undefined}
                 rel={item.external ? 'noopener noreferrer' : undefined}
+                aria-current={isActive ? 'page' : undefined}
                 class:list={[
                   'nav-link relative inline-flex items-center gap-1 px-3.5 py-2 transition-colors duration-300 hover:text-white rounded-lg hover:bg-white/5 active:bg-white/10',
                   isActive ? 'text-white' : 'text-platinum/70',
@@ -150,9 +156,9 @@ const currentPath = Astro.url.pathname;
             <li>
               <a
                 href={item.href}
-                aria-current={isActive ? 'page' : undefined}
                 target={item.external ? '_blank' : undefined}
                 rel={item.external ? 'noopener noreferrer' : undefined}
+                aria-current={isActive ? 'page' : undefined}
                 class:list={[
                   'mobile-link group flex items-center justify-between rounded-xl px-4 py-3 text-base font-medium transition-all hover:bg-white/6 hover:text-white active:bg-white/10',
                   isActive ? 'bg-teal/8 text-white border border-teal/15' : 'text-platinum/80 border border-transparent',
@@ -160,8 +166,8 @@ const currentPath = Astro.url.pathname;
               >
                 <span class="flex items-center gap-1.5">
                   {item.label}
-                  {item.external && (
-                    <span class="rounded-pill border border-teal/25 bg-teal/[0.08] px-1.5 py-px text-[9px] font-semibold uppercase tracking-wide text-teal">Practice</span>
+                  {item.badge && (
+                    <span class="rounded-pill border border-teal/25 bg-teal/[0.08] px-1.5 py-px text-[9px] font-semibold uppercase tracking-wide text-teal">{item.badge}</span>
                   )}
                 </span>
                 <span
