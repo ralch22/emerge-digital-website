@@ -20,6 +20,17 @@ const {
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://emerge-digital-website.emerge-digital.workers.dev').toString();
+
+/**
+ * Shared analytics — Cloudflare Web Analytics beacon (privacy-friendly, cookieless,
+ * no consent banner required). Loads on every page via this layout.
+ *
+ * The token is a clearly-marked PLACEHOLDER for review. Set the real value at
+ * build time with the `PUBLIC_CF_BEACON_TOKEN` env var (Cloudflare Pages →
+ * Settings → Environment variables). Match the property/token chosen for roai +
+ * future so the three-site funnel reports under one analytics account.
+ */
+const CF_BEACON_TOKEN = import.meta.env.PUBLIC_CF_BEACON_TOKEN ?? 'CF_BEACON_TOKEN_PLACEHOLDER';
 ---
 
 <!doctype html>
@@ -46,6 +57,14 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://emerge-digi
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#0A1F3D" />
+
+    {/* Cloudflare Web Analytics — funnel measurement across the Vision hub. */}
+    <script
+      is:inline
+      defer
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon={`{"token": "${CF_BEACON_TOKEN}"}`}
+    ></script>
   </head>
 
   <body>
