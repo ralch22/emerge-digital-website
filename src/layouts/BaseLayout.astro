@@ -4,6 +4,8 @@
  * Pages should pass `title`, `description`, and optionally `ogImage`.
  */
 import '../styles/global.css';
+// LCP web-font preload — fingerprinted URL for the latin Inter subset (text-LCP font).
+import interLatinWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
 
@@ -26,6 +28,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://emerge-digi
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <!-- LCP web-font preload — latin Inter subset, discovered before CSS parse -->
+    <link rel="preload" href={interLatinWoff2} as="font" type="font/woff2" crossorigin />
     <!-- Google tag (gtag.js) — GA4 stream Vision Site · vision.emergedigital.ae -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-HEQYW1EESD"></script>
     <script is:inline>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-HEQYW1EESD');</script>

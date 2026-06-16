@@ -21,6 +21,11 @@ const legal = [
   { href: '/legal/cookies/', label: 'Cookies' },
   { href: '/legal/terms/',   label: 'Terms' },
 ];
+// Funnel down-links — vision hub → Agentforce practice (future) and the live Vela demo (roai).
+const ecosystem = [
+  { href: 'https://future.emergedigital.com?utm_source=vision&utm_medium=footer', label: 'Agentforce practice' },
+  { href: 'https://roai.emergedigital.ae?utm_source=vision&utm_medium=footer',    label: 'See Vela live' },
+];
 ---
 
 <footer class="footer-surface relative isolate overflow-hidden border-t border-white/5">
@@ -67,7 +72,7 @@ const legal = [
         </a>
 
         <!-- Powered-by-FPT lockup: ties the 80,000+ bench + the FPT CX Services practice (future/roai) to vision -->
-        <p class="mt-7 max-w-[30ch] text-[11px] leading-relaxed text-platinum/45">
+        <p class="mt-7 max-w-[30ch] text-[11px] leading-relaxed text-cool">
           <span class="font-semibold uppercase tracking-eyebrow text-platinum/65">Powered by FPT CX Services</span><br/>
           Part of FPT — a global technology group of 80,000+ engineers.
         </p>
@@ -84,7 +89,7 @@ const legal = [
       </div>
 
       <!-- Capabilities -->
-      <div class="md:col-span-3">
+      <div class="md:col-span-2">
         <h4 class="footer-heading">Capabilities</h4>
         <ul class="mt-4 space-y-2.5">
           {capabilities.map((item) => (
@@ -93,8 +98,22 @@ const legal = [
         </ul>
       </div>
 
+      <!-- Ecosystem -->
+      <div class="md:col-span-2">
+        <h4 class="footer-heading">Ecosystem</h4>
+        <ul class="mt-4 space-y-2.5">
+          {ecosystem.map((item) => (
+            <li>
+              <a href={item.href} class="footer-link" target="_blank" rel="noopener noreferrer">
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
       <!-- Compliance -->
-      <div class="md:col-span-3">
+      <div class="md:col-span-2">
         <h4 class="footer-heading">Compliance</h4>
         <div class="mt-4 space-y-3">
           <p class="text-sm leading-relaxed text-platinum/55">
