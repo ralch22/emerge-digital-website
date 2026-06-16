@@ -7,10 +7,12 @@
     "directory": "./dist",
     "binding": "ASSETS"
   },
+  // Keep the *.workers.dev URL live as a fallback. Declaring `routes` defaults
+  // workers_dev to off (which 404s the workers.dev URL) — set it true.
+  "workers_dev": true,
   // Workers Custom Domain. emergedigital.ae is a Cloudflare zone in this
   // account, so on deploy wrangler provisions the proxied DNS record + an edge
-  // TLS cert for vision.emergedigital.ae and routes it to this Worker. The
-  // existing workers.dev URL keeps working alongside it.
+  // TLS cert for vision.emergedigital.ae and routes it to this Worker.
   "routes": [
     { "pattern": "vision.emergedigital.ae", "custom_domain": true }
   ]
