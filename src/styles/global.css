@@ -3,7 +3,11 @@
    Brand tokens (CSS vars) + Tailwind base/components/utilities
    ---------------------------------------------------------- */
 
-@import '@fontsource-variable/inter';
+@import '@fontsource-variable/lexend';
+@import '@fontsource/lexend-zetta/latin-400.css';
+@import '@fontsource/lexend-zetta/latin-700.css';
+@import '@fontsource/prompt/latin-400.css';
+@import '@fontsource/prompt/latin-500.css';
 @import '@fontsource-variable/jetbrains-mono';
 
 @tailwind base;
