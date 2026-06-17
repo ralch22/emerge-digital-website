@@ -85,7 +85,7 @@ const capabilities = ['All', ...Array.from(capabilitySet)].slice(0, 6); // cap f
             data-reveal-delay={String((i % 3) + 1)}
           >
             <a
-              href={`/case-studies/${study.slug}`}
+              href={`/case-studies/${study.slug}/`}
               class="card-surface group flex h-full flex-col p-8 no-underline"
               aria-label={`Read case study: ${study.data.title}`}
             >
@@ -166,8 +166,8 @@ const capabilities = ['All', ...Array.from(capabilitySet)].slice(0, 6); // cap f
           procurement window.
         </p>
         <div class="flex flex-wrap justify-center gap-4">
-          <Button href="/contact" size="lg">Book a Vision 2030 Readiness Briefing</Button>
-          <Button href="/services" variant="secondary" size="lg">Explore the capability stack</Button>
+          <Button href="/contact/" size="lg">Book a Vision 2030 Readiness Briefing</Button>
+          <Button href="/services/" variant="secondary" size="lg">Explore the capability stack</Button>
         </div>
       </div>
     </Container>
