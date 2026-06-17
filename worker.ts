@@ -29,17 +29,10 @@ export default {
     }
 
     // ── Static assets ──────────────────────────────────────
-    const response = await env.ASSETS.fetch(request);
-
-    // Content-hashed assets in /_astro/* never change for a given URL — cache
-    // them immutably so repeat visits and CDN edges skip revalidation.
-    if (url.pathname.startsWith('/_astro/') && response.ok) {
-      const cached = new Response(response.body, response);
-      cached.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
-      return cached;
-    }
-
-    return response;
+    // Asset responses (incl. /_astro/* cache headers) are served directly by the
+    // ASSETS binding before the Worker runs, so caching is configured in
+    // `public/_headers`, not here. The Worker only sees non-asset paths.
+    return env.ASSETS.fetch(request);
   },
 };
 
