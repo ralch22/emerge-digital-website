@@ -75,6 +75,7 @@ const jsonLd = {
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, canonical).toString()} />
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
