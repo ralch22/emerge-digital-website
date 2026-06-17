@@ -55,9 +55,6 @@ const jsonLd = {
     <meta charset="UTF-8" />
     <!-- LCP web-font preload — latin Lexend subset, discovered before CSS parse -->
     <link rel="preload" href={lexendLatinWoff2} as="font" type="font/woff2" crossorigin />
-    <!-- Google tag (gtag.js) — GA4 stream Vision Site · vision.emergedigital.ae -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HEQYW1EESD"></script>
-    <script is:inline>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-HEQYW1EESD');</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
 
@@ -80,6 +77,11 @@ const jsonLd = {
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#0A1F3D" />
+
+    <!-- Google tag (gtag.js) — GA4 stream Vision Site · vision.emergedigital.ae -->
+    <!-- Loaded after title/meta/CSS so it stays out of the critical render path; `async` keeps it non-blocking. -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HEQYW1EESD"></script>
+    <script is:inline>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-HEQYW1EESD');</script>
   </head>
 
   <body>
