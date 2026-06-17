@@ -30,7 +30,13 @@
     // detaches it and .com goes down. www → apex is a separate redirect (the custom-domain
     // dialog only accepts apex zones, not the www subdomain).
     { "pattern": "emergedigital.com", "custom_domain": true },
-    { "pattern": "vision.emergedigital.ae", "custom_domain": true }
+    { "pattern": "vision.emergedigital.ae", "custom_domain": true },
+    // www → apex is redirect-only. A plain route (not a custom domain) reuses the
+    // existing proxied `www` CNAME — no record to delete, no separate cert (Universal
+    // SSL covers www). The Worker's host-canon block 301s www → apex; run_worker_first
+    // guarantees it fires on every path. The `www` DNS record must be PROXIED (orange)
+    // for this route to apply.
+    { "pattern": "www.emergedigital.com/*", "zone_name": "emergedigital.com" }
   ],
   // Observability — pin the dashboard's Workers Logs settings in config so CI
   // `wrangler deploy` stops resetting them (the "consistent across deployments"
