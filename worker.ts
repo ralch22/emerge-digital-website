@@ -64,9 +64,10 @@ export default {
     }
 
     // ── Static assets ──────────────────────────────────────
-    // Asset responses (incl. /_astro/* cache headers) are served directly by the
-    // ASSETS binding before the Worker runs, so caching is configured in
-    // `public/_headers`, not here. The Worker only sees non-asset paths.
+    // run_worker_first (wrangler.jsonc) means the Worker sees EVERY request,
+    // including assets. Anything that isn't a redirect/410/301 or an API route
+    // falls through to the ASSETS binding here, which serves the file and still
+    // applies the /_astro/* cache headers from `public/_headers`.
     return env.ASSETS.fetch(request);
   },
 };
