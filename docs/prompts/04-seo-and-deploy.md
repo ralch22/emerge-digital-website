@@ -1,5 +1,14 @@
 # Prompt 04 — SEO migration, performance hardening, and deploy
 
+> **Historical record — the deploy target has changed.** This prompt was written for a
+> Cloudflare **Pages** deploy, but the site now ships as a **Cloudflare Worker** that serves
+> the static `dist/` build through an `ASSETS` binding (see `worker.ts` and `wrangler.jsonc`;
+> `CLAUDE.md` documents the current model). Concretely: the contact form is a `/api/contact`
+> route handled inside that Worker — **not** a Pages Function under `/functions/` — and there
+> is no `_redirects` file, no `wrangler.toml`, and no `docs/deploy.md`. Treat every
+> "Cloudflare Pages" / "Pages Functions" / `_redirects` / `wrangler.toml` / `docs/deploy.md`
+> mention below as a snapshot of the original plan, not as current instructions.
+
 Paste the prompt below into Claude Code. Prompts 01–03 must be complete.
 
 ---
@@ -65,6 +74,11 @@ Constraints unchanged. Do not introduce client-side React, do not bloat the bund
 ---
 
 ## What to do after Claude Code finishes
+
+> **Superseded.** The Cloudflare **Pages** steps below describe the original plan. The site
+> actually deploys as a Cloudflare **Worker** (`worker.ts` + `wrangler.jsonc`, static `dist/`
+> served via the `ASSETS` binding, custom domain `vision.emergedigital.ae`). See `CLAUDE.md`
+> for the current deploy model; there is no `docs/deploy.md`.
 
 1. Open `docs/deploy.md` and follow the Cloudflare Pages setup. Connect your GitHub repo, set build command `npm run build`, output `dist`.
 2. Buy/configure the production domain. Point DNS to Cloudflare Pages.
