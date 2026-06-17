@@ -78,6 +78,9 @@ const jsonLd = {
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
+    <!-- Per-page <head> extras — page-specific JSON-LD (Article, BreadcrumbList), etc. -->
+    <slot name="head" />
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#0A1F3D" />
   </head>
