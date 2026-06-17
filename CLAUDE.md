@@ -11,8 +11,8 @@ The corporate marketing site for **Emerge Digital** — the Dubai Mainland local
 - Astro 5 with TypeScript (strict)
 - Tailwind CSS via `@astrojs/tailwind` (base styles disabled — see `src/styles/global.css`)
 - MDX for case studies and insights via Astro content collections
-- `@fontsource-variable/inter` and `@fontsource-variable/jetbrains-mono` for fonts
-- Deploy target: Cloudflare Pages
+- Fonts via `@fontsource`: `@fontsource-variable/lexend` (primary UI/body + display), `@fontsource/lexend-zetta` (oversized display/wordmark), `@fontsource/prompt` (labels and eyebrows), and `@fontsource-variable/jetbrains-mono` (data/code). Imported in `src/styles/global.css`.
+- Deploy target: Cloudflare Worker (`worker.ts`) serving the static build through an `ASSETS` binding — see `wrangler.jsonc`. The Worker handles `/api/contact` and falls through to the prerendered `dist/` for everything else. Not Cloudflare Pages.
 - No React, Vue, Svelte, MUI, shadcn, or other component libraries. Astro components only.
 
 ## Design system
@@ -40,6 +40,12 @@ Brand tokens live in `tailwind.config.mjs` and `src/styles/global.css`. Use them
 - `text-display-md` — 32px H3
 - `text-lead` — 20px lead paragraph
 - `text-eyebrow` — 13px uppercase eyebrow with 0.15em tracking
+
+**Fonts** (Tailwind `font-*` utilities, defined in `tailwind.config.mjs`):
+- `font-sans` / `font-display` — **Lexend** (variable) — primary UI, body, and headings
+- `font-wide` — **Lexend Zetta** — oversized display and the wordmark
+- `font-label` — **Prompt** — eyebrows, labels, and small caps
+- `font-mono` — **JetBrains Mono** — stats, technical callouts, code
 
 **Spacing**: 8px base grid. Use `py-section` for desktop section padding (128px) and `py-section-sm` for mobile (64px). Section content max-width is `max-w-section` (1280px).
 
@@ -89,7 +95,7 @@ docs/             # Project docs — never deployed
 - Don't introduce a state library, an animation library, or a UI kit
 - Don't hardcode strings that should live in `docs/brand-and-content.md` or in a content collection
 - Don't refactor the design tokens without updating both `tailwind.config.mjs` and `src/styles/global.css`
-- Don't commit secrets — use Cloudflare Pages environment variables for any keys
+- Don't commit secrets — use Cloudflare Worker environment variables / secrets (Dashboard → Workers & Pages → emerge-digital-website → Settings → Variables and Secrets) for any keys
 - Don't add tracking pixels without explicit instruction
 
 ## How to ask for help
