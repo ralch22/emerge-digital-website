@@ -137,11 +137,16 @@ const marqueeChunks = [
                     <span>Vision 2030 · {monthsRemaining} months remain in the procurement window</span>
                   </p>
 
-                  <!-- Center row · the H1 anchors precisely at viewport vertical center -->
-                  <h1 class="stack-h1 hero-headline">
+                  <!-- Center row · headline anchors precisely at viewport vertical center.
+                       Rendered as a styled paragraph, not a heading: this desktop stage
+                       and the mobile stack are both in the DOM, so only one may own the
+                       page's single H1. Google indexes mobile-first, so that H1 lives on
+                       the mobile layout (.hero-mobile-headline) — the DOM the crawler
+                       renders at a phone viewport. -->
+                  <p class="stack-h1 hero-headline">
                     Local Prime. Global Power.<br/>
                     <span class="text-gradient-glow">Enterprise Outcomes.</span>
-                  </h1>
+                  </p>
 
                   <!-- Bottom row · sub-headline + CTAs flush below headline -->
                   <div class="stack-extras">
