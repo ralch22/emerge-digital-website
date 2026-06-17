@@ -13,12 +13,15 @@ interface Props {
   title: string;
   description?: string;
   ogImage?: string;
+  /** When true, emit a robots `noindex, nofollow` directive to keep the page out of search results. */
+  noindex?: boolean;
 }
 
 const {
   title,
   description = 'The Dubai Mainland local prime for enterprise CX, Data, AI, and digital transformation across MEA.',
   ogImage = '/og-default.png',
+  noindex = false,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://emerge-digital-website.emerge-digital.workers.dev').toString();
@@ -63,6 +66,7 @@ const jsonLd = {
 
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={canonical} />
 
     <meta property="og:type" content="website" />
