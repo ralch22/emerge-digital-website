@@ -10,6 +10,7 @@
  *   FROM_EMAIL          — noreply@site.emergedigital.com
  *   RESEND_AUDIENCE_ID  — Resend audience UUID for newsletter subscribers
  */
+import { REDIRECTS, GONE_PREFIXES, GONE_RE } from './src/lib/redirects';
 
 interface Env {
   ASSETS: Fetcher;
@@ -22,6 +23,25 @@ interface Env {
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
+    const { pathname } = url;
+
+    // ── Host canonicalization: www → apex (dormant until emergedigital.com is routed) ──
+    if (url.host === 'www.emergedigital.com') {
+      url.host = 'emergedigital.com';
+      return Response.redirect(url.toString(), 301);
+    }
+
+    // ── Legacy WordPress → new Astro (same-domain platform swap) ──
+    // 410 Gone: WooCommerce / WP system / feeds / oauth / legacy assets.
+    if (GONE_PREFIXES.some((p) => pathname.startsWith(p)) || GONE_RE.test(pathname)) {
+      return new Response('410 Gone', { status: 410 });
+    }
+    // 301: exact legacy path (matches both trailing-slash forms).
+    const redirKey = pathname !== '/' && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
+    const redirTo = REDIRECTS[redirKey];
+    if (redirTo) {
+      return Response.redirect(new URL(redirTo, url.origin).toString(), 301);
+    }
 
     // ── API routes ─────────────────────────────────────────
     if (url.pathname === '/api/contact') {
