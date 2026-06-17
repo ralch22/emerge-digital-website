@@ -5,7 +5,15 @@
   "compatibility_date": "2026-04-29",
   "assets": {
     "directory": "./dist",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
+    // Run the Worker BEFORE serving static assets. Without this, the ASSETS
+    // binding serves matching files directly and the Worker never runs for
+    // paths that exist as assets ('/', '/contact/', …) — so host-canonical
+    // redirects (www → apex, vision.ae → .com in worker.ts) silently fail on
+    // exactly those paths. With run_worker_first the Worker sees every request,
+    // applies the redirect/410/301 layer, then falls through to
+    // env.ASSETS.fetch() for normal paths (which still applies public/_headers).
+    "run_worker_first": true
   },
   // Keep the *.workers.dev URL live as a fallback. Declaring `routes` defaults
   // workers_dev to off (which 404s the workers.dev URL) — set it true.
