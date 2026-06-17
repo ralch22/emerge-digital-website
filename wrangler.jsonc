@@ -17,9 +17,11 @@
   // in this Cloudflare account). vision.emergedigital.ae is kept during the transition, then
   // demoted to a 301 → emergedigital.com after cutover.
   "routes": [
-    // emergedigital.com + www are attached as Worker custom domains via the dashboard
-    // at cutover — Cloudflare won't attach a custom domain over the live WP DNS record
-    // during a deploy — then re-added here so future deploys preserve them.
+    // emergedigital.com (apex) attached as a Worker custom domain at the 2026-06-17 cutover.
+    // Listed here so `wrangler deploy` RECONCILES + preserves it — do NOT remove, or a deploy
+    // detaches it and .com goes down. www → apex is a separate redirect (the custom-domain
+    // dialog only accepts apex zones, not the www subdomain).
+    { "pattern": "emergedigital.com", "custom_domain": true },
     { "pattern": "vision.emergedigital.ae", "custom_domain": true }
   ],
   // Observability — pin the dashboard's Workers Logs settings in config so CI
