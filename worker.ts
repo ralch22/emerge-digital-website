@@ -31,6 +31,13 @@ export default {
       return Response.redirect(url.toString(), 301);
     }
 
+    // ── vision.emergedigital.ae → 301 → emergedigital.com (post-cutover finalize, Decision 3) ──
+    // The .ae alias permanently consolidates onto the canonical .com domain; path preserved.
+    if (url.host === 'vision.emergedigital.ae') {
+      url.host = 'emergedigital.com';
+      return Response.redirect(url.toString(), 301);
+    }
+
     // ── Legacy WordPress → new Astro (same-domain platform swap) ──
     // 410 Gone: WooCommerce / WP system / feeds / oauth / legacy assets.
     if (GONE_PREFIXES.some((p) => pathname.startsWith(p)) || GONE_RE.test(pathname)) {
