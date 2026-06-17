@@ -2,6 +2,7 @@
 /**
  * Footer — premium dark treatment with gradient wordmark, glow effects, and teal accents.
  */
+import BrandIcon from './BrandIcon.astro';
 
 const year = new Date().getFullYear();
 
@@ -50,11 +51,7 @@ const ecosystem = [
       <!-- Brand column -->
       <div class="md:col-span-4">
         <a href="/" class="group inline-flex items-center gap-2.5 font-display text-lg font-semibold tracking-tight text-white">
-          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-accent text-ink transition-all duration-300 group-hover:shadow-glow">
-            <svg width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-              <path d="M3 4h12M3 9h8M3 14h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </span>
+          <BrandIcon class="h-8 w-8 flex-none rounded-lg overflow-hidden transition-all duration-300 group-hover:shadow-glow" />
           Emerge<span class="text-teal transition-colors group-hover:text-cyan">.</span>
         </a>
 

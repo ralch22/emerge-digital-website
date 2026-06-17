@@ -6,6 +6,7 @@
  *  - Active page detection
  *  - Mobile sheet with focus trap
  */
+import BrandIcon from './BrandIcon.astro';
 
 // Live platform demo (roai) — vision hub → live demo funnel
 const demoUrl =
@@ -42,11 +43,7 @@ const currentPath = Astro.url.pathname;
       class="group relative z-10 flex items-center gap-2.5 font-display text-[15px] font-semibold tracking-tight text-white"
       aria-label="Emerge Digital — home"
     >
-      <span class="logo-mark relative inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-accent text-ink transition-all duration-300 group-hover:shadow-glow">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-          <path d="M3 4h12M3 9h8M3 14h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </span>
+      <BrandIcon class="logo-mark h-8 w-8 flex-none rounded-lg overflow-hidden transition-all duration-300 group-hover:shadow-glow" />
       <span class="hidden sm:inline-flex items-baseline gap-px">
         Emerge<span class="text-teal transition-colors duration-300 group-hover:text-cyan">.</span>
       </span>
@@ -128,11 +125,7 @@ const currentPath = Astro.url.pathname;
     <!-- Sheet header -->
     <div class="flex items-center justify-between border-b border-white/8 px-6 py-4">
       <a href="/" class="flex items-center gap-2 font-display text-[15px] font-semibold text-white">
-        <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-accent text-ink">
-          <svg width="14" height="14" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-            <path d="M3 4h12M3 9h8M3 14h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </span>
+        <BrandIcon class="h-7 w-7 flex-none rounded-lg overflow-hidden" />
         Emerge<span class="text-teal">.</span>
       </a>
       <button
