@@ -15,5 +15,25 @@
   // TLS cert for vision.emergedigital.ae and routes it to this Worker.
   "routes": [
     { "pattern": "vision.emergedigital.ae", "custom_domain": true }
-  ]
+  ],
+  // Observability — pin the dashboard's Workers Logs settings in config so CI
+  // `wrangler deploy` stops resetting them (the "consistent across deployments"
+  // drift warning). Modern split model: top-level `enabled` is the legacy unified
+  // toggle (left off); the granular `logs.enabled` is what keeps logs flowing +
+  // persisted, so `wrangler tail` and the dashboard Logs view work. Traces off.
+  "observability": {
+    "enabled": false,
+    "head_sampling_rate": 1,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "persist": true,
+      "invocation_logs": true
+    },
+    "traces": {
+      "enabled": false,
+      "persist": true,
+      "head_sampling_rate": 1
+    }
+  }
 }
