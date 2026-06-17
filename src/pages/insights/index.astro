@@ -213,6 +213,7 @@ function formatDate(d: Date | string) {
           name="insights-subscribe"
           class="flex flex-col gap-4 rounded-2xl border border-white/8 bg-white/[0.02] p-8"
           id="subscribe-form"
+          data-endpoint="/api/subscribe"
           novalidate
         >
           <input type="hidden" name="form-name" value="insights-subscribe" />
@@ -239,9 +240,13 @@ function formatDate(d: Date | string) {
               class="block w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white placeholder-cool/60 outline-none transition duration-200 focus:border-teal/50 focus:bg-white/[0.06]"
             />
           </div>
+          <!-- Honeypot (hidden) -->
+          <div class="hidden" aria-hidden="true">
+            <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" />
+          </div>
           <button
             type="submit"
-            class="w-full rounded-pill bg-gradient-accent px-6 py-3 text-sm font-semibold text-ink transition hover:-translate-y-0.5 hover:shadow-glow"
+            class="w-full rounded-pill bg-gradient-accent px-6 py-3 text-sm font-semibold text-ink transition hover:-translate-y-0.5 hover:shadow-glow disabled:cursor-not-allowed disabled:opacity-60"
           >
             Subscribe to Briefings →
           </button>
@@ -252,6 +257,12 @@ function formatDate(d: Date | string) {
           <!-- Success -->
           <p id="sub-success" class="hidden rounded-xl border border-teal/30 bg-teal/5 px-4 py-3 text-sm text-teal" role="status" aria-live="polite">
             You're subscribed. We'll be in touch when the next brief is ready.
+          </p>
+
+          <!-- Error -->
+          <p id="sub-error" class="hidden rounded-xl border border-danger/40 bg-danger/5 px-4 py-3 text-sm text-danger" role="alert" aria-live="assertive">
+            Something went wrong. Please try again or email
+            <a href="mailto:rami@emergedigital.com" class="underline">rami@emergedigital.com</a>.
           </p>
         </form>
       </div>
@@ -302,20 +313,52 @@ function formatDate(d: Date | string) {
     applyFilter();
   });
 
-  // Subscribe form (simulation — wire to real endpoint)
+  // Subscribe form — posts to the Worker /api/subscribe endpoint
   const subForm = document.getElementById('subscribe-form') as HTMLFormElement | null;
   const subSuccess = document.getElementById('sub-success');
+  const subError = document.getElementById('sub-error');
+  const subBtn = subForm?.querySelector<HTMLButtonElement>('button[type="submit"]');
 
   subForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
+
     const emailInput = subForm.querySelector<HTMLInputElement>('[name="email"]');
     if (!emailInput?.value || !emailInput.validity.valid) {
       emailInput?.focus();
       return;
     }
-    // Simulate submission — replace with fetch to your endpoint
-    await new Promise((r) => setTimeout(r, 400));
-    subForm.querySelectorAll('input, button').forEach((el) => ((el as HTMLElement).style.opacity = '0.4'));
-    if (subSuccess) subSuccess.classList.remove('hidden');
+
+    // Honeypot — bots fill this; bail silently
+    const honeypot = subForm.querySelector<HTMLInputElement>('[name="_gotcha"]');
+    if (honeypot?.value) return;
+
+    subError?.classList.add('hidden');
+
+    // Loading state
+    const originalLabel = subBtn?.textContent;
+    if (subBtn) {
+      subBtn.disabled = true;
+      subBtn.textContent = 'Subscribing…';
+    }
+
+    try {
+      const endpoint = subForm.dataset.endpoint ?? '';
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        body: new FormData(subForm),
+        headers: { Accept: 'application/json' },
+      });
+      if (!res.ok) throw new Error('Subscription failed');
+
+      // Only show success on a 2xx response
+      subForm.querySelectorAll('input, button').forEach((el) => ((el as HTMLElement).style.opacity = '0.4'));
+      if (subSuccess) subSuccess.classList.remove('hidden');
+    } catch {
+      if (subBtn) {
+        subBtn.disabled = false;
+        subBtn.textContent = originalLabel ?? 'Subscribe to Briefings →';
+      }
+      subError?.classList.remove('hidden');
+    }
   });
 </script>
