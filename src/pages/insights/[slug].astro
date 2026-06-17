@@ -16,7 +16,7 @@ export async function getStaticPaths() {
 const { article } = Astro.props;
 const { Content } = await article.render();
 
-const { title, summary, author, publishDate, category, tags, gated, readingMinutes } = article.data;
+const { title, summary, author, publishDate, category, tags, gated, readingMinutes, hero } = article.data;
 
 function formatDate(d: Date | string) {
   return new Date(d).toLocaleDateString('en-GB', {
@@ -31,12 +31,46 @@ const allArticles = await getCollection('insights', ({ data }) => data.published
 const related = allArticles
   .filter((a) => a.slug !== article.slug && a.data.category === category)
   .slice(0, 2);
+
+// ── Structured data: Article + BreadcrumbList ──────────────────
+const siteBase = (Astro.site ?? new URL('https://vision.emergedigital.ae')).toString().replace(/\/$/, '');
+const pageUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://vision.emergedigital.ae').toString();
+const heroAbsolute = hero ? new URL(hero.src, pageUrl).toString() : undefined;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Article',
+      '@id': `${pageUrl}#article`,
+      headline: title,
+      description: summary,
+      ...(heroAbsolute ? { image: heroAbsolute } : {}),
+      datePublished: new Date(publishDate).toISOString(),
+      author: { '@type': 'Person', name: author },
+      publisher: { '@id': `${siteBase}/#organization` },
+      mainEntityOfPage: pageUrl,
+      articleSection: category,
+      ...(tags.length ? { keywords: tags.join(', ') } : {}),
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteBase}/` },
+        { '@type': 'ListItem', position: 2, name: 'Insights', item: `${siteBase}/insights` },
+        { '@type': 'ListItem', position: 3, name: title, item: pageUrl },
+      ],
+    },
+  ],
+};
 ---
 
 <BaseLayout
   title={`${title} | Emerge Digital Insights`}
   description={summary}
+  ogImage={hero?.src}
 >
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   <!-- ── Hero ─────────────────────────────────────────────── -->
   <section class="relative overflow-hidden bg-gradient-hero pb-0 pt-section-sm md:pt-24">
     <div class="pointer-events-none absolute inset-0 bg-grid bg-grid-fade" aria-hidden="true"></div>
@@ -48,7 +82,7 @@ const related = allArticles
         <ol class="flex items-center gap-2 text-sm text-cool">
           <li><a href="/" class="hover:text-teal">Home</a></li>
           <li aria-hidden="true" class="text-cool/40">›</li>
-          <li><a href="/insights" class="hover:text-teal">Insights</a></li>
+          <li><a href="/insights/" class="hover:text-teal">Insights</a></li>
           <li aria-hidden="true" class="text-cool/40">›</li>
           <li class="truncate text-platinum/70" aria-current="page">{category}</li>
         </ol>
@@ -125,7 +159,7 @@ const related = allArticles
               <p class="mt-2 text-sm leading-relaxed text-platinum/65">
                 Book a 30-minute Readiness Briefing with Rami — no deck, no sales process.
               </p>
-              <Button href="/contact" size="md" class="mt-5 w-full justify-center">
+              <Button href="/contact/" size="md" class="mt-5 w-full justify-center">
                 Book a Briefing
               </Button>
             </div>
@@ -173,7 +207,7 @@ const related = allArticles
         <div class="grid gap-6 sm:grid-cols-2">
           {related.map((a) => (
             <a
-              href={`/insights/${a.slug}`}
+              href={`/insights/${a.slug}/`}
               class="card-surface group flex flex-col gap-4 p-7 no-underline"
             >
               <span class="rounded-pill border border-teal/20 bg-teal/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-teal self-start">
@@ -190,7 +224,7 @@ const related = allArticles
           ))}
         </div>
         <div class="mt-8">
-          <Button href="/insights" variant="secondary">All insights</Button>
+          <Button href="/insights/" variant="secondary">All insights</Button>
         </div>
       </Container>
     </section>
@@ -206,8 +240,8 @@ const related = allArticles
           Book a 30-minute Vision 2030 Readiness Briefing with our founder.
         </p>
         <div class="flex flex-wrap justify-center gap-4">
-          <Button href="/contact" size="lg">Book a Readiness Briefing</Button>
-          <Button href="/case-studies" variant="secondary" size="lg">See the proof</Button>
+          <Button href="/contact/" size="lg">Book a Readiness Briefing</Button>
+          <Button href="/case-studies/" variant="secondary" size="lg">See the proof</Button>
         </div>
       </div>
     </Container>

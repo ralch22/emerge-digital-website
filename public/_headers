@@ -1,0 +1,5 @@
+# Cloudflare static-asset headers (honoured by the Workers ASSETS binding).
+# Content-hashed Astro bundles — incl. fingerprinted fonts — live under /_astro/*
+# and never change for a given URL, so cache them immutably.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable

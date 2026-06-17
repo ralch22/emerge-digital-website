@@ -4,8 +4,8 @@
  * Pages should pass `title`, `description`, and optionally `ogImage`.
  */
 import '../styles/global.css';
-// LCP web-font preload — fingerprinted URL for the latin Inter subset (text-LCP font).
-import interLatinWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+// LCP web-font preload — fingerprinted URL for the latin Lexend subset (text-LCP font).
+import lexendLatinWoff2 from '@fontsource-variable/lexend/files/lexend-latin-wght-normal.woff2?url';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
 
@@ -13,12 +13,15 @@ interface Props {
   title: string;
   description?: string;
   ogImage?: string;
+  /** When true, emit a robots `noindex, nofollow` directive to keep the page out of search results. */
+  noindex?: boolean;
 }
 
 const {
   title,
   description = 'The Dubai Mainland local prime for enterprise CX, Data, AI, and digital transformation across MEA.',
   ogImage = '/og-default.png',
+  noindex = false,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://emerge-digital-website.emerge-digital.workers.dev').toString();
@@ -33,7 +36,7 @@ const jsonLd = {
       '@id': `${siteBase}/#organization`,
       name: 'Emerge Digital',
       url: `${siteBase}/`,
-      logo: `${siteBase}/favicon.svg`,
+      logo: `${siteBase}/logo.png`,
       description:
         'The Dubai Mainland local prime for enterprise CX, Data, AI, and digital transformation across the MEA region.',
       areaServed: ['AE', 'SA', 'EG', 'Middle East & Africa'],
@@ -53,16 +56,14 @@ const jsonLd = {
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- LCP web-font preload — latin Inter subset, discovered before CSS parse -->
-    <link rel="preload" href={interLatinWoff2} as="font" type="font/woff2" crossorigin />
-    <!-- Google tag (gtag.js) — GA4 stream Vision Site · vision.emergedigital.ae -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HEQYW1EESD"></script>
-    <script is:inline>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-HEQYW1EESD');</script>
+    <!-- LCP web-font preload — latin Lexend subset, discovered before CSS parse -->
+    <link rel="preload" href={lexendLatinWoff2} as="font" type="font/woff2" crossorigin />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
 
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={canonical} />
 
     <meta property="og:type" content="website" />
@@ -75,11 +76,20 @@ const jsonLd = {
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, canonical).toString()} />
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
+    <!-- Per-page <head> extras — page-specific JSON-LD (Article, BreadcrumbList), etc. -->
+    <slot name="head" />
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#0A1F3D" />
+
+    <!-- Google tag (gtag.js) — GA4 stream Vision Site · vision.emergedigital.ae -->
+    <!-- Loaded after title/meta/CSS so it stays out of the critical render path; `async` keeps it non-blocking. -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HEQYW1EESD"></script>
+    <script is:inline>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-HEQYW1EESD');</script>
   </head>
 
   <body>

@@ -1,0 +1,42 @@
+---
+/**
+ * LegalLayout — shared chrome + prose styling for the /legal/* pages
+ * (privacy, cookies, terms). Pass `title`, `description`, and `updated`.
+ */
+import BaseLayout from './BaseLayout.astro';
+import Container from '../components/Container.astro';
+import Eyebrow from '../components/Eyebrow.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  updated?: string;
+}
+
+const { title, description, updated = '17 June 2026' } = Astro.props;
+---
+
+<BaseLayout title={`${title} — Emerge Digital`} description={description}>
+  <section class="bg-offwhite py-section-sm md:py-section">
+    <Container class="max-w-3xl">
+      <Eyebrow>Legal</Eyebrow>
+      <h1 class="mt-4 text-display-lg text-slate">{title}</h1>
+      <p class="mt-3 text-sm text-cool">Last updated: {updated}</p>
+      <div class="legal mt-10">
+        <slot />
+      </div>
+    </Container>
+  </section>
+</BaseLayout>
+
+<style is:global>
+  .legal { @apply text-slate/80 leading-relaxed; }
+  .legal > p:first-child { @apply mt-0; }
+  .legal h2 { @apply mt-12 mb-4 text-display-md text-slate; }
+  .legal h3 { @apply mt-8 mb-3 text-lg font-semibold text-slate; }
+  .legal p { @apply mt-4; }
+  .legal ul { @apply mt-4 ml-5 list-disc space-y-2; }
+  .legal li { @apply pl-1; }
+  .legal a { @apply text-teal underline underline-offset-2 hover:text-cyan; }
+  .legal strong { @apply font-semibold text-slate; }
+</style>

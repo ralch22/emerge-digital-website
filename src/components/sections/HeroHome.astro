@@ -137,11 +137,16 @@ const marqueeChunks = [
                     <span>Vision 2030 · {monthsRemaining} months remain in the procurement window</span>
                   </p>
 
-                  <!-- Center row · the H1 anchors precisely at viewport vertical center -->
-                  <h1 class="stack-h1 hero-headline">
+                  <!-- Center row · headline anchors precisely at viewport vertical center.
+                       Rendered as a styled paragraph, not a heading: this desktop stage
+                       and the mobile stack are both in the DOM, so only one may own the
+                       page's single H1. Google indexes mobile-first, so that H1 lives on
+                       the mobile layout (.hero-mobile-headline) — the DOM the crawler
+                       renders at a phone viewport. -->
+                  <p class="stack-h1 hero-headline">
                     Local Prime. Global Power.<br/>
                     <span class="text-gradient-glow">Enterprise Outcomes.</span>
-                  </h1>
+                  </p>
 
                   <!-- Bottom row · sub-headline + CTAs flush below headline -->
                   <div class="stack-extras">
@@ -303,7 +308,7 @@ const marqueeChunks = [
     align-items: center;
     flex-wrap: nowrap;
     overflow: visible;
-    font-family: 'Inter Variable', system-ui, sans-serif;
+    font-family: 'Lexend Variable', system-ui, sans-serif;
     font-weight: 900;
     font-size: clamp(8rem, 22vw, 18rem);
     line-height: 0.85;
@@ -411,7 +416,7 @@ const marqueeChunks = [
     max-width: 64ch;
   }
   .hero-headline {
-    font-family: 'Inter Variable', system-ui, sans-serif;
+    font-family: 'Lexend Variable', system-ui, sans-serif;
     font-weight: 700;
     font-size: clamp(1.75rem, 3.6vw, 3.5rem);
     line-height: 1.05;
@@ -461,7 +466,7 @@ const marqueeChunks = [
     gap: 2.5rem;
     width: max-content;
     animation: marquee 40s linear infinite;
-    font-family: var(--font-family-display, 'Inter Variable'), sans-serif;
+    font-family: var(--font-family-display, 'Lexend Variable'), sans-serif;
     font-weight: 700;
     font-size: clamp(1.5rem, 3.4vw, 3rem);
     line-height: 1;
@@ -573,7 +578,7 @@ const marqueeChunks = [
     justify-content: center;
   }
   .hero-mobile-vision {
-    font-family: 'Inter Variable', system-ui, sans-serif;
+    font-family: 'Lexend Variable', system-ui, sans-serif;
     font-weight: 900;
     font-size: clamp(4rem, 18vw, 12rem);
     line-height: 0.85;
@@ -586,7 +591,7 @@ const marqueeChunks = [
     margin: 0;
   }
   .hero-mobile-year {
-    font-family: 'Inter Variable', system-ui, sans-serif;
+    font-family: 'Lexend Variable', system-ui, sans-serif;
     font-weight: 700;
     font-size: 1.25rem;
     letter-spacing: 0.4em;
@@ -595,7 +600,7 @@ const marqueeChunks = [
     margin-bottom: 2.5rem;
   }
   .hero-mobile-headline {
-    font-family: 'Inter Variable', system-ui, sans-serif;
+    font-family: 'Lexend Variable', system-ui, sans-serif;
     font-weight: 700;
     font-size: clamp(1.875rem, 4.5vw, 3rem);
     line-height: 1.05;

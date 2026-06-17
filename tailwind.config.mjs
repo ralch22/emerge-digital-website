@@ -64,8 +64,10 @@ export default {
       },
 
       fontFamily: {
-        display: ['"Inter Variable"', 'Inter', 'system-ui', 'sans-serif'],
-        sans:    ['"Inter Variable"', 'Inter', 'system-ui', 'sans-serif'],
+        display: ['"Lexend Variable"', 'Lexend', 'system-ui', 'sans-serif'],
+        sans:    ['"Lexend Variable"', 'Lexend', 'system-ui', 'sans-serif'],
+        wide:    ['"Lexend Zetta"', '"Lexend Variable"', 'system-ui', 'sans-serif'],
+        label:   ['"Prompt"', '"Lexend Variable"', 'system-ui', 'sans-serif'],
         mono:    ['"JetBrains Mono Variable"', 'ui-monospace', 'monospace'],
       },
 

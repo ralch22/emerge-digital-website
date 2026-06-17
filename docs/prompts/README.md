@@ -2,13 +2,18 @@
 
 Five prompts. Run them in order. Each is a self-contained brief you paste into Claude Code.
 
+> **Historical record.** These are the original one-time build prompts, preserved as written.
+> One detail has since changed: the site deploys as a **Cloudflare Worker** that serves the
+> static `dist/` build through an `ASSETS` binding — **not Cloudflare Pages**. See `worker.ts`
+> and `wrangler.jsonc` (and `CLAUDE.md`) for the current deploy model.
+
 | # | Prompt | What it does | Time estimate |
 |---|---|---|---|
 | 00 | [00-setup.md](./00-setup.md) | One-time Mac setup: install Node, install Claude Code, run the scaffold | 15 min |
 | 01 | [01-design-system.md](./01-design-system.md) | Build primitive components and a /styleguide route | 30–60 min |
 | 02 | [02-homepage.md](./02-homepage.md) | Build the full homepage from the strategy doc | 60–90 min |
 | 03 | [03-content-pages.md](./03-content-pages.md) | Build all inner pages, content collections, seed case studies + insights | 2–4 hrs |
-| 04 | [04-seo-and-deploy.md](./04-seo-and-deploy.md) | SEO migration plan, performance hardening, Cloudflare Pages deploy | 1–2 hrs |
+| 04 | [04-seo-and-deploy.md](./04-seo-and-deploy.md) | SEO migration plan, performance hardening, Cloudflare Worker deploy | 1–2 hrs |
 
 ## Tips for working with Claude Code
 

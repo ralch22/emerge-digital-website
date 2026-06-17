@@ -85,25 +85,25 @@ The remainder of this document delivers the full deliverables in numbered sectio
 
 ### 1.5 Typography
 
-**Headlines:** *Söhne* (premium licensed) or open alternative *Inter Display* — geometric, confident, modern enterprise feel.
+**Primary (headlines + body):** *Lexend* (variable) — geometric, highly legible humanist sans tuned for reading proficiency; carries both display headings and body copy. Loaded via `@fontsource-variable/lexend` and exposed as `font-display` / `font-sans`.
 
-**Body:** *Inter* — exceptional legibility at every weight and size, supports Arabic well via Inter Arabic counterpart.
+**Display / wordmark:** *Lexend Zetta* — the extra-wide cut of Lexend, used for oversized hero display type and the wordmark. Exposed as `font-wide`.
 
-**Arabic Co-system:** *IBM Plex Sans Arabic* — paired with Inter for bilingual content; uniform stroke weights ensure visual harmony across English and Arabic.
+**Labels and eyebrows:** *Prompt* — used for eyebrows, labels, and small caps where a tighter, more technical counterpoint to Lexend is wanted. Exposed as `font-label`.
 
-**Data and code:** *JetBrains Mono* — for stat blocks, technical callouts, and any code snippets.
+**Data and code:** *JetBrains Mono* — for stat blocks, technical callouts, and any code snippets. Exposed as `font-mono`.
 
 **Hierarchy reference**
 
 | Use | Font | Size (desktop) | Weight |
 |---|---|---|---|
-| H1 Hero | Inter Display | 72 px | 700 |
-| H2 Section | Inter Display | 48 px | 600 |
-| H3 Sub-section | Inter Display | 32 px | 600 |
-| Body Lead | Inter | 20 px | 400 |
-| Body | Inter | 17 px | 400 |
-| Eyebrow | Inter | 13 px, 1.5 px tracking, uppercase | 600 |
-| Stat | Inter Display | 64 px | 700 |
+| H1 Hero | Lexend (or Lexend Zetta for oversized display) | 72 px | 700 |
+| H2 Section | Lexend | 48 px | 700 |
+| H3 Sub-section | Lexend | 32 px | 600 |
+| Body Lead | Lexend | 20 px | 400 |
+| Body | Lexend | 17 px | 400 |
+| Eyebrow | Prompt | 13 px, 1.5 px tracking, uppercase | 500 |
+| Stat | JetBrains Mono | 64 px | 700 |
 
 ### 1.6 Visual Style Guide
 
@@ -193,7 +193,7 @@ Home
 
 ### 3.1 Hero Section
 
-**Visual concept:** Cinematic dark-navy gradient background with subtle animated particle flow representing data converging from MEA capitals (Dubai, Riyadh, Cairo) into a glowing teal node. Headline overlaid in white Inter Display, with a single teal CTA button.
+**Visual concept:** Cinematic dark-navy gradient background with subtle animated particle flow representing data converging from MEA capitals (Dubai, Riyadh, Cairo) into a glowing teal node. Headline overlaid in white Lexend, with a single teal CTA button.
 
 **Eyebrow (small, uppercase, teal):**
 LOCAL PRIME · DUBAI MAINLAND · MEA-WIDE DELIVERY

@@ -5,9 +5,10 @@
  *
  * Required environment variables (Cloudflare Dashboard → Workers & Pages →
  * emerge-digital-website → Settings → Variables and Secrets):
- *   RESEND_API_KEY  — re_xxxx (send-only key from resend.com)
- *   TO_EMAIL        — rami@emergedigital.com
- *   FROM_EMAIL      — noreply@site.emergedigital.com
+ *   RESEND_API_KEY      — re_xxxx (key from resend.com)
+ *   TO_EMAIL            — rami@emergedigital.com
+ *   FROM_EMAIL          — noreply@site.emergedigital.com
+ *   RESEND_AUDIENCE_ID  — Resend audience UUID for newsletter subscribers
  */
 import { REDIRECTS, GONE_PREFIXES, GONE_RE } from './src/lib/redirects';
 
@@ -16,6 +17,7 @@ interface Env {
   RESEND_API_KEY: string;
   TO_EMAIL: string;
   FROM_EMAIL: string;
+  RESEND_AUDIENCE_ID: string;
 }
 
 export default {
@@ -48,7 +50,16 @@ export default {
       return new Response('Method Not Allowed', { status: 405 });
     }
 
+    if (url.pathname === '/api/subscribe') {
+      if (request.method === 'OPTIONS') return corsPreflightResponse(request);
+      if (request.method === 'POST')    return handleSubscribe(request, env);
+      return new Response('Method Not Allowed', { status: 405 });
+    }
+
     // ── Static assets ──────────────────────────────────────
+    // Asset responses (incl. /_astro/* cache headers) are served directly by the
+    // ASSETS binding before the Worker runs, so caching is configured in
+    // `public/_headers`, not here. The Worker only sees non-asset paths.
     return env.ASSETS.fetch(request);
   },
 };
@@ -212,6 +223,78 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
     const body = await resendRes.text().catch(() => '');
     console.error('Resend API error:', resendRes.status, body);
     return json({ error: 'Email delivery failed' }, 502, request);
+  }
+
+  return json({ ok: true }, 200, request);
+}
+
+// ── Subscribe handler ───────────────────────────────────────
+
+async function handleSubscribe(request: Request, env: Env): Promise<Response> {
+  // Parse body (supports both JSON and multipart/form-data)
+  let fields: Record<string, string>;
+  try {
+    const ct = request.headers.get('content-type') ?? '';
+    if (ct.includes('application/json')) {
+      fields = await request.json() as Record<string, string>;
+    } else {
+      const fd = await request.formData();
+      fields = Object.fromEntries(fd.entries()) as Record<string, string>;
+    }
+  } catch {
+    return json({ error: 'Invalid request body' }, 400, request);
+  }
+
+  // Honeypot — pretend success, drop silently
+  if (fields['_gotcha']) return json({ ok: true }, 200, request);
+
+  const email = (fields['email'] ?? '').toString().trim();
+  if (!email) {
+    return json({ error: 'Missing field: email' }, 422, request);
+  }
+  if (!isValidEmail(email)) {
+    return json({ error: 'Invalid email address' }, 422, request);
+  }
+
+  // Env check
+  if (!env.RESEND_API_KEY || !env.RESEND_AUDIENCE_ID) {
+    console.error('Missing env vars: RESEND_API_KEY, RESEND_AUDIENCE_ID');
+    return json({ error: 'Server configuration error' }, 500, request);
+  }
+
+  // Optional name → split into first / last for the Resend contact record
+  const name = (fields['name'] ?? '').toString().trim();
+  const [firstName, ...restName] = name.split(/\s+/).filter(Boolean);
+  const lastName = restName.join(' ');
+
+  // ── Add to Resend audience ───────────────────────────────
+  let resendRes: Response;
+  try {
+    resendRes = await fetch(
+      `https://api.resend.com/audiences/${env.RESEND_AUDIENCE_ID}/contacts`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          first_name: firstName ?? '',
+          last_name: lastName,
+          unsubscribed: false,
+        }),
+      },
+    );
+  } catch (err) {
+    console.error('Resend fetch error:', err);
+    return json({ error: 'Failed to reach email service' }, 502, request);
+  }
+
+  if (!resendRes.ok) {
+    const body = await resendRes.text().catch(() => '');
+    console.error('Resend API error:', resendRes.status, body);
+    return json({ error: 'Subscription failed' }, 502, request);
   }
 
   return json({ ok: true }, 200, request);

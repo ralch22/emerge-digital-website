@@ -26,6 +26,7 @@ const {
   year,
   client,
   anonymized,
+  hero,
 } = study.data;
 
 // Related studies (same industry, excluding self)
@@ -33,12 +34,45 @@ const allStudies = await getCollection('case-studies', ({ data }) => data.publis
 const related = allStudies
   .filter((s) => s.slug !== study.slug && s.data.industry === industry)
   .slice(0, 2);
+
+// ── Structured data: Article + BreadcrumbList ──────────────────
+const siteBase = (Astro.site ?? new URL('https://vision.emergedigital.ae')).toString().replace(/\/$/, '');
+const pageUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://vision.emergedigital.ae').toString();
+const heroAbsolute = hero ? new URL(hero.src, pageUrl).toString() : undefined;
+const crumbLabel = client && !anonymized ? client : title;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Article',
+      '@id': `${pageUrl}#article`,
+      headline: title,
+      description: summary,
+      ...(heroAbsolute ? { image: heroAbsolute } : {}),
+      author: { '@id': `${siteBase}/#organization` },
+      publisher: { '@id': `${siteBase}/#organization` },
+      mainEntityOfPage: pageUrl,
+      about: industry,
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteBase}/` },
+        { '@type': 'ListItem', position: 2, name: 'Case Studies', item: `${siteBase}/case-studies` },
+        { '@type': 'ListItem', position: 3, name: crumbLabel, item: pageUrl },
+      ],
+    },
+  ],
+};
 ---
 
 <BaseLayout
   title={`${client ?? 'Case Study'} — ${title} | Emerge Digital`}
   description={summary}
+  ogImage={hero?.src}
 >
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   <!-- ── Hero ─────────────────────────────────────────────── -->
   <section class="relative overflow-hidden bg-gradient-hero pb-0 pt-section-sm md:pt-section">
     <div class="pointer-events-none absolute inset-0 bg-grid bg-grid-fade" aria-hidden="true"></div>
@@ -50,7 +84,7 @@ const related = allStudies
         <ol class="flex items-center gap-2 text-sm text-cool">
           <li><a href="/" class="hover:text-teal">Home</a></li>
           <li aria-hidden="true" class="text-cool/40">›</li>
-          <li><a href="/case-studies" class="hover:text-teal">Case Studies</a></li>
+          <li><a href="/case-studies/" class="hover:text-teal">Case Studies</a></li>
           <li aria-hidden="true" class="text-cool/40">›</li>
           <li class="truncate text-platinum/70" aria-current="page">{client ?? 'Case Study'}</li>
         </ol>
@@ -150,7 +184,7 @@ const related = allStudies
               <p class="mt-2 text-sm leading-relaxed text-platinum/65">
                 Book a 30-minute Readiness Briefing with our founder to map your priorities.
               </p>
-              <Button href="/contact" size="md" class="mt-5 w-full justify-center">
+              <Button href="/contact/" size="md" class="mt-5 w-full justify-center">
                 Book a Briefing
               </Button>
             </div>
@@ -168,7 +202,7 @@ const related = allStudies
         <div class="grid gap-6 sm:grid-cols-2">
           {related.map((s) => (
             <a
-              href={`/case-studies/${s.slug}`}
+              href={`/case-studies/${s.slug}/`}
               class="card-surface group flex flex-col gap-4 p-8 no-underline"
             >
               <div class="flex flex-wrap gap-2">
@@ -205,8 +239,8 @@ const related = allStudies
           See the full proof library.
         </h2>
         <div class="flex flex-wrap justify-center gap-4">
-          <Button href="/case-studies" size="lg">View all case studies</Button>
-          <Button href="/contact" variant="secondary" size="lg">Book a briefing</Button>
+          <Button href="/case-studies/" size="lg">View all case studies</Button>
+          <Button href="/contact/" variant="secondary" size="lg">Book a briefing</Button>
         </div>
       </div>
     </Container>
