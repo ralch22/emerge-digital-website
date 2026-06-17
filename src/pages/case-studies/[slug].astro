@@ -26,6 +26,7 @@ const {
   year,
   client,
   anonymized,
+  hero,
 } = study.data;
 
 // Related studies (same industry, excluding self)
@@ -33,12 +34,45 @@ const allStudies = await getCollection('case-studies', ({ data }) => data.publis
 const related = allStudies
   .filter((s) => s.slug !== study.slug && s.data.industry === industry)
   .slice(0, 2);
+
+// ── Structured data: Article + BreadcrumbList ──────────────────
+const siteBase = (Astro.site ?? new URL('https://vision.emergedigital.ae')).toString().replace(/\/$/, '');
+const pageUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://vision.emergedigital.ae').toString();
+const heroAbsolute = hero ? new URL(hero.src, pageUrl).toString() : undefined;
+const crumbLabel = client && !anonymized ? client : title;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Article',
+      '@id': `${pageUrl}#article`,
+      headline: title,
+      description: summary,
+      ...(heroAbsolute ? { image: heroAbsolute } : {}),
+      author: { '@id': `${siteBase}/#organization` },
+      publisher: { '@id': `${siteBase}/#organization` },
+      mainEntityOfPage: pageUrl,
+      about: industry,
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteBase}/` },
+        { '@type': 'ListItem', position: 2, name: 'Case Studies', item: `${siteBase}/case-studies` },
+        { '@type': 'ListItem', position: 3, name: crumbLabel, item: pageUrl },
+      ],
+    },
+  ],
+};
 ---
 
 <BaseLayout
   title={`${client ?? 'Case Study'} — ${title} | Emerge Digital`}
   description={summary}
+  ogImage={hero?.src}
 >
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   <!-- ── Hero ─────────────────────────────────────────────── -->
   <section class="relative overflow-hidden bg-gradient-hero pb-0 pt-section-sm md:pt-section">
     <div class="pointer-events-none absolute inset-0 bg-grid bg-grid-fade" aria-hidden="true"></div>
