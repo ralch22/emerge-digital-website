@@ -31,3 +31,6 @@ pnpm-debug.log*
 
 # Misc
 .cache/
+
+# Agent Orchestrator session telemetry
+.ao/
