@@ -1,0 +1,109 @@
+---
+import { Image } from 'astro:assets';
+import Section from '../Section.astro';
+import Container from '../Container.astro';
+import Eyebrow from '../Eyebrow.astro';
+import Button from '../Button.astro';
+import velaPoster from '../../assets/vela-os-explainer-poster.jpg';
+
+// Hosted on roai — embedded cross-origin, never copied into this repo.
+const VIDEO_SRC = 'https://roai.emergedigital.ae/downloads/Vela-OS-Explainer.mp4';
+const demoUrl =
+  'https://roai.emergedigital.ae?utm_source=vision&utm_medium=cta&utm_campaign=vela-explainer';
+---
+
+<Section tone="dark" id="vela-platform" class="relative isolate overflow-hidden">
+  <!-- Ambient command-center glow (matches CtaFinal language) -->
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-0"
+    style="background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(0,194,199,0.10), transparent 70%); filter: blur(70px);"
+  >
+  </div>
+
+  <Container class="relative">
+    <div class="mx-auto max-w-prose text-center">
+      <Eyebrow data-reveal>The Platform · Vela OS</Eyebrow>
+      <h2 class="mt-4 text-display-lg" data-reveal data-reveal-delay="1">
+        See the ROAI command center
+        <span class="text-gradient-accent">in 66 seconds.</span>
+      </h2>
+      <p class="mx-auto mt-5 max-w-2xl text-lead text-platinum/70" data-reveal data-reveal-delay="2">
+        Vela OS is the operating layer behind our AI delivery — governance cadence, named KPIs,
+        and run-state operations in one view. Watch the short walkthrough, then explore it live.
+      </p>
+    </div>
+
+    <!-- Click-to-play video frame -->
+    <figure
+      class="vela-player group relative mx-auto mt-12 aspect-video w-full max-w-4xl overflow-hidden rounded-card border border-white/8 bg-ink shadow-card-hover"
+      data-video-src={VIDEO_SRC}
+      data-reveal
+      data-reveal-delay="2"
+    >
+      <!-- Border accent -->
+      <div aria-hidden="true" class="pointer-events-none absolute inset-0 z-20 rounded-card ring-1 ring-inset ring-teal/15"></div>
+
+      <!-- Poster (optimized, lazy) -->
+      <Image
+        src={velaPoster}
+        alt="Vela OS — the ROAI command center, on iPhone and MacBook"
+        widths={[640, 960, 1280]}
+        sizes="(min-width: 1024px) 56rem, 100vw"
+        class="vela-poster absolute inset-0 h-full w-full object-cover transition-opacity duration-300"
+        loading="lazy"
+      />
+
+      <!-- Play button (the click target; keyboard-reachable) -->
+      <button
+        type="button"
+        class="vela-play absolute inset-0 z-10 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
+        aria-label="Play the Vela OS explainer (66 seconds)"
+      >
+        <span class="absolute inset-0 bg-ink/30 transition-colors duration-300 group-hover:bg-ink/15"></span>
+        <span class="relative flex h-20 w-20 items-center justify-center rounded-full bg-gradient-accent text-ink shadow-glow transition-transform duration-300 group-hover:scale-105">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M8 5.5v13l11-6.5z"></path>
+          </svg>
+        </span>
+      </button>
+
+      <figcaption class="sr-only">Vela OS explainer video, 66 seconds.</figcaption>
+    </figure>
+
+    <div class="mt-10 flex justify-center" data-reveal data-reveal-delay="3">
+      <Button variant="secondary" href={demoUrl} size="lg" target="_blank" rel="noopener noreferrer">
+        Explore Vela live
+      </Button>
+    </div>
+  </Container>
+</Section>
+
+<script>
+  // Click-to-play: swap the poster for a real <video> only on user intent.
+  // No autoplay, no preload — the 9MB cross-origin MP4 is never fetched until clicked.
+  document.querySelectorAll<HTMLElement>('.vela-player').forEach((frame) => {
+    const btn = frame.querySelector<HTMLButtonElement>('.vela-play');
+    const src = frame.dataset.videoSrc;
+    if (!btn || !src) return;
+
+    btn.addEventListener(
+      'click',
+      () => {
+        const video = document.createElement('video');
+        video.src = src;
+        video.controls = true;
+        video.autoplay = true;
+        video.playsInline = true;
+        video.setAttribute('playsinline', '');
+        video.preload = 'metadata';
+        video.className = 'absolute inset-0 z-10 h-full w-full bg-ink object-contain';
+        frame.appendChild(video);
+        btn.remove();
+        frame.querySelector('.vela-poster')?.classList.add('opacity-0');
+        video.focus();
+      },
+      { once: true },
+    );
+  });
+</script>
