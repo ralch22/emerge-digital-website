@@ -9,8 +9,24 @@
  *   TO_EMAIL            — rami@emergedigital.com
  *   FROM_EMAIL          — noreply@site.emergedigital.com
  *   RESEND_AUDIENCE_ID  — Resend audience UUID for newsletter subscribers
+ *   CAL_WEBHOOK_SECRET  — Cal.com webhook signing secret (verifies X-Cal-Signature-256)
+ *   SF_CLIENT_ID        — Salesforce connected-app consumer key (client-credentials flow)
+ *   SF_CLIENT_SECRET    — Salesforce connected-app consumer secret
+ *   SF_LOGIN_URL        — Salesforce token host, e.g. https://your-domain.my.salesforce.com
+ *   SF_API_VERSION      — optional, defaults to v60.0
  */
 import { REDIRECTS, GONE_PREFIXES, GONE_RE } from './src/lib/redirects';
+import {
+  type CalWebhookBody,
+  type MilestoneUpsertBody,
+  buildUpsertBody,
+  engagementIdFromMetadata,
+  firstAttendeeEmail,
+  isSupportedTrigger,
+  soqlEscape,
+  statusForTrigger,
+  verifyCalSignature,
+} from './src/lib/cal-webhook';
 
 interface Env {
   ASSETS: Fetcher;
@@ -18,6 +34,11 @@ interface Env {
   TO_EMAIL: string;
   FROM_EMAIL: string;
   RESEND_AUDIENCE_ID: string;
+  CAL_WEBHOOK_SECRET: string;
+  SF_CLIENT_ID: string;
+  SF_CLIENT_SECRET: string;
+  SF_LOGIN_URL: string;
+  SF_API_VERSION?: string;
 }
 
 export default {
@@ -60,6 +81,13 @@ export default {
     if (url.pathname === '/api/subscribe') {
       if (request.method === 'OPTIONS') return corsPreflightResponse(request);
       if (request.method === 'POST')    return handleSubscribe(request, env);
+      return new Response('Method Not Allowed', { status: 405 });
+    }
+
+    // Cal.com → Salesforce Milestone__c upsert (blueprint §9.3.1). Server-to-server
+    // webhook: no CORS/preflight; authenticity is established by the HMAC signature.
+    if (url.pathname === '/api/cal-webhook') {
+      if (request.method === 'POST') return handleCalWebhook(request, env);
       return new Response('Method Not Allowed', { status: 405 });
     }
 
@@ -306,6 +334,177 @@ async function handleSubscribe(request: Request, env: Env): Promise<Response> {
   }
 
   return json({ ok: true }, 200, request);
+}
+
+// ── Cal.com webhook → Salesforce Milestone__c (blueprint §9.3.1) ──
+
+async function handleCalWebhook(request: Request, env: Env): Promise<Response> {
+  // Env check
+  if (!env.CAL_WEBHOOK_SECRET || !env.SF_CLIENT_ID || !env.SF_CLIENT_SECRET || !env.SF_LOGIN_URL) {
+    console.error('Missing env vars: CAL_WEBHOOK_SECRET, SF_CLIENT_ID, SF_CLIENT_SECRET, SF_LOGIN_URL');
+    return json({ error: 'Server configuration error' }, 500);
+  }
+
+  // Read the RAW body — the HMAC is computed over the exact bytes Cal.com signed,
+  // so we must verify before parsing as JSON.
+  const raw = await request.text();
+  const signature = request.headers.get('X-Cal-Signature-256');
+  const valid = await verifyCalSignature(raw, signature, env.CAL_WEBHOOK_SECRET);
+  if (!valid) {
+    console.warn('Cal.com webhook rejected: signature mismatch');
+    return json({ error: 'Invalid signature' }, 401);
+  }
+
+  let body: CalWebhookBody;
+  try {
+    body = JSON.parse(raw) as CalWebhookBody;
+  } catch {
+    return json({ error: 'Invalid request body' }, 400);
+  }
+
+  const trigger = body.triggerEvent;
+  if (!isSupportedTrigger(trigger)) {
+    // Acknowledge so Cal.com doesn't retry, but there's nothing to map.
+    return json({ ok: true, ignored: trigger ?? null }, 200);
+  }
+
+  const payload = body.payload ?? {};
+  const uid = payload.uid?.trim();
+  if (!uid) return json({ error: 'Missing booking uid' }, 422);
+
+  const status = statusForTrigger(trigger);
+
+  // ── Salesforce auth (OAuth client-credentials) ──
+  let sf: SfSession;
+  try {
+    sf = await sfAuth(env);
+  } catch (err) {
+    console.error('Salesforce auth error:', err);
+    return json({ error: 'Salesforce auth failed' }, 502);
+  }
+
+  // ── Resolve Engagement__c: booking metadata wins, else attendee email → Contact → Engagement ──
+  let engagementId = engagementIdFromMetadata(payload);
+  if (!engagementId) {
+    const email = firstAttendeeEmail(payload);
+    if (email) {
+      try {
+        engagementId = await resolveEngagementByEmail(sf, email, env);
+      } catch (err) {
+        console.error('Engagement resolution error:', err);
+      }
+    }
+  }
+  if (!engagementId) {
+    // Non-fatal: still upsert the Milestone so the booking is captured and stays
+    // idempotent on reschedule; the link can be backfilled in Salesforce.
+    console.warn(`No Engagement__c resolved for Cal booking ${uid}; upserting without link`);
+  }
+
+  // ── Upsert Milestone__c on the Cal_Booking_UID__c external id ──
+  const upsertBody = buildUpsertBody({ payload, status, engagementId });
+  let res: Response;
+  try {
+    res = await sfUpsertMilestone(sf, uid, upsertBody, env);
+  } catch (err) {
+    console.error('Salesforce upsert fetch error:', err);
+    return json({ error: 'Failed to reach Salesforce' }, 502);
+  }
+  if (!res.ok) {
+    const errBody = await res.text().catch(() => '');
+    console.error('Salesforce upsert error:', res.status, errBody);
+    return json({ error: 'Milestone upsert failed' }, 502);
+  }
+
+  return json({ ok: true, uid, status, engagement: engagementId ?? null }, 200);
+}
+
+// ── Salesforce REST helpers ──────────────────────────────────
+
+interface SfSession {
+  accessToken: string;
+  instanceUrl: string;
+}
+
+function sfApiVersion(env: Env): string {
+  return env.SF_API_VERSION || 'v60.0';
+}
+
+/** OAuth 2.0 client-credentials grant against the org's token endpoint. */
+async function sfAuth(env: Env): Promise<SfSession> {
+  const tokenUrl = `${env.SF_LOGIN_URL.replace(/\/$/, '')}/services/oauth2/token`;
+  const res = await fetch(tokenUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'client_credentials',
+      client_id: env.SF_CLIENT_ID,
+      client_secret: env.SF_CLIENT_SECRET,
+    }),
+  });
+  if (!res.ok) {
+    const t = await res.text().catch(() => '');
+    throw new Error(`token endpoint ${res.status}: ${t}`);
+  }
+  const data = (await res.json()) as { access_token?: string; instance_url?: string };
+  if (!data.access_token || !data.instance_url) {
+    throw new Error('token response missing access_token / instance_url');
+  }
+  return { accessToken: data.access_token, instanceUrl: data.instance_url };
+}
+
+interface SoqlResult<T> {
+  records?: T[];
+}
+
+async function sfQuery<T>(sf: SfSession, soql: string, env: Env): Promise<SoqlResult<T>> {
+  const url = `${sf.instanceUrl}/services/data/${sfApiVersion(env)}/query/?q=${encodeURIComponent(soql)}`;
+  const res = await fetch(url, { headers: { Authorization: `Bearer ${sf.accessToken}` } });
+  if (!res.ok) {
+    const t = await res.text().catch(() => '');
+    throw new Error(`SOQL query ${res.status}: ${t}`);
+  }
+  return (await res.json()) as SoqlResult<T>;
+}
+
+/** attendee email → Contact → Account → most recently modified Engagement__c. */
+async function resolveEngagementByEmail(
+  sf: SfSession,
+  email: string,
+  env: Env,
+): Promise<string | undefined> {
+  const contacts = await sfQuery<{ Id: string; AccountId: string | null }>(
+    sf,
+    `SELECT Id, AccountId FROM Contact WHERE Email = '${soqlEscape(email)}' LIMIT 1`,
+    env,
+  );
+  const accountId = contacts.records?.[0]?.AccountId;
+  if (!accountId) return undefined;
+
+  const engagements = await sfQuery<{ Id: string }>(
+    sf,
+    `SELECT Id FROM Engagement__c WHERE Account__c = '${soqlEscape(accountId)}' ORDER BY LastModifiedDate DESC LIMIT 1`,
+    env,
+  );
+  return engagements.records?.[0]?.Id;
+}
+
+/** PATCH upsert keyed by the Cal_Booking_UID__c external id (idempotent on reschedule). */
+async function sfUpsertMilestone(
+  sf: SfSession,
+  uid: string,
+  fields: MilestoneUpsertBody,
+  env: Env,
+): Promise<Response> {
+  const url = `${sf.instanceUrl}/services/data/${sfApiVersion(env)}/sobjects/Milestone__c/Cal_Booking_UID__c/${encodeURIComponent(uid)}`;
+  return fetch(url, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${sf.accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(fields),
+  });
 }
 
 // ── Helpers ──────────────────────────────────────────────────
