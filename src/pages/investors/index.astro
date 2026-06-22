@@ -54,12 +54,20 @@ const timing = [
   },
 ];
 
+// Market validation — the 2X -> Knownwell deal (public deal facts; deck slide 8)
+const validation = [
+  { stat: '$400M+', label: '2X + Knownwell', body: 'The combined value when 2X acquired Knownwell in June 2026 — human + agentic services, valued and acquired.' },
+  { stat: 'Services + AI', label: 'The premium category', body: 'Services revenue with software economics — not pure tools. The model buyers are paying up for.' },
+  { stat: 'The exit', label: 'Who’s buying', body: 'PE-backed services consolidators are acquiring the category — the realistic path for us.' },
+];
+
 const countries = ['UAE', 'Saudi Arabia (KSA)', 'Egypt', 'Kuwait', 'Bahrain', 'Oman', 'Qatar', 'United States', 'United Kingdom', 'Other'];
 ---
 
 <BaseLayout
-  title="Investors — Emerge Digital | The marketplace for AI agents"
-  description="Emerge Digital is the local-prime marketplace for AI agents that do real business work — outcomes, not software, proven on a live ROAI dashboard. Backed by FPT, built on Salesforce. Request the full investor brief."
+  title="Investors — Emerge Digital | Human + agentic services"
+  description="Emerge Digital is the outcomes-led local prime — human teams + governed AI agents that make enterprise AI pay, proven on a live ROAI dashboard. Backed by FPT, built on Salesforce. Request the full investor brief."
+  ogImage="/og-investors.png"
 >
   <!-- ── Hero ─────────────────────────────────────────────────── -->
   <section class="relative overflow-hidden bg-gradient-hero pb-0 pt-section-sm md:pt-28">
@@ -72,8 +80,8 @@ const countries = ['UAE', 'Saudi Arabia (KSA)', 'Egypt', 'Kuwait', 'Bahrain', 'O
           Investor Relations
         </div>
         <h1 class="text-display-xl text-white">
-          The marketplace for AI agents that do
-          <span class="text-gradient-accent">real business work.</span>
+          Human + agentic services that make
+          <span class="text-gradient-accent">enterprise AI pay.</span>
         </h1>
         <p class="mt-6 max-w-2xl text-lead text-platinum/75">
           Outcomes, not software. Clients buy the result, pay for what they use, and see the return
@@ -101,13 +109,13 @@ const countries = ['UAE', 'Saudi Arabia (KSA)', 'Egypt', 'Kuwait', 'Bahrain', 'O
       <div class="max-w-3xl">
         <Eyebrow data-reveal>What we're building</Eyebrow>
         <h2 class="mt-4 text-display-lg" data-reveal data-reveal-delay="1">
-          An app store of AI agents —
-          <span class="text-gradient-accent">hired by the task.</span>
+          Human teams + governed AI agents —
+          <span class="text-gradient-accent">a services business with software economics.</span>
         </h2>
         <p class="mt-6 max-w-prose text-lead text-platinum/75" data-reveal data-reveal-delay="2">
-          An online marketplace of AI agents — digital workers that do marketing, sales, and
-          customer-service work for large companies. Clients pick the agents they need, we run them,
-          and they pay for what they use.
+          Senior teams and governed AI agents do marketing, sales, and customer-service work for large
+          companies. Clients pick the outcomes they need, we run the agents through our marketplace, and
+          they pay for what they use.
         </p>
       </div>
 
@@ -205,6 +213,47 @@ const countries = ['UAE', 'Saudi Arabia (KSA)', 'Egypt', 'Kuwait', 'Bahrain', 'O
             <p class="mt-3 text-sm leading-relaxed text-platinum/70">{t.body}</p>
           </article>
         ))}
+      </div>
+    </Container>
+  </Section>
+
+  <!-- ── Market validation (2X to Knownwell) ──────────────────── -->
+  <Section tone="light" class="relative overflow-hidden">
+    <Container class="relative">
+      <div class="max-w-3xl">
+        <Eyebrow tone="cool" data-reveal>The market is validating this</Eyebrow>
+        <h2 class="mt-4 text-display-lg text-slate" data-reveal data-reveal-delay="1">
+          A category the market is
+          <span class="text-teal">already buying.</span>
+        </h2>
+        <p class="mt-6 max-w-prose text-lead text-slate/75" data-reveal data-reveal-delay="2">
+          In June 2026, <strong class="text-slate">2X</strong> — a PE-backed B2B go-to-market services
+          firm — acquired <strong class="text-slate">Knownwell</strong> (an agentic-AI platform) to build
+          “the first GTM human-agentic services company.” Services + governed AI + proven outcomes is now
+          a category the market is buying — and we're early, local, and already live in it.
+        </p>
+      </div>
+
+      <div class="mt-14 grid gap-6 lg:grid-cols-3">
+        {validation.map((v, i) => (
+          <div
+            class="relative rounded-card border border-slate/10 bg-white p-8 shadow-sm"
+            data-reveal
+            data-reveal-delay={String(i + 1)}
+          >
+            <div class="absolute inset-x-0 top-0 h-[2px] rounded-t-card bg-gradient-accent"></div>
+            <p class="font-display text-display-md font-bold text-slate">{v.stat}</p>
+            <p class="mt-2 text-[11px] font-semibold uppercase tracking-eyebrow text-teal">{v.label}</p>
+            <p class="mt-3 text-sm leading-relaxed text-slate/65">{v.body}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="mt-10 rounded-2xl border border-teal/20 bg-teal/[0.06] px-7 py-5" data-reveal>
+        <p class="text-slate">
+          <strong class="text-teal">AI M&amp;A is at record pace</strong> — and “human + agentic services”
+          is the category being bought. We are early, local, and already live in it.
+        </p>
       </div>
     </Container>
   </Section>
