@@ -19,11 +19,26 @@ const studies = (await getCollection('case-studies', ({ data }) => data.publishe
         <span class="text-teal">in practice.</span>
       </h2>
       <p class="mt-6 text-lead text-slate/75" data-reveal data-reveal-delay="2">
-        A selection of programs we've led for Government, BFSI, and Retail leaders across the MEA region.
+        We don't just name KPIs — we prove the return. Outcomes from programs we've led for
+        Government, BFSI, and Retail leaders across MEA.
       </p>
     </div>
 
-    <div class="mt-14 grid gap-6 lg:grid-cols-3">
+    <!-- Stat band — hard outcome numbers -->
+    <div class="mt-12 grid gap-4 sm:grid-cols-3" data-reveal data-reveal-delay="2">
+      {[
+        { value: '+38%',   label: 'cross-sell conversion' },
+        { value: '+22-pt', label: 'CSAT' },
+        { value: '~4x',    label: 'ROAI' },
+      ].map((stat) => (
+        <div class="rounded-card border border-platinum/80 bg-white p-6 shadow-sm">
+          <p class="font-mono text-display-md font-semibold text-teal">{stat.value}</p>
+          <p class="mt-1 text-[11px] font-semibold uppercase tracking-eyebrow text-cool">{stat.label}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="mt-8 grid gap-6 lg:grid-cols-3">
       {studies.map((study, i) => (
         <a
           href={`/case-studies/${study.slug}/`}

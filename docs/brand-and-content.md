@@ -773,10 +773,12 @@ Each case study card includes:
 - **Bilingual-aware.** Write English copy that translates cleanly to Arabic. Avoid idioms.
 
 **Words to use:**
-*local prime, accountability, enterprise outcomes, in-country, mainland, founder-led, governance cadence, procurement-ready, regulatory-aligned, named KPIs, phase gates, customer-centric.*
+*local prime, accountability, enterprise outcomes, in-country, mainland, founder-led, governance cadence, procurement-ready, regulatory-aligned, named KPIs, phase gates, customer-centric, proven outcomes, ROAI (return on AI investment), the return, measurable, live dashboard, governed AI / human + agentic delivery.*
 
 **Words to avoid:**
 *synergy, world-class, cutting-edge, disruptive, ninja/rockstar/guru, leverage (as a verb in body copy), unique (overused), revolutionary.*
+
+Also avoid the following AI-positioning traps: never say "autonomous agents that replace your team" (AI is the governed delivery mechanism, never a replacement for senior people), and never use "marketplace of AI agents" as a headline. Lead with proven outcomes and ROAI, not the tooling.
 
 ---
 
