@@ -78,6 +78,12 @@ export default {
       return new Response('Method Not Allowed', { status: 405 });
     }
 
+    if (url.pathname === '/api/investor-request') {
+      if (request.method === 'OPTIONS') return corsPreflightResponse(request);
+      if (request.method === 'POST')    return handleInvestorRequest(request, env);
+      return new Response('Method Not Allowed', { status: 405 });
+    }
+
     if (url.pathname === '/api/subscribe') {
       if (request.method === 'OPTIONS') return corsPreflightResponse(request);
       if (request.method === 'POST')    return handleSubscribe(request, env);
@@ -230,6 +236,142 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
     `Situation: ${reasons}`,
     `Follow-up: ${followup}`,
     brief ? `\nBrief:\n${brief}` : '',
+  ].filter(Boolean).join('\n');
+
+  // ── Send via Resend ──────────────────────────────────────
+  let resendRes: Response;
+  try {
+    resendRes = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: `Emerge Digital <${env.FROM_EMAIL}>`,
+        to: [env.TO_EMAIL],
+        reply_to: email,
+        subject,
+        html,
+        text,
+      }),
+    });
+  } catch (err) {
+    console.error('Resend fetch error:', err);
+    return json({ error: 'Failed to reach email service' }, 502, request);
+  }
+
+  if (!resendRes.ok) {
+    const body = await resendRes.text().catch(() => '');
+    console.error('Resend API error:', resendRes.status, body);
+    return json({ error: 'Email delivery failed' }, 502, request);
+  }
+
+  return json({ ok: true }, 200, request);
+}
+
+// ── Investor brief request handler ──────────────────────────
+
+async function handleInvestorRequest(request: Request, env: Env): Promise<Response> {
+  // Parse body (supports both JSON and multipart/form-data)
+  let fields: Record<string, string>;
+  try {
+    const ct = request.headers.get('content-type') ?? '';
+    if (ct.includes('application/json')) {
+      fields = await request.json() as Record<string, string>;
+    } else {
+      const fd = await request.formData();
+      fields = Object.fromEntries(fd.entries()) as Record<string, string>;
+    }
+  } catch {
+    return json({ error: 'Invalid request body' }, 400, request);
+  }
+
+  // Honeypot — pretend success, drop silently
+  if (fields['_gotcha']) return json({ ok: true }, 200, request);
+
+  // Required field validation
+  const required = ['full-name', 'firm', 'email', 'role', 'country'];
+  for (const f of required) {
+    if (!fields[f]?.toString().trim()) {
+      return json({ error: `Missing field: ${f}` }, 422, request);
+    }
+  }
+  if (!isValidEmail(fields['email'])) {
+    return json({ error: 'Invalid email address' }, 422, request);
+  }
+  // Both attestations must be confirmed
+  if (!fields['investor-attestation'] || !fields['nda-ack']) {
+    return json({ error: 'Both attestations are required' }, 422, request);
+  }
+
+  // Env check
+  if (!env.RESEND_API_KEY || !env.TO_EMAIL || !env.FROM_EMAIL) {
+    console.error('Missing env vars: RESEND_API_KEY, TO_EMAIL, FROM_EMAIL');
+    return json({ error: 'Server configuration error' }, 500, request);
+  }
+
+  const name    = fields['full-name'];
+  const firm    = fields['firm'];
+  const email   = fields['email'];
+  const role    = fields['role'];
+  const country = fields['country'];
+  const note    = (fields['note'] ?? '').toString().trim();
+
+  // ── Build email ──────────────────────────────────────────
+  const subject = `Investor brief request: ${name} · ${firm}`;
+
+  const htmlRows = [
+    ['Name',                 name],
+    ['Firm / Fund',          firm],
+    ['Email',                `<a href="mailto:${email}" style="color:#00C2C7">${email}</a>`],
+    ['Role',                 role],
+    ['Country',              country],
+    ['Qualified investor',   'Yes — attested'],
+    ['Confidentiality/NDA',  'Yes — acknowledged'],
+    ...(note ? [['Note', note.replace(/\n/g, '<br/>')]] : []),
+  ].map(([label, value]) => `
+    <tr>
+      <td style="padding:8px 16px 8px 0;vertical-align:top;color:#6B7A90;font-size:13px;white-space:nowrap;width:130px">${label}</td>
+      <td style="padding:8px 0;font-size:14px;color:#E8EEF5;border-bottom:1px solid rgba(255,255,255,0.07)">${value}</td>
+    </tr>`).join('');
+
+  const html = `<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:24px;background:#0A1F3D;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <div style="max-width:560px;margin:0 auto;background:#06122A;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.08)">
+    <div style="padding:24px 28px;border-bottom:1px solid rgba(255,255,255,0.08)">
+      <p style="margin:0;font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#6B7A90">Emerge Digital</p>
+      <h1 style="margin:6px 0 0;font-size:18px;font-weight:600;color:#fff">New Investor Brief Request</h1>
+      <p style="margin:4px 0 0;font-size:12px;color:#6B7A90">emergedigital.com/investors · send the deck under NDA</p>
+    </div>
+    <div style="padding:24px 28px">
+      <table style="width:100%;border-collapse:collapse">${htmlRows}</table>
+    </div>
+    <div style="padding:20px 28px;border-top:1px solid rgba(255,255,255,0.08)">
+      <a href="mailto:${email}?subject=Re: Emerge Digital — Investor Brief"
+         style="display:inline-block;background:linear-gradient(90deg,#00C2C7,#3DDCE3);color:#06122A;font-weight:600;font-size:13px;padding:10px 20px;border-radius:9999px;text-decoration:none">
+        Reply to ${name} →
+      </a>
+    </div>
+    <div style="padding:16px 28px;background:rgba(255,255,255,0.02);border-top:1px solid rgba(255,255,255,0.06)">
+      <p style="margin:0;font-size:11px;color:#6B7A90">Emerge Digital · Dubai Mainland · ESR &amp; UBO Compliant</p>
+    </div>
+  </div>
+</body>
+</html>`;
+
+  const text = [
+    'New investor brief request',
+    `From: ${name} <${email}>`,
+    '---',
+    `Firm/Fund: ${firm}`,
+    `Role:      ${role}`,
+    `Country:   ${country}`,
+    `Qualified investor: Yes — attested`,
+    `Confidentiality/NDA: Yes — acknowledged`,
+    note ? `\nNote:\n${note}` : '',
+    '\nSend the full deck under NDA.',
   ].filter(Boolean).join('\n');
 
   // ── Send via Resend ──────────────────────────────────────
