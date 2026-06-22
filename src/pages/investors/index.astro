@@ -1,0 +1,578 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Section from '../../components/Section.astro';
+import Container from '../../components/Container.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import Button from '../../components/Button.astro';
+
+// Months remaining in the Vision 2030 procurement window (through Dec 2027)
+const now = new Date();
+const windowEnd = new Date('2027-12-31T00:00:00Z');
+const monthsRemaining = Math.max(
+  0,
+  Math.round((windowEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24 * 30.44)),
+);
+
+// Live platform — vision hub → live demo funnel
+const demoUrl = 'https://roai.emergedigital.ae?utm_source=investors&utm_medium=cta&utm_campaign=live-demo';
+const tourUrl = 'https://roai.emergedigital.ae/guide?utm_source=investors&utm_medium=cta&utm_campaign=tour';
+const practiceUrl = 'https://future.emergedigital.com?utm_source=investors&utm_medium=cta&utm_campaign=practice';
+
+// The marketplace in three moves (deck slide 2 — public-safe)
+const flow = [
+  {
+    label: 'Companies',
+    body: 'Enterprises are under pressure to use AI to cut cost and grow — but they don’t know what actually works.',
+  },
+  {
+    label: 'The Emerge marketplace',
+    body: 'Ready-made AI agents — digital workers for marketing, sales, and service — run and proven by us.',
+  },
+  {
+    label: 'Outcomes + return',
+    body: 'Clients pay for what they use, and see the return on a live dashboard. Outcomes, not software.',
+  },
+];
+
+// Credibility — the numbers, no company financials (deck slide 8)
+const credibility = [
+  { stat: '$2.47B', label: 'Backed by FPT', body: 'A global technology group of 80,000+ people behind the delivery.' },
+  { stat: 'Salesforce', label: 'Built on the leader', body: 'The world’s leading enterprise business platform — Agentforce + Data Cloud.' },
+  { stat: '340+', label: 'Certified experts', body: 'A certified delivery bench, ready in-region from day one.' },
+  { stat: 'Live today', label: 'A real product', body: 'The marketplace and client portal are running now — not a concept on paper.' },
+];
+
+// Why now (deck slide 7)
+const timing = [
+  {
+    title: 'The AI shift is here',
+    body: 'Every large enterprise is moving budget into AI right now. The tools finally work — and buyers are spending.',
+  },
+  {
+    title: 'The region is spending',
+    body: 'Gulf Vision 2030 programs are funding digital transformation at scale — an open procurement window we are positioned to capture.',
+  },
+];
+
+const countries = ['UAE', 'Saudi Arabia (KSA)', 'Egypt', 'Kuwait', 'Bahrain', 'Oman', 'Qatar', 'United States', 'United Kingdom', 'Other'];
+---
+
+<BaseLayout
+  title="Investors — Emerge Digital | The marketplace for AI agents"
+  description="Emerge Digital is the local-prime marketplace for AI agents that do real business work — outcomes, not software, proven on a live ROAI dashboard. Backed by FPT, built on Salesforce. Request the full investor brief."
+>
+  <!-- ── Hero ─────────────────────────────────────────────────── -->
+  <section class="relative overflow-hidden bg-gradient-hero pb-0 pt-section-sm md:pt-28">
+    <div class="pointer-events-none absolute inset-0 bg-grid bg-grid-fade" aria-hidden="true"></div>
+    <div class="aurora pointer-events-none absolute inset-0 opacity-50" aria-hidden="true"></div>
+    <Container>
+      <div class="max-w-3xl pb-16">
+        <div class="chip-eyebrow mb-6">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          Investor Relations
+        </div>
+        <h1 class="text-display-xl text-white">
+          The marketplace for AI agents that do
+          <span class="text-gradient-accent">real business work.</span>
+        </h1>
+        <p class="mt-6 max-w-2xl text-lead text-platinum/75">
+          Outcomes, not software. Clients buy the result, pay for what they use, and see the return
+          on a live dashboard — delivered by a local prime on the ground with global power behind it.
+        </p>
+        <div class="mt-9 flex flex-wrap items-center gap-4">
+          <Button href="#request" size="lg" class="btn-shimmer">
+            Request the investor brief
+          </Button>
+          <Button variant="secondary" href={demoUrl} size="lg" target="_blank" rel="noopener noreferrer">
+            See the platform live
+          </Button>
+        </div>
+        <p class="mt-8 text-[11px] font-semibold uppercase tracking-eyebrow text-teal/80">
+          Local Prime · Global Power · Enterprise Outcomes
+        </p>
+      </div>
+    </Container>
+    <div class="hairline" aria-hidden="true"></div>
+  </section>
+
+  <!-- ── What we're building ──────────────────────────────────── -->
+  <Section tone="dark" class="relative overflow-hidden">
+    <Container class="relative">
+      <div class="max-w-3xl">
+        <Eyebrow data-reveal>What we're building</Eyebrow>
+        <h2 class="mt-4 text-display-lg" data-reveal data-reveal-delay="1">
+          An app store of AI agents —
+          <span class="text-gradient-accent">hired by the task.</span>
+        </h2>
+        <p class="mt-6 max-w-prose text-lead text-platinum/75" data-reveal data-reveal-delay="2">
+          An online marketplace of AI agents — digital workers that do marketing, sales, and
+          customer-service work for large companies. Clients pick the agents they need, we run them,
+          and they pay for what they use.
+        </p>
+      </div>
+
+      <div class="mt-14 grid gap-6 lg:grid-cols-3">
+        {flow.map((step, i) => (
+          <article
+            class="relative rounded-card border border-white/8 p-8"
+            style="background: rgba(255,255,255,0.025); backdrop-filter: blur(12px);"
+            data-reveal
+            data-reveal-delay={String(i + 1)}
+          >
+            <div class="absolute inset-x-0 top-0 h-[1.5px] rounded-t-card bg-gradient-accent opacity-70"></div>
+            <p class="font-mono text-[11px] font-semibold uppercase tracking-eyebrow text-teal">
+              0{i + 1}
+            </p>
+            <h3 class="mt-3 text-display-sm text-white">{step.label}</h3>
+            <p class="mt-3 text-sm leading-relaxed text-platinum/70">{step.body}</p>
+          </article>
+        ))}
+      </div>
+    </Container>
+  </Section>
+
+  <!-- ── The edge: ROAI ───────────────────────────────────────── -->
+  <Section tone="gradient" class="relative isolate overflow-hidden">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0"
+      style="background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(0,194,199,0.12), transparent 70%); filter: blur(70px);"></div>
+    <Container class="relative">
+      <div class="mx-auto max-w-3xl text-center">
+        <Eyebrow class="justify-center" data-reveal>Our edge — in one number</Eyebrow>
+        <p class="mt-6 font-display text-[clamp(3.5rem,9vw,6rem)] font-bold leading-none text-gradient-glow" data-reveal data-reveal-delay="1">
+          ≈ 4×
+        </p>
+        <p class="mt-5 text-lead text-platinum/85" data-reveal data-reveal-delay="2">
+          Return on AI Investment (ROAI). For every $1 a client spends on AI through us, they get
+          about <strong class="text-white">$4 of value back</strong> — shown on a live dashboard the
+          customer sees on their phone and the agency sees across the whole book.
+        </p>
+      </div>
+    </Container>
+  </Section>
+
+  <!-- ── Why us — credibility ─────────────────────────────────── -->
+  <Section tone="dark" class="relative overflow-hidden">
+    <Container class="relative">
+      <div class="max-w-3xl">
+        <Eyebrow data-reveal>Why us</Eyebrow>
+        <h2 class="mt-4 text-display-lg" data-reveal data-reveal-delay="1">
+          Credibility most startups
+          <span class="text-gradient-accent">can't match.</span>
+        </h2>
+      </div>
+
+      <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {credibility.map((c, i) => (
+          <div
+            class="rounded-card border border-white/8 p-7"
+            style="background: rgba(255,255,255,0.025);"
+            data-reveal
+            data-reveal-delay={String(i + 1)}
+          >
+            <p class="font-display text-display-md font-bold text-white">{c.stat}</p>
+            <p class="mt-2 text-[11px] font-semibold uppercase tracking-eyebrow text-teal">{c.label}</p>
+            <p class="mt-3 text-sm leading-relaxed text-platinum/65">{c.body}</p>
+          </div>
+        ))}
+      </div>
+    </Container>
+  </Section>
+
+  <!-- ── Why now ──────────────────────────────────────────────── -->
+  <Section tone="dark" class="relative overflow-hidden border-t border-white/5">
+    <Container class="relative">
+      <div class="max-w-3xl">
+        <Eyebrow data-reveal>Timing</Eyebrow>
+        <h2 class="mt-4 text-display-lg" data-reveal data-reveal-delay="1">
+          Why now.
+        </h2>
+        <p class="mt-6 max-w-prose text-lead text-platinum/75" data-reveal data-reveal-delay="2">
+          Two curves are meeting at once — and we are positioned at the intersection, local on the
+          ground with global firepower behind us.
+          <span class="text-white">{monthsRemaining} months remain in the Vision 2030 procurement window.</span>
+        </p>
+      </div>
+
+      <div class="mt-12 grid gap-6 lg:grid-cols-2">
+        {timing.map((t, i) => (
+          <article
+            class="rounded-card border border-white/8 p-8"
+            style="background: rgba(255,255,255,0.025);"
+            data-reveal
+            data-reveal-delay={String(i + 1)}
+          >
+            <h3 class="text-display-sm text-white">{t.title}</h3>
+            <p class="mt-3 text-sm leading-relaxed text-platinum/70">{t.body}</p>
+          </article>
+        ))}
+      </div>
+    </Container>
+  </Section>
+
+  <!-- ── The product is real ──────────────────────────────────── -->
+  <Section tone="gradient" class="relative isolate overflow-hidden">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0"
+      style="background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(0,194,199,0.10), transparent 70%); filter: blur(70px);"></div>
+    <Container class="relative">
+      <div class="mx-auto max-w-prose text-center">
+        <Eyebrow class="justify-center" data-reveal>The product is real</Eyebrow>
+        <h2 class="mt-4 text-display-lg text-white" data-reveal data-reveal-delay="1">
+          See it live — the
+          <span class="text-gradient-accent">66-second tour.</span>
+        </h2>
+        <p class="mx-auto mt-5 max-w-2xl text-lead text-platinum/80" data-reveal data-reveal-delay="2">
+          Vela OS is the live platform behind our AI delivery — an agency command center and a
+          customer portal in one. The way we onboard a client is itself the product we sell, so every
+          demo is the real thing.
+        </p>
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-4" data-reveal data-reveal-delay="3">
+          <Button href={tourUrl} size="lg" class="btn-shimmer" target="_blank" rel="noopener noreferrer">
+            Watch the 66-second tour
+          </Button>
+          <Button variant="secondary" href={practiceUrl} size="lg" target="_blank" rel="noopener noreferrer">
+            Explore the Agentforce practice
+          </Button>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <!-- ── Request the full brief (gated) ───────────────────────── -->
+  <Section tone="light" id="request">
+    <Container>
+      <div class="grid gap-16 lg:grid-cols-[1fr_380px]">
+
+        <!-- Form -->
+        <div>
+          <Eyebrow tone="cool" class="mb-6">Investor brief</Eyebrow>
+          <h2 class="text-display-lg text-slate">
+            Request the full
+            <span class="text-teal">investor brief.</span>
+          </h2>
+          <p class="mt-5 max-w-prose text-slate/75">
+            The full brief covers the business model, the five-year plan, the raise, and use of funds.
+            Share a few details and we'll review and send it to you — under NDA, to qualified investors.
+          </p>
+
+          <!-- Success state (hidden until JS shows it) -->
+          <div
+            id="form-success"
+            class="mt-8 hidden rounded-2xl border border-teal/30 bg-teal/5 p-10 text-center"
+            role="status"
+            aria-live="polite"
+          >
+            <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-teal/15">
+              <svg class="h-6 w-6 text-teal" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3 class="text-display-md text-slate">Request received.</h3>
+            <p class="mt-3 text-slate/70">
+              Thank you — we'll review your request and send the brief, typically within one business day.
+            </p>
+          </div>
+
+          <form
+            id="investor-form"
+            name="investor-brief-request"
+            method="POST"
+            data-endpoint="/api/investor-request"
+            class="mt-8 space-y-6"
+            novalidate
+          >
+            <input type="hidden" name="form-name" value="investor-brief-request" />
+            <input type="hidden" name="form-source" value="investors-page" />
+
+            <!-- Name + Firm -->
+            <div class="grid gap-5 sm:grid-cols-2">
+              <div class="field-group">
+                <label for="full-name" class="field-label">Full name <span class="text-teal" aria-hidden="true">*</span></label>
+                <input type="text" id="full-name" name="full-name" autocomplete="name" required class="field-input" placeholder="Jane Smith" />
+                <p class="field-error hidden" role="alert"></p>
+              </div>
+              <div class="field-group">
+                <label for="firm" class="field-label">Firm / Fund <span class="text-teal" aria-hidden="true">*</span></label>
+                <input type="text" id="firm" name="firm" autocomplete="organization" required class="field-input" placeholder="Acme Ventures" />
+                <p class="field-error hidden" role="alert"></p>
+              </div>
+            </div>
+
+            <!-- Email + Role -->
+            <div class="grid gap-5 sm:grid-cols-2">
+              <div class="field-group">
+                <label for="email" class="field-label">Work email <span class="text-teal" aria-hidden="true">*</span></label>
+                <input type="email" id="email" name="email" autocomplete="email" required class="field-input" placeholder="you@firm.com" />
+                <p class="field-error hidden" role="alert"></p>
+              </div>
+              <div class="field-group">
+                <label for="role" class="field-label">Role / Title <span class="text-teal" aria-hidden="true">*</span></label>
+                <input type="text" id="role" name="role" autocomplete="organization-title" required class="field-input" placeholder="Partner" />
+                <p class="field-error hidden" role="alert"></p>
+              </div>
+            </div>
+
+            <!-- Country -->
+            <div class="field-group">
+              <label for="country" class="field-label">Country <span class="text-teal" aria-hidden="true">*</span></label>
+              <select id="country" name="country" required class="field-input field-select">
+                <option value="" disabled selected>Select country</option>
+                {countries.map((c) => <option value={c}>{c}</option>)}
+              </select>
+              <p class="field-error hidden" role="alert"></p>
+            </div>
+
+            <!-- Note -->
+            <div class="field-group">
+              <label for="note" class="field-label">Anything we should know? <span class="text-cool text-xs font-normal">(optional)</span></label>
+              <textarea id="note" name="note" rows="3" class="field-input resize-none" placeholder="Mandate, ticket size, timeline…"></textarea>
+            </div>
+
+            <!-- Attestations -->
+            <fieldset class="space-y-3">
+              <label class="check-row">
+                <input type="checkbox" id="investor-attestation" name="investor-attestation" value="yes" class="check-input" />
+                <span class="check-text">I am a qualified / accredited investor (or representing one). <span class="text-teal" aria-hidden="true">*</span></span>
+              </label>
+              <label class="check-row">
+                <input type="checkbox" id="nda-ack" name="nda-ack" value="yes" class="check-input" />
+                <span class="check-text">I will treat the brief as confidential and am willing to sign an NDA. <span class="text-teal" aria-hidden="true">*</span></span>
+              </label>
+              <p id="check-error" class="field-error hidden" role="alert"></p>
+            </fieldset>
+
+            <!-- Honeypot -->
+            <div class="hidden" aria-hidden="true">
+              <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" />
+            </div>
+
+            <div class="pt-2">
+              <button
+                type="submit"
+                id="submit-btn"
+                class="inline-flex w-full items-center justify-center gap-2 rounded-pill bg-gradient-accent px-8 py-4 text-base font-semibold text-ink transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glow focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal focus-visible:outline-offset-3 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+              >
+                <span id="submit-label">Request the brief</span>
+                <span aria-hidden="true" id="submit-arrow">→</span>
+                <svg id="submit-spinner" class="hidden h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+                </svg>
+              </button>
+              <p class="mt-4 text-xs leading-relaxed text-cool">
+                This page is informational only and is not an offer to sell or a solicitation of an
+                offer to buy any securities. Your details are used only to respond to your request — see our
+                <a href="/legal/privacy/" class="text-teal underline underline-offset-2 hover:text-cyan">Privacy Policy</a>.
+              </p>
+            </div>
+          </form>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="space-y-6 lg:pt-16">
+          <div class="rounded-2xl border border-slate/10 bg-white p-7 shadow-sm">
+            <h3 class="text-base font-semibold text-slate">What's in the brief</h3>
+            <ul class="mt-5 space-y-3 text-sm text-slate/70">
+              {[
+                'The business model — land, then grow',
+                'The five-year plan in numbers',
+                'The raise and use of funds',
+                'Traction, product, and team',
+              ].map((item) => (
+                <li class="flex items-start gap-3">
+                  <svg class="mt-0.5 h-4 w-4 shrink-0 text-teal" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M2 8.5l3.5 3.5L14 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="rounded-2xl border border-slate/10 bg-white p-7 shadow-sm">
+            <h3 class="text-base font-semibold text-slate">Direct contact</h3>
+            <a href="mailto:rami@emergedigital.com" class="mt-4 inline-flex items-start gap-3 text-sm text-slate/70 transition hover:text-teal">
+              <svg class="mt-0.5 h-4 w-4 shrink-0 text-teal" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M2 4h12v8a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" stroke="currentColor" stroke-width="1.25" stroke-linejoin="round"/>
+                <path d="M2 4l6 5 6-5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="break-all">rami@emergedigital.com</span>
+            </a>
+            <p class="mt-5 text-xs leading-relaxed text-cool">
+              Rami Alcheikh &amp; Bashar Hafez — Emerge Digital, Dubai, UAE.
+            </p>
+          </div>
+        </aside>
+
+      </div>
+    </Container>
+  </Section>
+</BaseLayout>
+
+<style>
+  .field-label {
+    @apply mb-2 block text-sm font-semibold text-slate/85;
+  }
+  .field-input {
+    @apply block w-full rounded-xl border border-slate/15 bg-white px-4 py-3 text-sm text-slate placeholder-cool/60 outline-none transition duration-200;
+  }
+  .field-input:focus {
+    @apply border-teal/50;
+    box-shadow: 0 0 0 3px rgba(0, 194, 199, 0.12);
+  }
+  .field-input.field-input--error {
+    @apply border-danger/60;
+    box-shadow: 0 0 0 3px rgba(229, 72, 77, 0.12);
+  }
+  .field-select {
+    @apply cursor-pointer appearance-none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'><path d='M1 1l5 5 5-5' stroke='%236B7A90' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
+  }
+  .field-error {
+    @apply mt-1.5 text-xs text-danger;
+  }
+  /* Attestation checkboxes */
+  .check-row {
+    @apply flex cursor-pointer items-start gap-3;
+  }
+  .check-input {
+    @apply mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-slate/30 text-teal accent-teal;
+  }
+  .check-text {
+    @apply text-sm leading-relaxed text-slate/75;
+  }
+</style>
+
+<script>
+  const form = document.getElementById('investor-form') as HTMLFormElement | null;
+  const successPanel = document.getElementById('form-success');
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
+  const submitLabel = document.getElementById('submit-label');
+  const submitArrow = document.getElementById('submit-arrow');
+  const submitSpinner = document.getElementById('submit-spinner');
+  const checkError = document.getElementById('check-error');
+
+  function getError(input: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement): string {
+    if (input.validity.valueMissing) return 'This field is required.';
+    if (input.validity.typeMismatch && input.type === 'email') return 'Please enter a valid work email address.';
+    return '';
+  }
+
+  function showError(fieldGroup: Element, message: string) {
+    const errorEl = fieldGroup.querySelector<HTMLElement>('.field-error');
+    const inputEl = fieldGroup.querySelector<HTMLElement>('.field-input');
+    if (errorEl) {
+      errorEl.textContent = message;
+      errorEl.classList.remove('hidden');
+    }
+    if (inputEl) inputEl.classList.add('field-input--error');
+  }
+
+  function clearError(fieldGroup: Element) {
+    const errorEl = fieldGroup.querySelector<HTMLElement>('.field-error');
+    const inputEl = fieldGroup.querySelector<HTMLElement>('.field-input');
+    if (errorEl) {
+      errorEl.textContent = '';
+      errorEl.classList.add('hidden');
+    }
+    if (inputEl) inputEl.classList.remove('field-input--error');
+  }
+
+  // Validate on blur / clear on input
+  form?.querySelectorAll<HTMLInputElement | HTMLSelectElement>('.field-input[required]').forEach((input) => {
+    input.addEventListener('blur', () => {
+      const group = input.closest('.field-group');
+      if (!group) return;
+      const error = getError(input);
+      if (error) showError(group, error);
+      else clearError(group);
+    });
+    input.addEventListener('input', () => {
+      const group = input.closest('.field-group');
+      if (group && input.validity.valid) clearError(group);
+    });
+  });
+
+  function checksValid(): boolean {
+    const a = form?.querySelector<HTMLInputElement>('#investor-attestation');
+    const b = form?.querySelector<HTMLInputElement>('#nda-ack');
+    const ok = !!a?.checked && !!b?.checked;
+    if (checkError) {
+      if (ok) {
+        checkError.textContent = '';
+        checkError.classList.add('hidden');
+      } else {
+        checkError.textContent = 'Please confirm both statements to receive the brief.';
+        checkError.classList.remove('hidden');
+      }
+    }
+    return ok;
+  }
+  form?.querySelectorAll<HTMLInputElement>('.check-input').forEach((cb) =>
+    cb.addEventListener('change', () => { if (cb.checked) checksValid(); }),
+  );
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    let valid = true;
+    form.querySelectorAll<HTMLInputElement | HTMLSelectElement>('.field-input[required]').forEach((input) => {
+      const group = input.closest('.field-group');
+      if (!group) return;
+      const error = getError(input);
+      if (error) {
+        showError(group, error);
+        valid = false;
+      }
+    });
+    if (!checksValid()) valid = false;
+    if (!valid) {
+      const firstError = form.querySelector<HTMLElement>('.field-input--error');
+      firstError?.focus();
+      return;
+    }
+
+    // Honeypot
+    const honeypot = form.querySelector<HTMLInputElement>('[name="_gotcha"]');
+    if (honeypot?.value) return;
+
+    if (submitBtn) submitBtn.disabled = true;
+    if (submitLabel) submitLabel.textContent = 'Sending…';
+    if (submitArrow) submitArrow.classList.add('hidden');
+    if (submitSpinner) submitSpinner.classList.remove('hidden');
+
+    try {
+      const data = new FormData(form);
+      const endpoint = form.dataset.endpoint ?? '';
+      if (endpoint) {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          body: data,
+          headers: { Accept: 'application/json' },
+        });
+        if (!res.ok) throw new Error('Network response was not ok');
+      } else {
+        await new Promise((r) => setTimeout(r, 600));
+      }
+
+      form.style.display = 'none';
+      if (successPanel) {
+        successPanel.classList.remove('hidden');
+        successPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    } catch {
+      if (submitBtn) submitBtn.disabled = false;
+      if (submitLabel) submitLabel.textContent = 'Request the brief';
+      if (submitArrow) submitArrow.classList.remove('hidden');
+      if (submitSpinner) submitSpinner.classList.add('hidden');
+
+      const errorBanner = document.createElement('p');
+      errorBanner.className = 'rounded-xl border border-danger/40 bg-danger/5 px-5 py-3 text-sm text-danger';
+      errorBanner.textContent = 'Something went wrong. Please try again or email rami@emergedigital.com directly.';
+      form.insertBefore(errorBanner, form.firstChild);
+      setTimeout(() => errorBanner.remove(), 8000);
+    }
+  });
+</script>
