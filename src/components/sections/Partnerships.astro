@@ -14,6 +14,7 @@ const families = [
       <path d="M1 18c0-4 3-5.5 6-5.5s6 1.5 6 5.5"/>
       <path d="M14 6h5M14 10h5M14 14h3"/>
     </svg>`,
+    badge: 'Salesforce Consulting Partner',
   },
   {
     title: 'Analytics & Media',
@@ -33,6 +34,7 @@ const families = [
       <path d="M5 14H4a3 3 0 0 1 0-6 4 4 0 0 1 7.8-1A3.5 3.5 0 0 1 16 10.5"/>
       <path d="M13 14l2 2 2-2M15 12v4"/>
     </svg>`,
+    badge: 'Google Cloud Partner',
   },
 ];
 ---
@@ -104,8 +106,19 @@ const families = [
       ))}
     </div>
 
-    <div class="mt-12" data-reveal>
+    <div class="mt-12 flex flex-wrap items-center gap-x-8 gap-y-4" data-reveal>
       <Button variant="ghost" href="/services/">See the full capability stack</Button>
+      <a
+        href="https://cloud.google.com/find-a-partner/partner/emerge-digital-it-solutions-llc"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-1.5 rounded-sm font-label text-xs uppercase tracking-wide text-platinum/60 transition-colors hover:text-teal focus-visible:text-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal/40"
+      >
+        Listed in the Google Cloud Partner Directory
+        <svg width="11" height="11" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 13L13 7M8 7h5v5"/>
+        </svg>
+      </a>
     </div>
   </Container>
 </Section>
