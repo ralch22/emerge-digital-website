@@ -66,6 +66,10 @@ export default {
     }
     // 301: exact legacy path (matches both trailing-slash forms).
     const redirKey = pathname !== '/' && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
+    // ── Vanity short-links → ecosystem spokes ──
+    if (redirKey === '/vault') {
+      return Response.redirect('https://vault.emergedigital.com/?utm_source=vision&utm_medium=vanity', 301);
+    }
     const redirTo = REDIRECTS[redirKey];
     if (redirTo) {
       return Response.redirect(new URL(redirTo, url.origin).toString(), 301);

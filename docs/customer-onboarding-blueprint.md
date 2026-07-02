@@ -169,7 +169,7 @@ These KPIs are the measurement contract for Section 6 and the success criteria f
 | `Phase__c` | A Crawl/Walk/Run phase within an Engagement. | Master-Detail → `Engagement__c` |
 | `PhaseGate__c` | Entry/exit criteria + decision for a Phase. | Master-Detail → `Phase__c` |
 | `Milestone__c` | Kickoff, discovery sessions, gate reviews. **Cal.com webhook target.** | Master-Detail → `Engagement__c` |
-| `Deliverable__c` | Diagnostic, ROAI baseline, roadmap. Client-visible toggle. | Master-Detail → `Engagement__c`; Lookup → `Phase__c` |
+| `Deliverable__c` | Diagnostic, ROAI baseline, roadmap, OKF knowledge vault. Client-visible toggle. | Master-Detail → `Engagement__c`; Lookup → `Phase__c` |
 | `ChecklistItem__c` | The chase loop: documents, data, access, decisions. | Master-Detail → `Engagement__c`; Lookup → `Contact` (owner) |
 | `Stakeholder__c` | Stakeholder map + RACI. | Master-Detail → `Engagement__c`; Lookup → `Contact` |
 | `ROAIBaseline__c` | Baseline metrics for later value measurement. | Master-Detail → `Engagement__c` |
@@ -178,6 +178,10 @@ These KPIs are the measurement contract for Section 6 and the success criteria f
 The full field list for each object is in **Appendix 9.1**; the demo dataset in **Section 10** populates every one of them.
 
 **Why Master-Detail for the children:** it gives the client-visibility model a clean spine. A Customer Community Sharing Set that grants a contact access to *their* `Engagement__c` cascades to all detail children, so a client sees their checklist, milestones, deliverables, stakeholders, and ROAI baseline without per-object sharing config (§5.6).
+
+#### The engagement knowledge vault (OKF) — standard Crawl deliverable
+
+As of June 2026, **every engagement ships an OKF knowledge vault** as part of the standard Crawl deliverable set (adopted forward-looking practice — engagements before this date did not include it). What the client receives: an **OKF v0.1-compliant vault of engagement knowledge** — decisions and their rationale, access maps, runbooks, and approved artefacts — built during Crawl and theirs to keep. Because it is plain OKF (markdown + YAML frontmatter, wiki-linked), it is portable (no lock-in) and agent-ready: the client can point their own AI tooling at it from day one. Operationally it is a `Deliverable__c` of type `Knowledge Vault`, client-visible in the portal Documents page like any other deliverable; the knowledge intake reuses the VaultOS intake spec (`vaultos-kit/intake-form-spec.md`). It is also the natural on-ramp to VaultOS (vault.emergedigital.com) for clients who want the vault maintained, synced, and agent-served after Crawl.
 
 ### 5.3 The eight-stage onboarding journey (Flow Orchestration)
 
@@ -191,7 +195,7 @@ One **Flow Orchestration** orchestrates the journey. Stages run sequentially; wi
 | 4 | **Client welcome & portal provisioning** | Prep complete | Create Experience Cloud (Customer Community) users for client contacts; send branded welcome email (Resend); apply Sharing Set | Community users; welcome email |
 | 5 | **Kickoff scheduling & session** | Welcome sent | Client books via Cal.com → `Milestone__c` (kickoff); session held; notes captured | `Milestone__c` (kickoff) |
 | 6 | **Discovery & the chase loop** | Kickoff held | Discovery sessions booked (Cal.com → `Milestone__c`); `ChecklistItem__c` worked `Requested → Received → Approved`; automated reminders (Resend) on aging items | `Milestone__c` (3–4), `ChecklistItem__c` transitions |
-| 7 | **Diagnostic build & ROAI baseline** | Inputs `Received` | Produce `Deliverable__c` (diagnostic, ROAI baseline, roadmap); capture `ROAIBaseline__c` metrics; publish client-visible deliverables | `Deliverable__c`, `ROAIBaseline__c` |
+| 7 | **Diagnostic build & ROAI baseline** | Inputs `Received` | Produce `Deliverable__c` (diagnostic, ROAI baseline, roadmap, OKF knowledge vault); capture `ROAIBaseline__c` metrics; publish client-visible deliverables | `Deliverable__c`, `ROAIBaseline__c` |
 | 8 | **Crawl exit gate & Walk-readiness** | Deliverables delivered | Attach evidence to exit `PhaseGate__c`; record gate decision; onboarding CSAT; hand off to Walk | `PhaseGate__c` → `Met` |
 
 **Where the two agents sit on this journey** (detail in §5.7):

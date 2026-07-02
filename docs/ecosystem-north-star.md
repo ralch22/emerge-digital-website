@@ -1,9 +1,10 @@
 # Emerge Ecosystem — Shared North-Star
 
-This is the single source of truth that all three Emerge Digital sites ladder to:
+This is the single source of truth that all four Emerge Digital sites ladder to:
 the corporate hub (`emergedigital.com`), the Agentforce practice
-(`future.emergedigital.com`), and the live ROAI proof site (`roai.emergedigital.ae`).
-Every headline, subhead, and proof point on any of the three should be traceable back
+(`future.emergedigital.com`), the live ROAI proof site (`roai.emergedigital.ae`),
+and the VaultOS knowledge product (`vault.emergedigital.com`).
+Every headline, subhead, and proof point on any of the four should be traceable back
 to the spine below. When in doubt, this document wins.
 
 ## North-star
@@ -34,6 +35,7 @@ Keep each site's one-liner exactly as written below.
 | **Corporate** | emergedigital.com | Buyer front door | "Local Prime. Global Power. Enterprise Outcomes." | Surface ROAI as the wedge — currently absent. |
 | **Future** | future.emergedigital.com | The Agentforce practice | "Agentforce that earns its keep." | Thread human + governed; tighten ICP to Gulf Gov/BFSI; echo Local Prime + link the hub. |
 | **Vela / ROAI** | roai.emergedigital.ae | Live ROAI proof | "Return on AI Investment, measured." | Add governance + Gulf Gov/BFSI context; keep ROAI lead. |
+| **VaultOS** | vault.emergedigital.com | Knowledge layer | "Knowledge your agents can run on — OKF-compliant, governed, agent-ready." | Ecosystem links landed 2026-06; hub surfaces the enterprise OKF angle only (no personal-tier pricing on the hub). |
 
 ## Voice
 
@@ -48,3 +50,14 @@ cutting-edge, disruptive, leverage (as a verb), revolutionary, "we believe".
 > **Numbers note:** any specific public number on these sites (the ROAI multiple, case-study
 > metrics such as "+38% cross-sell conversion" or "+22-pt CSAT") is illustrative until a human
 > verifies it against a real engagement. Confirm before publishing.
+
+> **VaultOS truthful-claims note:** VaultOS is positioned as *the knowledge layer* of the
+> ecosystem. Claims that are TRUE and usable: Emerge runs its own operations on an
+> OKF-compliant vault (327+ documents across 6 businesses); VaultOS is real, E2E-encrypted
+> infrastructure built by Emerge; it is OKF v0.1-compliant and *built for* BigQuery Knowledge
+> Catalog and Vertex AI (designed capability — never "deployed at scale with"); and, as of
+> June 2026, every engagement ships an OKF knowledge vault (adopted forward-looking practice —
+> never claimed retroactively). Claims that are FALSE and must never appear on any site:
+> "Vela OS runs on VaultOS" and "Agentforce agents run on VaultOS." The hub presents the
+> enterprise OKF Knowledge Graph angle only; personal-tier pricing lives solely on
+> vault.emergedigital.com.
