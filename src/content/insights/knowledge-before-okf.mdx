@@ -55,6 +55,18 @@ Two things make this matter:
 
 Making our own system OKF-compliant took one script and five seconds; the spec asks for one required field. That is the point of a good standard: if you built the right thing, compliance is trivial.
 
+## Compliance is easy. Connectivity is the job.
+
+A one-page spec makes the format look like the finish line. It is not.
+
+The moment we made the vault OKF-compliant, we opened the graph view and found a scattered cloud of disconnected notes — 221 of the vault's roughly 330 documents had no links in or out. An alarming number. The lazy fix is to bulk-add links until the graph *looks* dense.
+
+We classified instead. Only about 22 were real knowledge that had simply never been linked — our service-brand kits — and one Map of Content tied them together in ten minutes. The other 199 were not knowledge at all: build artifacts, prompt files, and READMEs that rode in when we imported whole project folders. Every one of those projects already had a curated entry point, so we excluded the noise from the graph rather than fake-link it.
+
+The result: a 134-document graph with zero orphans — and the 199 other files still safe on disk, no longer pretending to be knowledge.
+
+That is the part a spec cannot do for you. OKF-compliant means machine-readable. *Connected* means an agent can traverse from any question to the right answer. The distance between the two is judgment — what is knowledge, what is noise, what links to what. One script made us compliant; real editorial work made us useful. When we do this for a client, that editorial pass — link the real, prune the noise — is the deliverable.
+
 ## What this means if you run a business
 
 The gap between "Google published a spec" and "your organization has a living, agent-ready knowledge graph" is where all the work is. Someone has to:
