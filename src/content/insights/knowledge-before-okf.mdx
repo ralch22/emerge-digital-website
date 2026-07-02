@@ -1,0 +1,76 @@
+---
+title: "We Built an OKF Knowledge Graph Before OKF Existed — Here's What We Learned"
+summary: "In June 2026, Google published the Open Knowledge Format — an open spec for the knowledge AI agents need. We had finished building exactly that system two days earlier, for our own operations: 327+ documents across six businesses, wiki-linked into a graph an agent reads and writes. Here is what we built, why the architecture matters more than the tooling, and what OKF means if you run a business."
+author: "Rami Alcheikh — Founder, Emerge Digital"
+publishDate: 2026-07-02
+category: "Capability POV"
+tags: ["OKF", "Knowledge", "AI"]
+hero: ../../assets/knowledge-before-okf-hero.png
+readingMinutes: 6
+published: true
+---
+
+In June 2026, Google published the [Open Knowledge Format](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing) (OKF) — an open specification for the knowledge that AI agents need to do useful work. A directory of markdown files. YAML frontmatter. Cross-links. Index files for navigation. The whole spec fits on one page.
+
+We had finished building that system two days earlier — for ourselves.
+
+Not because we saw the spec coming. Because when you set out to solve the real problem — capable models with no memory of your business — you converge on the same architecture Google's data teams and Andrej Karpathy arrived at independently. Markdown files. Links between them. Structure that humans and agents can both read without a translation layer.
+
+This is what we built, why the architecture matters more than the tooling, and what OKF means if you run a business.
+
+## The problem nobody has solved for you
+
+Here is the uncomfortable truth about every AI tool you are paying for: it does not know you.
+
+ChatGPT does not remember what you decided in March. Copilot does not know your company's naming conventions. Gemini does not know that "WAU" in your dashboards excludes internal accounts, or that the payments runbook changed after the Q2 incident.
+
+The models are capable. The context is missing. And in most organizations, that context lives in five incompatible places: a wiki nobody updates, a metadata catalog with its own API, code comments, shared drives, and — mostly — in the heads of your most senior people.
+
+Every AI agent project starts by re-solving this same problem from scratch. Google's OKF announcement names it precisely: what is missing is not another knowledge *service*. It is a knowledge *format*.
+
+## What we built
+
+Over a few days, we consolidated three years of operating knowledge — client decisions, infrastructure runbooks, brand systems, pricing history, hard-won gotchas across six businesses — into a single knowledge system:
+
+- **327+ markdown documents**, each one atomic: one fact, one decision, one runbook
+- **Wiki-links between them**, so the knowledge forms a graph, not a pile
+- **Maps of Content** as entry points per domain — exactly OKF's `index.md` pattern
+- **YAML frontmatter** on every document — type, description, tags
+- **End-to-end encrypted sync** across every device (self-hosted CouchDB behind a Cloudflare Tunnel — about \$3/month)
+- And the part that matters most: **an AI agent connected to the same graph** — it reads the vault, answers from it, and *writes back to it*
+
+That last point is the unlock. Karpathy put it well in his LLM-wiki note: models do not get bored, do not forget to update a cross-reference, and can touch fifteen files in one pass. The bookkeeping that kills every human wiki is exactly what agents are good at. Humans curate; agents maintain.
+
+Since then, our agent does not start from zero. It knows which Cloudflare setting broke the site in June, what we charge for a service page, which supplier we dropped and why. Ask it "what did we decide about X?" and it answers from *your* history — with the receipts linked.
+
+## Then Google standardized it
+
+OKF v0.1 formalizes this pattern into an interoperable standard. Frontmatter with a `type:` field. Relative links between concepts. `index.md` for progressive disclosure. Nothing proprietary, no SDK, no platform.
+
+Two things make this matter:
+
+**1. BigQuery Knowledge Catalog now ingests OKF natively.** A knowledge graph your team can read in any editor becomes first-class context for governed AI. Our vault is built for BigQuery Knowledge Catalog and Vertex AI — and because the format is the contract, the same files also feed Claude, or any other model. The tools on each end are swappable.
+
+**2. It removes the lock-in objection.** Enterprises hesitated to invest in knowledge systems because every option was a walled garden. OKF is just files in a git repo. If you replace your vendor — including us — you keep everything.
+
+Making our own system OKF-compliant took one script and five seconds; the spec asks for one required field. That is the point of a good standard: if you built the right thing, compliance is trivial.
+
+## What this means if you run a business
+
+The gap between "Google published a spec" and "your organization has a living, agent-ready knowledge graph" is where all the work is. Someone has to:
+
+- audit where your knowledge actually lives (mostly in two people's heads)
+- design the taxonomy — what types, what domains, what links
+- extract and convert what exists (Notion, Confluence, email, code comments)
+- wire it to the agents your team actually uses
+- and set up the human-curates / agent-maintains loop so it does not rot like every wiki before it
+
+We have now done this end to end — for a multi-business portfolio, with sync to every device and an agent reading and writing the graph in production. For organizations building on Google Cloud, we implement the full OKF knowledge graph: the taxonomy, the extraction, the agent wiring, and the loop that keeps it current. As of June 2026, every Emerge engagement ships with an OKF knowledge vault.
+
+If your AI tools still have no memory of your business, that is now a solvable problem — with an open standard behind it.
+
+**See a live one.** [Explore VaultOS](https://emergedigital.com/vault?utm_medium=cta&utm_campaign=okf-article) — the knowledge layer we run our own operations on: the graph, the encrypted sync, and the agent that knows three years of our decisions.
+
+---
+
+*Rami Alcheikh is the Founder of Emerge Digital — the Dubai Mainland local prime for enterprise CX, Data, AI, and digital transformation across the MEA region. Emerge is a Google Cloud partner and runs its own operations on an OKF-compliant knowledge vault.*
