@@ -1,0 +1,593 @@
+---
+/**
+ * /services/private-ai-cx/ — service-line page for the Private AI CX Assistant.
+ * Claims discipline: every technical fact on this page traces to Google's published
+ * Gemma 4 documentation or to the Ask Aqua codebase. No partner logos (text mentions
+ * only), no performance benchmarks, no invented metrics. Pricing is quote-based.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Container from '../../components/Container.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import Button from '../../components/Button.astro';
+
+const aquoraUrl = 'https://aquora.ae?utm_source=vision&utm_medium=service-page&utm_campaign=private-ai-cx';
+
+// Verified against Google's Gemma 4 developer guide + model card (June 2026 release).
+const facts = [
+  {
+    figure: 'Apache 2.0',
+    title: 'Weights you own',
+    body: 'Gemma 4 12B ships under an open licence. No per-token fee to a model vendor, no obligation to send a single customer utterance outside your boundary.',
+  },
+  {
+    figure: '16 GB VRAM',
+    title: 'One enterprise GPU',
+    body: 'Google’s own guidance: small enough for 16 GB of VRAM. In practice, a single NVIDIA L4 serves it — which changes what “private deployment” costs.',
+  },
+  {
+    figure: 'Voice + vision',
+    title: 'Natively multimodal',
+    body: 'The encoder-free architecture ingests speech and images directly — the largest audio-capable model in the Gemma 4 family. A customer can talk to it or send a photo.',
+  },
+  {
+    figure: '256K',
+    title: 'Context window',
+    body: 'Enough working memory for long support conversations, full policy documents, and the retrieved knowledge that grounds every answer.',
+  },
+];
+
+interface TierRow {
+  label: string;
+  value: string;
+}
+interface Tier {
+  name: string;
+  flagship?: boolean;
+  claim: string;
+  lead: string;
+  rows: TierRow[];
+  fit: string;
+  icon: string;
+}
+
+const tiers: Tier[] = [
+  {
+    name: 'Managed CX',
+    claim: 'Frontier capability, enterprise terms.',
+    lead: 'Gemini on Vertex AI, running in your own Google Cloud project against regional endpoints.',
+    rows: [
+      { label: 'Model', value: 'Gemini on Vertex AI' },
+      { label: 'Boundary', value: 'Your GCP project, under Google Cloud’s published Vertex AI data-governance commitments' },
+      { label: 'Residency', value: 'Vertex regional endpoints, region-pinned' },
+      { label: 'Voice', value: 'Native audio in, Cloud TTS out' },
+    ],
+    fit: 'Retail and commerce CX, and any program where capability speed matters more than weight ownership.',
+    icon: `<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 15H5a4 4 0 0 1 0-8 5.5 5.5 0 0 1 10.6-1.6A4.5 4.5 0 0 1 16.5 15H16"/>
+      <path d="M8 12.5l3-3 3 3M11 9.5V18"/>
+    </svg>`,
+  },
+  {
+    name: 'Private CX',
+    flagship: true,
+    claim: 'Your data never leaves your project.',
+    lead: 'Gemma 4 12B — open weights you own — served on GPU inside your own cloud project. No third-party model provider in the inference path.',
+    rows: [
+      { label: 'Model', value: 'Gemma 4 12B, Apache 2.0 — the weights sit in your registry' },
+      { label: 'Boundary', value: 'Inference runs inside your project. Prompts, transcripts, and logs stay there too' },
+      { label: 'Residency', value: 'In-country KSA on GKE (me-central2, Dammam) — GPU availability verified. Cloud Run GPU in six further regions' },
+      { label: 'Voice', value: 'Native audio in, TTS served in-project' },
+    ],
+    fit: 'Regulated data where cloud is permitted — the tier most sovereignty conversations actually land on.',
+    icon: `<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="16" height="16" rx="2.5"/>
+      <rect x="7.5" y="7.5" width="7" height="7" rx="1.5"/>
+      <path d="M11 3v-1.5M11 22v-1.5M3 11H1.5M22 11h-1.5" opacity="0.5"/>
+    </svg>`,
+  },
+  {
+    name: 'Sovereign CX',
+    claim: 'Your data never leaves your building.',
+    lead: 'The same client-owned weights on your own GKE cluster or bare metal — air-gap capable, with a fully self-hosted voice stack.',
+    rows: [
+      { label: 'Model', value: 'Gemma 4 12B on your infrastructure' },
+      { label: 'Boundary', value: 'Nothing crosses your network edge. Air-gapped operation is a supported design goal' },
+      { label: 'Residency', value: 'Your data centre — the answer for UAE and Qatar in-country mandates' },
+      { label: 'Voice', value: 'Self-hosted speech-to-text and text-to-speech' },
+    ],
+    fit: 'No-cloud mandates, classified environments, and boards that require physical custody of the model.',
+    icon: `<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3.5 19.5V8l7.5-4.5L18.5 8v11.5"/>
+      <path d="M1.5 19.5h19"/>
+      <path d="M8 19.5v-4a3 3 0 0 1 6 0v4"/>
+      <path d="M8 10.5h.01M11 10.5h.01M14 10.5h.01"/>
+    </svg>`,
+  },
+];
+
+// The residency map — each row verified against Google Cloud region documentation.
+const residency = [
+  {
+    code: 'me-central2 · Dammam',
+    place: 'Saudi Arabia',
+    verdict: 'In-country inference, verified',
+    detail: 'L4 and G4 GPU capacity is documented for this region. The Private tier runs Gemma 4 12B on GKE inside the Kingdom.',
+    ok: true,
+  },
+  {
+    code: 'me-central1 · Doha',
+    place: 'Qatar',
+    verdict: 'No GPU capacity today',
+    detail: 'Managed tier serves via regional endpoints. A hard in-country inference requirement routes to the Sovereign tier.',
+    ok: false,
+  },
+  {
+    code: 'no region',
+    place: 'United Arab Emirates',
+    verdict: 'No Google Cloud region exists',
+    detail: 'An in-country UAE mandate is answered honestly: the Sovereign tier, on your own infrastructure.',
+    ok: false,
+  },
+  {
+    code: 'asia-south1 / south2 / southeast1 +',
+    place: 'Nearest Cloud Run GPU',
+    verdict: 'Mumbai, Delhi, Singapore',
+    detail: 'Where in-country is preferred but not mandated, the Private tier can run serverless on Cloud Run GPU in six documented regions.',
+    ok: true,
+  },
+];
+
+const aquaCapabilities = [
+  'Live catalogue search and comparison across ~6,000 products',
+  'Photo-to-product visual search',
+  'Voice in and out, with a dual speech-recognition fallback path',
+  'Cross-sell and personalised recommendations',
+  'Order-status lookup, gated behind order number and email',
+  'PII-masked logging, full transcripts, assisted-conversion attribution',
+  'An admin insights dashboard over every conversation',
+];
+
+const phases = [
+  {
+    phase: 'Crawl',
+    name: 'Data-Residency Assessment',
+    body: 'A fixed-scope diagnostic. Output: your regulatory posture mapped, a tier recommendation with evidence, an integration inventory, and the target architecture. Built so procurement can sign it quickly.',
+    price: 'Tailored quote',
+  },
+  {
+    phase: 'Walk',
+    name: 'Build & launch',
+    body: 'The agent built and grounded on your real systems — knowledge base, order or case APIs, escalation paths. Channels to match your posture: web, WhatsApp where permitted, email. Named KPIs and phase gates throughout.',
+    price: 'Tailored quote',
+  },
+  {
+    phase: 'Run',
+    name: 'Operate',
+    body: 'A managed monthly cadence: model updates, prompt and tool tuning, evaluation reviews, and an SLA. Your team keeps custody; ours keeps it sharp.',
+    price: 'Tailored monthly quote',
+  },
+];
+
+const faqs = [
+  {
+    q: 'Who owns the model?',
+    a: 'On the Private and Sovereign tiers — you do. Gemma 4 is released under Apache 2.0, so the weights sit in your own registry, and any fine-tune we build on your data is yours outright. There is no licence to renew and no vendor who can switch it off.',
+  },
+  {
+    q: 'Is a 12B open model good enough for customer-facing work?',
+    a: 'The honest answer: a frontier managed model is stronger on open-ended tasks. A CX agent, however, is not open-ended — it is tool-grounded and narrowly scoped, and the architecture does the heavy lifting. That is why the Assessment includes an evaluation gate on your actual use-cases before you commit to a tier. We publish no benchmark claims; we test on your traffic.',
+  },
+  {
+    q: 'What about Arabic?',
+    a: 'We scope and evaluate Arabic quality per use-case during the Assessment rather than making a blanket claim. If the evaluation gate says the quality is not there for your dialect and domain, we tell you — and design the fallback before launch, not after.',
+  },
+  {
+    q: 'Can we run WhatsApp on the Sovereign tier?',
+    a: 'WhatsApp messages transit Meta’s Business Platform by design — for most sovereign deployments that is disqualifying, so we default those programs to web, voice, and kiosk channels. If your regulator signs off on WhatsApp for specific journeys, we wire it. We would rather surface that tension in scoping than discover it in an audit.',
+  },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Service',
+      name: 'Private AI CX Assistant',
+      serviceType: 'AI customer experience assistant — private and sovereign deployment',
+      description:
+        'A production multimodal AI customer-experience agent deployed as managed (Gemini on Vertex AI), private (Gemma 4 12B open weights in the client’s own cloud project), or sovereign (fully on-premise). Quote-based engagement.',
+      provider: { '@type': 'Organization', name: 'Emerge Digital' },
+      areaServed: ['AE', 'SA', 'QA', 'GCC', 'Middle East & Africa'],
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Private AI CX Assistant — Your Data Never Leaves Your Project | Emerge Digital"
+  description="A production AI customer-experience agent on an honest sovereignty ladder: Gemini on Vertex AI, Gemma 4 12B open weights in your own cloud project, or fully on-premise. In-country KSA deployment verified. Quote-based."
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <section class="relative isolate overflow-hidden bg-gradient-hero py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 bg-grid bg-grid-fade"></div>
+    <div aria-hidden="true" class="aurora-strong pointer-events-none absolute inset-0 opacity-70" style="animation: aurora-drift 24s ease-in-out infinite;"></div>
+    <div aria-hidden="true" class="noise pointer-events-none absolute inset-0"></div>
+    <div aria-hidden="true" class="beam-scan pointer-events-none absolute inset-0"></div>
+
+    <Container class="relative">
+      <div class="max-w-3xl">
+        <div class="chip-eyebrow-teal mb-6" data-reveal>
+          <span class="pulse-dot" aria-hidden="true"></span>
+          New Service Line · CX Division
+        </div>
+        <h1 class="text-display-xl text-white" data-reveal data-reveal-delay="1">
+          Enterprise AI CX.<br />
+          <span class="text-gradient-accent">Your data never leaves</span><br />
+          your project.
+        </h1>
+        <p class="mt-6 max-w-2xl text-lead text-platinum/75" data-reveal data-reveal-delay="2">
+          A production-grade customer-experience agent your customers can type to, talk to, or send
+          a photo — grounded on your real systems, never on guesswork. Run it on Google’s frontier
+          models under enterprise terms, on open weights you own inside your own cloud project, or
+          fully on-premise where no cloud is permitted.
+        </p>
+        <div class="mt-9 flex flex-wrap gap-4" data-reveal data-reveal-delay="3">
+          <Button href="/contact/" size="lg" class="btn-shimmer">Book a Data-Residency Assessment</Button>
+          <Button href={aquoraUrl} variant="ghost" size="lg" target="_blank" rel="noopener noreferrer">See the live reference build</Button>
+        </div>
+      </div>
+
+      <div class="mt-10 flex flex-wrap gap-x-8 gap-y-3" data-reveal data-reveal-delay="4">
+        {['Directory-listed Google Cloud partner', 'GCC PDPL aligned', 'In-country KSA deployment — verified', 'Quote-based engagement'].map((t) => (
+          <div class="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-eyebrow text-cool">
+            <div class="h-1 w-1 rounded-full bg-teal/50"></div>
+            {t}
+          </div>
+        ))}
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── Why now: verified facts as rows, not stat cards ───── -->
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-ink py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 50% 40% at 85% 30%, rgba(0,194,199,0.05), transparent 70%); filter: blur(60px);"></div>
+
+    <Container class="relative">
+      <div class="grid gap-14 lg:grid-cols-[minmax(0,26rem)_1fr]">
+        <div>
+          <h2 class="text-display-lg text-white" data-reveal>
+            Open weights changed the <span class="text-gradient-accent">procurement question.</span>
+          </h2>
+          <p class="mt-5 text-lead-sm text-platinum/70" data-reveal data-reveal-delay="1">
+            Until mid-2026, a capable multimodal CX assistant meant sending customer conversations
+            to a model vendor, token by token. Google’s Gemma 4 release ended that trade-off: a
+            12-billion-parameter model that hears, sees, and reasons — small enough to run on
+            hardware your project already has access to, licensed so that you own it.
+          </p>
+          <p class="mt-4 text-sm text-cool" data-reveal data-reveal-delay="2">
+            Every figure on this row is verified against Google’s published Gemma 4 developer
+            guide and model card (June 2026) — and re-verified at scoping.
+          </p>
+        </div>
+
+        <div role="list">
+          {facts.map((f, i) => (
+            <div
+              role="listitem"
+              class="group grid gap-2 border-t border-white/8 py-6 transition-colors duration-300 first:border-t-0 first:pt-0 last:pb-0 hover:border-teal/20 sm:grid-cols-[10.5rem_1fr] sm:gap-8"
+              data-reveal
+              data-reveal-delay={String(i + 1)}
+            >
+              <div class="font-mono text-lg font-bold tracking-tight text-teal">{f.figure}</div>
+              <div>
+                <h3 class="font-semibold text-white">{f.title}</h3>
+                <p class="mt-1.5 max-w-xl text-sm leading-relaxed text-platinum/65 transition-colors duration-300 group-hover:text-platinum/80">{f.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── The sovereignty ladder ────────────────────────────── -->
+  <section id="tiers" class="relative isolate overflow-hidden border-t border-white/[0.06] bg-navy py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 60% 45% at 50% 0%, rgba(0,194,199,0.07), transparent 70%); filter: blur(60px);"></div>
+
+    <Container class="relative">
+      <div class="max-w-3xl">
+        <Eyebrow data-reveal>The sovereignty ladder</Eyebrow>
+        <h2 class="mt-4 text-display-lg text-white" data-reveal data-reveal-delay="1">
+          One architecture. Three answers to
+          <span class="text-gradient-accent">“where does our data live?”</span>
+        </h2>
+        <p class="mt-5 text-lead-sm text-platinum/70" data-reveal data-reveal-delay="2">
+          The agent design is identical at every rung — the same tool-grounded loop, the same
+          channels, the same insights. What changes is where the model runs, and who holds the keys.
+        </p>
+      </div>
+
+      <div class="mt-14 grid gap-5 lg:grid-cols-3 lg:items-stretch">
+        {tiers.map((tier, i) => (
+          <article
+            class:list={[
+              'tier-card group relative flex flex-col overflow-hidden rounded-card-lg border p-7 transition-all duration-400 hover:-translate-y-1',
+              tier.flagship
+                ? 'border-teal/40 bg-teal/[0.06] shadow-glow hover:border-teal/60'
+                : 'border-white/8 bg-white/[0.025] hover:border-teal/25',
+            ]}
+            data-reveal
+            data-reveal-delay={String(i + 1)}
+          >
+            {tier.flagship && (
+              <div aria-hidden="true" class="absolute inset-x-0 top-0 h-[2px] bg-gradient-accent"></div>
+            )}
+
+            <div class="flex items-start justify-between gap-3">
+              <div class="icon-wrap" set:html={tier.icon}></div>
+              {tier.flagship && (
+                <span class="rounded-pill border border-teal/30 bg-teal/[0.12] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-eyebrow text-teal">The headline offer</span>
+              )}
+            </div>
+
+            <h3 class="mt-5 text-display-sm text-white">{tier.name}</h3>
+            <p class:list={['mt-1.5 font-semibold', tier.flagship ? 'text-teal' : 'text-platinum/85']}>{tier.claim}</p>
+            <p class="mt-3 text-sm leading-relaxed text-platinum/65">{tier.lead}</p>
+
+            <dl class="mt-6 space-y-3.5 border-t border-white/8 pt-6">
+              {tier.rows.map((row) => (
+                <div class="grid grid-cols-[5.25rem_1fr] gap-3">
+                  <dt class="pt-px font-mono text-[10px] font-semibold uppercase tracking-wide text-cool">{row.label}</dt>
+                  <dd class="text-[13px] leading-relaxed text-platinum/75">{row.value}</dd>
+                </div>
+              ))}
+            </dl>
+
+            <div class="mt-auto pt-6">
+              <p class="text-[13px] leading-relaxed text-platinum/60"><span class="font-semibold text-platinum/85">Best for:</span> {tier.fit}</p>
+              <div class="mt-5 flex items-center justify-between gap-3 border-t border-white/8 pt-5">
+                <span class="font-mono text-xs font-semibold text-teal">Tailored quote</span>
+                <a href="/contact/" class="inline-flex items-center gap-1 text-[13px] font-semibold text-platinum/75 transition-colors duration-300 hover:text-teal">
+                  Scope it
+                  <span aria-hidden="true" class="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <p class="mt-8 max-w-3xl text-sm leading-relaxed text-cool" data-reveal>
+        Pricing follows the engagement, not a rate card: every tier is scoped and quoted against
+        your integration surface, channels, and regulatory posture during the Assessment.
+      </p>
+    </Container>
+  </section>
+
+  <!-- ── Residency, stated plainly ─────────────────────────── -->
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-ink py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 45% 40% at 15% 60%, rgba(61,220,227,0.05), transparent 70%); filter: blur(60px);"></div>
+
+    <Container class="relative">
+      <div class="grid gap-14 lg:grid-cols-[minmax(0,24rem)_1fr] lg:items-start">
+        <div class="lg:sticky lg:top-28">
+          <h2 class="text-display-lg text-white" data-reveal>
+            The residency map, <span class="text-gradient-accent">stated plainly.</span>
+          </h2>
+          <p class="mt-5 text-lead-sm text-platinum/70" data-reveal data-reveal-delay="1">
+            Most vendors answer the residency question with a hand-wave. We answer it with region
+            codes — including the regions where the honest answer is “not there, use the
+            Sovereign tier.” That precision is the point.
+          </p>
+          <p class="mt-4 text-sm text-cool" data-reveal data-reveal-delay="2">
+            GPU quota is confirmed for your specific project during the Assessment — documented
+            availability and granted quota are not the same thing, and we treat them accordingly.
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          {residency.map((r, i) => (
+            <div
+              class="group rounded-card border border-white/8 p-6 transition-all duration-400 hover:border-teal/25 hover:-translate-y-0.5"
+              style="background: rgba(255,255,255,0.02);"
+              data-reveal
+              data-reveal-delay={String(i + 1)}
+            >
+              <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+                <div class="flex items-baseline gap-3">
+                  <span class="font-mono text-[13px] font-bold text-teal">{r.code}</span>
+                  <span class="text-sm font-semibold text-white">{r.place}</span>
+                </div>
+                <span
+                  class:list={[
+                    'inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-wide',
+                    r.ok ? 'text-success' : 'text-cool',
+                  ]}
+                >
+                  <span
+                    aria-hidden="true"
+                    class:list={['h-1.5 w-1.5 rounded-full', r.ok ? 'bg-success' : 'bg-cool/60']}
+                  ></span>
+                  {r.verdict}
+                </span>
+              </div>
+              <p class="mt-3 text-sm leading-relaxed text-platinum/65 transition-colors duration-300 group-hover:text-platinum/80">{r.detail}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── Live proof: Ask Aqua ──────────────────────────────── -->
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-navy py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 55% 45% at 80% 80%, rgba(0,194,199,0.07), transparent 70%); filter: blur(60px);"></div>
+
+    <Container class="relative">
+      <div class="grid gap-14 lg:grid-cols-2 lg:items-center">
+        <div>
+          <Eyebrow data-reveal>Reference implementation</Eyebrow>
+          <h2 class="mt-4 text-display-lg text-white" data-reveal data-reveal-delay="1">
+            Live proof, <span class="text-gradient-accent">not a slide.</span>
+          </h2>
+          <p class="mt-5 text-lead-sm text-platinum/70" data-reveal data-reveal-delay="2">
+            “Ask Aqua” runs today on <a href={aquoraUrl} target="_blank" rel="noopener noreferrer" class="font-semibold text-teal underline decoration-teal/30 underline-offset-4 transition-colors hover:text-cyan">aquora.ae</a> —
+            an Emerge-operated UAE commerce property with a catalogue of roughly six thousand
+            products. It is the Managed tier of this exact architecture, in production: an agentic
+            tool loop in which every product, price, and order status the agent shows is grounded
+            in a live system result. It cannot invent a SKU.
+          </p>
+          <p class="mt-4 text-lead-sm text-platinum/70" data-reveal data-reveal-delay="3">
+            The Private and Sovereign tiers swap the brain for Gemma 4 12B.
+            The proven design does not change.
+          </p>
+          <div class="mt-8" data-reveal data-reveal-delay="4">
+            <Button href={aquoraUrl} target="_blank" rel="noopener noreferrer" class="btn-shimmer">Try Ask Aqua live</Button>
+          </div>
+        </div>
+
+        <ul class="space-y-3" role="list">
+          {aquaCapabilities.map((cap, i) => (
+            <li
+              class="flex items-start gap-3.5 rounded-xl border border-white/8 px-5 py-4 transition-all duration-400 hover:border-teal/25"
+              style="background: rgba(255,255,255,0.02);"
+              data-reveal
+              data-reveal-delay={String((i % 5) + 1)}
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" class="mt-0.5 shrink-0 text-teal">
+                <path d="M2.5 8.5l3.5 3.5 7.5-8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="text-sm leading-relaxed text-platinum/75">{cap}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── Engagement: Crawl–Walk–Run ────────────────────────── -->
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-ink py-section-sm md:py-section">
+    <Container class="relative">
+      <div class="grid gap-14 lg:grid-cols-2 lg:items-center">
+        <div>
+          <Eyebrow data-reveal>How we engage</Eyebrow>
+          <h2 class="mt-4 text-display-lg text-white" data-reveal data-reveal-delay="1">
+            The same <span class="text-gradient-accent">Crawl–Walk–Run</span> discipline as every Emerge program.
+          </h2>
+          <p class="mt-5 text-lead-sm text-platinum/70" data-reveal data-reveal-delay="2">
+            Sovereignty programs fail when the architecture is chosen before the regulation is
+            read. So the engagement starts with a fixed-scope Assessment — and every phase after
+            it is gated, named, and quoted before it begins.
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          {phases.map((step, idx) => (
+            <div
+              class="group flex gap-5 rounded-card border border-white/8 p-6 transition-all duration-400 hover:border-teal/30 hover:-translate-y-0.5"
+              style="background: rgba(255,255,255,0.025); backdrop-filter: blur(12px);"
+              data-reveal
+              data-reveal-delay={String(idx + 1)}
+            >
+              <div class="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-accent font-mono text-xs font-bold text-ink shadow-glow">
+                {String(idx + 1).padStart(2, '0')}
+              </div>
+              <div class="flex-1">
+                <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <h3 class="font-semibold text-teal">{step.phase}</h3>
+                  <span class="text-sm font-semibold text-white">{step.name}</span>
+                  <span class="ml-auto rounded-pill border border-white/10 bg-white/5 px-2 py-0.5 font-mono text-[10px] text-cool">{step.price}</span>
+                </div>
+                <p class="mt-2 text-sm leading-relaxed text-platinum/65 transition-colors duration-300 group-hover:text-platinum/85">{step.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── FAQ ───────────────────────────────────────────────── -->
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-navy py-section-sm md:py-section">
+    <Container class="relative">
+      <div class="mx-auto max-w-3xl">
+        <h2 class="text-display-lg text-white" data-reveal>
+          The questions procurement <span class="text-gradient-accent">actually asks.</span>
+        </h2>
+
+        <div class="mt-10 space-y-3">
+          {faqs.map((f, i) => (
+            <details
+              class="faq-item group rounded-card border border-white/8 transition-colors duration-300 open:border-teal/25 hover:border-teal/20"
+              style="background: rgba(255,255,255,0.02);"
+              data-reveal
+              data-reveal-delay={String(i + 1)}
+            >
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-5 text-[15px] font-semibold text-white [&::-webkit-details-marker]:hidden">
+                {f.q}
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" class="faq-chevron shrink-0 text-teal transition-transform duration-300">
+                  <path d="M2 5l5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </summary>
+              <p class="px-6 pb-6 text-sm leading-relaxed text-platinum/70">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── Final CTA ─────────────────────────────────────────── -->
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-ink py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 70% 60% at 50% 110%, rgba(0,194,199,0.22), transparent 65%), radial-gradient(ellipse 45% 50% at 18% 0%, rgba(61,220,227,0.12), transparent 60%); filter: blur(60px);"></div>
+
+    <Container class="relative">
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-display-lg text-white" data-reveal>
+          Start where the regulation starts.
+        </h2>
+        <p class="mt-5 text-lead text-platinum/70" data-reveal data-reveal-delay="1">
+          The Data-Residency Assessment is a fixed-scope Crawl phase: your regulatory posture, the
+          right tier with evidence, and a procurement-ready architecture — before you commit to a
+          build.
+        </p>
+        <div class="mt-10 flex flex-wrap justify-center gap-4" data-reveal data-reveal-delay="2">
+          <Button href="/contact/" size="lg" class="btn-shimmer">Book a Data-Residency Assessment</Button>
+          <Button href="/services/" variant="ghost" size="lg">See the full capability stack</Button>
+        </div>
+
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3" data-reveal data-reveal-delay="3">
+          {['Directory-listed Google Cloud partner', 'GCC PDPL aligned', 'Quote-based engagement'].map((t) => (
+            <div class="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-eyebrow text-cool">
+              <div class="h-1 w-1 rounded-full bg-teal/50"></div>
+              {t}
+            </div>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>
+
+<style>
+  @keyframes aurora-drift {
+    0%, 100% { transform: translate3d(0,0,0) scale(1); opacity: 0.85; }
+    50%       { transform: translate3d(2%,-3%,0) scale(1.06); opacity: 1; }
+  }
+
+  .faq-item[open] .faq-chevron { transform: rotate(180deg); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tier-card, .faq-chevron { transition: none !important; }
+  }
+</style>
