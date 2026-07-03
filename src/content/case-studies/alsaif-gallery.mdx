@@ -28,13 +28,13 @@ The brief to Emerge Digital was clear: build an analytics foundation we can trus
 
 We opened with a four-week **Crawl phase** — a structured analytics audit that mapped every data touchpoint across the customer journey: paid search, social, on-site behaviour, checkout, in-store scan, and post-purchase. We assessed PDPL compliance gaps, documented the tag sprawl across the existing GTM container, and sized the revenue impact of the attribution blind spots.
 
-The audit surfaced a critical finding: approximately 38% of converting sessions were unattributed, most of them originating from WhatsApp referrals — a dominant but unmeasured channel for Saudi shoppers. That single insight justified the rebuild.
+The audit surfaced a critical finding: a substantial share of converting sessions were going unattributed, most of them originating from WhatsApp referrals — a dominant but unmeasured channel for Saudi shoppers. That single insight justified the rebuild.
 
 The **Walk phase** ran for ten weeks across four workstreams:
 
 1. **GA4 migration and BigQuery integration** — A clean-sheet GA4 property configured for Arabic-first e-commerce, with enhanced e-commerce events, cross-domain tracking across the loyalty sub-domain, and a live BigQuery export for warehouse-level analysis.
 
-2. **Server-side GTM migration** — We moved the entire tag architecture to a server-side container hosted in a KSA-resident cloud environment. This eliminated third-party cookie dependency, reduced page-load impact from tracking scripts by 340ms, and created a clean PDPL-compliant data pipeline.
+2. **Server-side GTM migration** — We moved the entire tag architecture to a server-side container hosted in a KSA-resident cloud environment. This eliminated third-party cookie dependency, reduced the page-load impact of tracking scripts, and created a clean PDPL-compliant data pipeline.
 
 3. **Consent management platform** — An Arabic/English bilingual consent layer, designed to PDPL specifications, with preference storage, audit logging, and downstream signal suppression for opted-out users.
 
@@ -44,14 +44,10 @@ The **Walk phase** ran for ten weeks across four workstreams:
 
 Within eight months of go-live, the results were clear:
 
-- **+54% increase in attributable digital revenue** — not by generating new revenue, but by measuring revenue that was already there. The WhatsApp channel alone accounted for 22% of total digital conversion once properly tracked.
-- **340ms reduction in page load time** from tag consolidation and server-side migration — a direct Lighthouse Core Web Vitals improvement.
-- **Full PDPL compliance** across all tracking, consent, and data-residency requirements — confirmed by a third-party compliance review.
-- **4.2× improvement in media attribution accuracy**, enabling the team to reallocate budget from underperforming paid channels to WhatsApp-driven retargeting sequences.
+- **+54% increase in attributable digital revenue** — not by generating new revenue, but by measuring revenue that was already there. Much of it came from the WhatsApp channel, which had been a major but effectively invisible source of conversions before the rebuild.
+- **A faster, lighter tracking layer** — consolidating tags and moving to a server-side architecture reduced the page-load impact of tracking scripts, a direct Core Web Vitals improvement.
+- **PDPL-aligned tracking, consent, and data residency** — the new architecture met the consent, tracking, and data-residency requirements the brief called for from day one.
+- **More reliable media attribution** — clean, consented, well-modelled data gave the team the confidence to reallocate budget from underperforming paid channels toward WhatsApp-driven retargeting.
 - **Zero disruption to trading** — the entire migration was executed in parallel with the existing stack, with a clean cutover timed to a low-traffic window.
 
 The Alsaif Gallery marketing team now runs weekly attribution reviews against a single dashboard. Media budget decisions are made on data, not instinct.
-
-> "Emerge Digital understood our market — the WhatsApp-first customer behaviour, the Mada payment patterns, the PDPL requirements — in a way that our previous analytics partners never had. The rebuild paid for itself in the first quarter."
->
-> — Head of E-commerce, Alsaif Gallery
