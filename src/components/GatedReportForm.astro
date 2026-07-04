@@ -1,0 +1,267 @@
+---
+/**
+ * GatedReportForm — inline lead-capture form on gated insight pages.
+ *
+ * Renders inside the article body when frontmatter.gated is true.
+ * Posts to /api/report-download; on success reveals a direct link to the
+ * PDF and also confirms an email was sent to the requester.
+ *
+ * Design tokens reused verbatim from contact.astro (field-group /
+ * field-input / gradient-accent CTA / spinner). No new primitives.
+ */
+export interface Props {
+  reportSlug: string;
+  reportTitle: string;
+  reportPath: string; // absolute site path to the PDF, e.g. /reports/foo.pdf
+}
+
+const { reportSlug, reportTitle, reportPath } = Astro.props;
+---
+
+<div
+  class="gated-report-form mt-8 rounded-2xl border border-teal/20 bg-teal/5 p-7 md:p-10"
+  data-report-slug={reportSlug}
+  data-report-path={reportPath}
+>
+  <!-- Success state — hidden until form submits successfully -->
+  <div
+    class="gated-success hidden"
+    role="status"
+    aria-live="polite"
+  >
+    <div class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-full bg-teal/15">
+      <svg class="h-5 w-5 text-teal" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h3 class="text-display-md text-white">Report ready.</h3>
+    <p class="mt-3 text-platinum/75">
+      Your download is below. We've also emailed the link to the address you provided —
+      keep it handy for later reference.
+    </p>
+    <a
+      class="gated-download mt-6 inline-flex items-center gap-2 rounded-pill bg-gradient-accent px-6 py-3 text-sm font-semibold text-ink transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glow focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal focus-visible:outline-offset-3"
+      href={reportPath}
+      download
+      target="_blank"
+      rel="noopener"
+    >
+      Download {reportTitle} <span aria-hidden="true">↓</span>
+    </a>
+  </div>
+
+  <!-- Form state -->
+  <form
+    class="gated-form"
+    method="POST"
+    data-endpoint="/api/report-download"
+    novalidate
+  >
+    <div class="mb-6">
+      <p class="text-eyebrow uppercase text-teal">Get the report</p>
+      <h3 class="mt-2 text-lg font-semibold text-white">
+        Read the full 15 pages — no paywall, just a name for our records.
+      </h3>
+      <p class="mt-2 text-sm text-platinum/70">
+        We'll email you the download link and follow up only if the retail/CPG
+        agenda in the report matches yours. No sales sequences.
+      </p>
+    </div>
+
+    <input type="hidden" name="report_slug" value={reportSlug} />
+    <input type="hidden" name="report_title" value={reportTitle} />
+    <input type="hidden" name="form-source" value="gated-insight" />
+
+    <!-- Name + Work email -->
+    <div class="grid gap-5 sm:grid-cols-2">
+      <div class="field-group">
+        <label for="grf-name" class="field-label">Full name <span class="text-teal" aria-hidden="true">*</span></label>
+        <input type="text" id="grf-name" name="full-name" autocomplete="name" required class="field-input" placeholder="Yousef Al-Rashidi" />
+        <p class="field-error hidden" role="alert"></p>
+      </div>
+      <div class="field-group">
+        <label for="grf-email" class="field-label">Work email <span class="text-teal" aria-hidden="true">*</span></label>
+        <input type="email" id="grf-email" name="email" autocomplete="email" required class="field-input" placeholder="you@company.com" />
+        <p class="field-error hidden" role="alert"></p>
+      </div>
+    </div>
+
+    <!-- Company + Role -->
+    <div class="mt-5 grid gap-5 sm:grid-cols-2">
+      <div class="field-group">
+        <label for="grf-company" class="field-label">Company <span class="text-teal" aria-hidden="true">*</span></label>
+        <input type="text" id="grf-company" name="company" autocomplete="organization" required class="field-input" placeholder="ACME Retail Group" />
+        <p class="field-error hidden" role="alert"></p>
+      </div>
+      <div class="field-group">
+        <label for="grf-role" class="field-label">Role / Title <span class="text-teal" aria-hidden="true">*</span></label>
+        <input type="text" id="grf-role" name="role" autocomplete="organization-title" required class="field-input" placeholder="Chief Digital Officer" />
+        <p class="field-error hidden" role="alert"></p>
+      </div>
+    </div>
+
+    <!-- Country -->
+    <div class="mt-5 field-group">
+      <label for="grf-country" class="field-label">Country <span class="text-teal" aria-hidden="true">*</span></label>
+      <select id="grf-country" name="country" required class="field-input field-select">
+        <option value="" disabled selected>Select country</option>
+        <option value="UAE">UAE</option>
+        <option value="KSA">Saudi Arabia (KSA)</option>
+        <option value="Egypt">Egypt</option>
+        <option value="Kuwait">Kuwait</option>
+        <option value="Bahrain">Bahrain</option>
+        <option value="Oman">Oman</option>
+        <option value="Qatar">Qatar</option>
+        <option value="Other">Other</option>
+      </select>
+      <p class="field-error hidden" role="alert"></p>
+    </div>
+
+    <!-- Honeypot -->
+    <div class="hidden" aria-hidden="true">
+      <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <div class="mt-7">
+      <button
+        type="submit"
+        class="gated-submit inline-flex w-full items-center justify-center gap-2 rounded-pill bg-gradient-accent px-8 py-4 text-base font-semibold text-ink transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glow focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal focus-visible:outline-offset-3 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+      >
+        <span class="gated-submit-label">Send me the report</span>
+        <span aria-hidden="true" class="gated-submit-arrow">→</span>
+        <svg class="gated-submit-spinner hidden h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+        </svg>
+      </button>
+      <p class="mt-3 text-xs text-cool">
+        Your details are used only to send the report and follow up briefly if there's a fit.
+        See our <a href="/legal/privacy/" class="text-teal underline underline-offset-2 hover:text-cyan">Privacy Policy</a>.
+      </p>
+    </div>
+
+    <p class="gated-form-error hidden mt-4 rounded-lg border border-warning/20 bg-warning/5 px-4 py-3 text-sm text-warning" role="alert"></p>
+  </form>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.gated-report-form').forEach((container) => {
+    const form = container.querySelector<HTMLFormElement>('.gated-form');
+    const successPanel = container.querySelector<HTMLElement>('.gated-success');
+    const submitBtn = container.querySelector<HTMLButtonElement>('.gated-submit');
+    const submitLabel = container.querySelector<HTMLElement>('.gated-submit-label');
+    const submitArrow = container.querySelector<HTMLElement>('.gated-submit-arrow');
+    const submitSpinner = container.querySelector<HTMLElement>('.gated-submit-spinner');
+    const formError = container.querySelector<HTMLElement>('.gated-form-error');
+    if (!form || !successPanel || !submitBtn) return;
+
+    // GA4 helper — same pattern as future.emergedigital.com / lead capture
+    function gaEvent(event: string, payload: Record<string, unknown> = {}) {
+      const w = window as unknown as { dataLayer?: unknown[]; gtag?: (...args: unknown[]) => void };
+      if (typeof w.gtag === 'function') {
+        w.gtag('event', event, payload);
+      } else if (Array.isArray(w.dataLayer)) {
+        w.dataLayer.push({ event, ...payload });
+      }
+    }
+
+    function getError(input: HTMLInputElement | HTMLSelectElement): string {
+      if (input.validity.valueMissing) return 'This field is required.';
+      if (input.validity.typeMismatch && input.type === 'email') return 'Please enter a valid work email address.';
+      return '';
+    }
+
+    function showError(fieldGroup: Element, message: string) {
+      const errorEl = fieldGroup.querySelector<HTMLElement>('.field-error');
+      const inputEl = fieldGroup.querySelector<HTMLElement>('.field-input');
+      if (errorEl) { errorEl.textContent = message; errorEl.classList.remove('hidden'); }
+      if (inputEl) inputEl.classList.add('field-input--error');
+    }
+
+    function clearError(fieldGroup: Element) {
+      const errorEl = fieldGroup.querySelector<HTMLElement>('.field-error');
+      const inputEl = fieldGroup.querySelector<HTMLElement>('.field-input');
+      if (errorEl) { errorEl.textContent = ''; errorEl.classList.add('hidden'); }
+      if (inputEl) inputEl.classList.remove('field-input--error');
+    }
+
+    form.querySelectorAll<HTMLInputElement | HTMLSelectElement>('.field-input[required]').forEach((input) => {
+      input.addEventListener('blur', () => {
+        const group = input.closest('.field-group');
+        if (!group) return;
+        const error = getError(input);
+        if (error) showError(group, error); else clearError(group);
+      });
+      input.addEventListener('input', () => {
+        const group = input.closest('.field-group');
+        if (!group) return;
+        if (input.validity.valid) clearError(group);
+      });
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      let valid = true;
+      form.querySelectorAll<HTMLInputElement | HTMLSelectElement>('.field-input[required]').forEach((input) => {
+        const group = input.closest('.field-group');
+        if (!group) return;
+        const error = getError(input);
+        if (error) { showError(group, error); valid = false; }
+      });
+      if (!valid) {
+        const firstError = form.querySelector<HTMLElement>('.field-input--error');
+        firstError?.focus();
+        return;
+      }
+
+      // Honeypot
+      const honeypot = form.querySelector<HTMLInputElement>('[name="_gotcha"]');
+      if (honeypot?.value) return;
+
+      const slug = container.dataset.reportSlug ?? '';
+      gaEvent('report_download_initiated', { report_slug: slug });
+
+      submitBtn.disabled = true;
+      if (submitLabel) submitLabel.textContent = 'Sending…';
+      submitArrow?.classList.add('hidden');
+      submitSpinner?.classList.remove('hidden');
+      formError?.classList.add('hidden');
+
+      try {
+        const endpoint = form.dataset.endpoint ?? '/api/report-download';
+        const fd = new FormData(form);
+        const payload: Record<string, string> = {};
+        fd.forEach((v, k) => { payload[k] = String(v); });
+
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          throw new Error(body?.error ?? `Request failed (${res.status})`);
+        }
+
+        // Reveal success + download link
+        form.classList.add('hidden');
+        successPanel.classList.remove('hidden');
+        gaEvent('report_downloaded', { report_slug: slug });
+      } catch (err) {
+        if (formError) {
+          formError.textContent = err instanceof Error
+            ? err.message
+            : 'Something went wrong. Please try again or email rami@emergedigital.com.';
+          formError.classList.remove('hidden');
+        }
+        submitBtn.disabled = false;
+        if (submitLabel) submitLabel.textContent = 'Send me the report';
+        submitArrow?.classList.remove('hidden');
+        submitSpinner?.classList.add('hidden');
+        gaEvent('report_download_failed', { report_slug: slug });
+      }
+    });
+  });
+</script>

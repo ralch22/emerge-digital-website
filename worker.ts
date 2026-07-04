@@ -94,6 +94,12 @@ export default {
       return new Response('Method Not Allowed', { status: 405 });
     }
 
+    if (url.pathname === '/api/report-download') {
+      if (request.method === 'OPTIONS') return corsPreflightResponse(request);
+      if (request.method === 'POST')    return handleReportDownload(request, env);
+      return new Response('Method Not Allowed', { status: 405 });
+    }
+
     // Cal.com → Salesforce Milestone__c upsert (blueprint §9.3.1). Server-to-server
     // webhook: no CORS/preflight; authenticity is established by the HMAC signature.
     if (url.pathname === '/api/cal-webhook') {
@@ -480,6 +486,206 @@ async function handleSubscribe(request: Request, env: Env): Promise<Response> {
   }
 
   return json({ ok: true }, 200, request);
+}
+
+// ── Report download handler ─────────────────────────────────
+//
+// Gated insight-report lead capture. Two Resend sends per successful POST:
+//   1. To the requester — deliver the download link (recovery + engagement signal).
+//   2. To rami@ — inbound lead notification with contact details.
+//
+// Reuses the same env (RESEND_API_KEY / FROM_EMAIL / TO_EMAIL) as the contact +
+// investor handlers. Honeypot pattern is identical: silent fake-200 on trap.
+// Slug→PDF mapping lives here (small, allow-listed) so a spoofed slug can't
+// leak an arbitrary link.
+
+const REPORT_ASSETS: Record<string, string> = {
+  'agent-trends-mea-retail-cpg-2026': '/reports/emerge-ai-agent-trends-2026-mea-retail-cpg.pdf',
+};
+
+async function handleReportDownload(request: Request, env: Env): Promise<Response> {
+  let fields: Record<string, string>;
+  try {
+    const ct = request.headers.get('content-type') ?? '';
+    if (ct.includes('application/json')) {
+      fields = await request.json() as Record<string, string>;
+    } else {
+      const fd = await request.formData();
+      fields = Object.fromEntries(fd.entries()) as Record<string, string>;
+    }
+  } catch {
+    return json({ error: 'Invalid request body' }, 400, request);
+  }
+
+  if (fields['_gotcha']) return json({ ok: true }, 200, request);
+
+  const required = ['full-name', 'company', 'email', 'role', 'country', 'report_slug'];
+  for (const f of required) {
+    if (!fields[f]?.toString().trim()) {
+      return json({ error: `Missing field: ${f}` }, 422, request);
+    }
+  }
+  if (!isValidEmail(fields['email'])) {
+    return json({ error: 'Invalid email address' }, 422, request);
+  }
+
+  const slug = fields['report_slug'].toString().trim();
+  const reportPath = REPORT_ASSETS[slug];
+  if (!reportPath) {
+    return json({ error: 'Unknown report' }, 404, request);
+  }
+  const reportTitle = (fields['report_title'] ?? 'the Emerge Digital report').toString().trim();
+
+  if (!env.RESEND_API_KEY || !env.TO_EMAIL || !env.FROM_EMAIL) {
+    console.error('Missing env vars: RESEND_API_KEY, TO_EMAIL, FROM_EMAIL');
+    return json({ error: 'Server configuration error' }, 500, request);
+  }
+
+  const name    = fields['full-name'];
+  const company = fields['company'];
+  const email   = fields['email'];
+  const role    = fields['role'];
+  const country = fields['country'];
+
+  const origin = new URL(request.url).origin;
+  const absoluteDownload = `${origin}${reportPath}`;
+
+  // ── (1) Email TO REQUESTER — download link ────────────────
+  const requesterSubject = `Your download: ${reportTitle}`;
+  const requesterHtml = `<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:24px;background:#0A1F3D;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <div style="max-width:560px;margin:0 auto;background:#06122A;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.08)">
+    <div style="padding:24px 28px;border-bottom:1px solid rgba(255,255,255,0.08)">
+      <p style="margin:0;font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#6B7A90">Emerge Digital</p>
+      <h1 style="margin:6px 0 0;font-size:18px;font-weight:600;color:#fff">${escapeHtml(reportTitle)}</h1>
+      <p style="margin:6px 0 0;font-size:12px;color:#6B7A90">Your download is ready.</p>
+    </div>
+    <div style="padding:28px">
+      <p style="margin:0 0 20px;font-size:14px;color:#E8EEF5;line-height:1.6">Thanks, ${escapeHtml(name)} — as requested, here is the report.</p>
+      <p style="margin:0 0 24px">
+        <a href="${absoluteDownload}" style="display:inline-block;background:linear-gradient(90deg,#00C2C7,#3DDCE3);color:#06122A;font-weight:600;font-size:14px;padding:12px 24px;border-radius:9999px;text-decoration:none">
+          Download the report →
+        </a>
+      </p>
+      <p style="margin:0 0 8px;font-size:12px;color:#6B7A90;line-height:1.6">Direct link (if the button doesn't work):</p>
+      <p style="margin:0 0 20px;font-size:12px;color:#00C2C7;word-break:break-all"><a href="${absoluteDownload}" style="color:#00C2C7">${absoluteDownload}</a></p>
+      <p style="margin:24px 0 0;font-size:13px;color:#6B7A90;line-height:1.6">If any of the five trends in the report maps to what you're working on this quarter, reply to this email and we'll set up a 30-minute Vision 2030 Readiness Briefing with Rami — no deck, no sales sequence.</p>
+    </div>
+    <div style="padding:16px 28px;background:rgba(255,255,255,0.02);border-top:1px solid rgba(255,255,255,0.06)">
+      <p style="margin:0;font-size:11px;color:#6B7A90">Emerge Digital · Dubai Mainland · Local Prime · Global Power</p>
+    </div>
+  </div>
+</body>
+</html>`;
+  const requesterText = [
+    `Thanks, ${name} — your download is ready.`,
+    '',
+    `Report: ${reportTitle}`,
+    `Direct link: ${absoluteDownload}`,
+    '',
+    'If any of the five trends map to what you are working on this quarter, reply to this email and we will set up a 30-minute Vision 2030 Readiness Briefing with Rami — no deck, no sales sequence.',
+    '',
+    'Emerge Digital · Dubai Mainland',
+  ].join('\n');
+
+  // ── (2) Email TO RAMI — lead notification ─────────────────
+  const ownerSubject = `Report download: ${name} · ${company} (${reportTitle})`;
+  const ownerRows = [
+    ['Report',      reportTitle],
+    ['Name',        name],
+    ['Company',     company],
+    ['Email',       `<a href="mailto:${email}" style="color:#00C2C7">${email}</a>`],
+    ['Role',        role],
+    ['Country',     country],
+    ['Slug',        slug],
+    ['Delivered',   `<a href="${absoluteDownload}" style="color:#00C2C7">${absoluteDownload}</a>`],
+  ].map(([label, value]) => `
+    <tr>
+      <td style="padding:8px 16px 8px 0;vertical-align:top;color:#6B7A90;font-size:13px;white-space:nowrap;width:130px">${label}</td>
+      <td style="padding:8px 0;font-size:14px;color:#E8EEF5;border-bottom:1px solid rgba(255,255,255,0.07)">${value}</td>
+    </tr>`).join('');
+  const ownerHtml = `<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:24px;background:#0A1F3D;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <div style="max-width:560px;margin:0 auto;background:#06122A;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.08)">
+    <div style="padding:24px 28px;border-bottom:1px solid rgba(255,255,255,0.08)">
+      <p style="margin:0;font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#6B7A90">Emerge Digital</p>
+      <h1 style="margin:6px 0 0;font-size:18px;font-weight:600;color:#fff">Report download — new lead</h1>
+    </div>
+    <div style="padding:24px 28px">
+      <table style="width:100%;border-collapse:collapse">${ownerRows}</table>
+    </div>
+    <div style="padding:20px 28px;border-top:1px solid rgba(255,255,255,0.08)">
+      <a href="mailto:${email}?subject=Re: ${encodeURIComponent(reportTitle)}"
+         style="display:inline-block;background:linear-gradient(90deg,#00C2C7,#3DDCE3);color:#06122A;font-weight:600;font-size:13px;padding:10px 20px;border-radius:9999px;text-decoration:none">
+        Reply to ${escapeHtml(name)} →
+      </a>
+    </div>
+  </div>
+</body>
+</html>`;
+  const ownerText = [
+    `New report download`,
+    `Report: ${reportTitle}`,
+    `Slug:   ${slug}`,
+    `From:   ${name} <${email}>`,
+    `Firm:   ${company}`,
+    `Role:   ${role}`,
+    `Country: ${country}`,
+    `Link:    ${absoluteDownload}`,
+  ].join('\n');
+
+  // Fire both sends. Owner-notification is best-effort — if it fails we still
+  // hand the requester their download (they filled the form; we owe them the file).
+  const results = await Promise.allSettled([
+    fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: `Emerge Digital <${env.FROM_EMAIL}>`,
+        to: [email],
+        subject: requesterSubject,
+        html: requesterHtml,
+        text: requesterText,
+        reply_to: env.TO_EMAIL,
+      }),
+    }),
+    fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: `Emerge Digital <${env.FROM_EMAIL}>`,
+        to: [env.TO_EMAIL],
+        reply_to: email,
+        subject: ownerSubject,
+        html: ownerHtml,
+        text: ownerText,
+      }),
+    }),
+  ]);
+
+  const requesterOk = results[0].status === 'fulfilled' && results[0].value.ok;
+  if (!requesterOk) {
+    if (results[0].status === 'fulfilled') {
+      const body = await results[0].value.text().catch(() => '');
+      console.error('Resend (requester) error:', results[0].value.status, body);
+    } else {
+      console.error('Resend (requester) fetch error:', results[0].reason);
+    }
+    return json({ error: 'Email delivery failed' }, 502, request);
+  }
+  if (results[1].status !== 'fulfilled' || !results[1].value.ok) {
+    console.error('Resend (owner-notification) send failed — requester still received link');
+  }
+
+  return json({ ok: true, download: reportPath }, 200, request);
+}
+
+function escapeHtml(s: string): string {
+  return s.replace(/[&<>"']/g, (c) => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string
+  ));
 }
 
 // ── Cal.com webhook → Salesforce Milestone__c (blueprint §9.3.1) ──

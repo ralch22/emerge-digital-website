@@ -4,6 +4,15 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import Container from '../../components/Container.astro';
 import Eyebrow from '../../components/Eyebrow.astro';
 import Button from '../../components/Button.astro';
+import GatedReportForm from '../../components/GatedReportForm.astro';
+
+// Slug → PDF path mapping for gated Report-category insights. Report files
+// live in public/reports/ and are served by the CF Worker's ASSETS binding.
+// Add a row per gated report — the form on the insight page uses this to
+// hand back the download URL after submission.
+const REPORT_ASSETS: Record<string, string> = {
+  'agent-trends-mea-retail-cpg-2026': '/reports/emerge-ai-agent-trends-2026-mea-retail-cpg.pdf',
+};
 
 export async function getStaticPaths() {
   const articles = await getCollection('insights', ({ data }) => data.published);
@@ -123,6 +132,13 @@ const jsonLd = {
           <!-- Prose -->
           <article class="prose-insight prose max-w-none">
             <Content />
+            {gated && REPORT_ASSETS[article.slug] && (
+              <GatedReportForm
+                reportSlug={article.slug}
+                reportTitle={title}
+                reportPath={REPORT_ASSETS[article.slug]}
+              />
+            )}
           </article>
 
           <!-- Sidebar -->
