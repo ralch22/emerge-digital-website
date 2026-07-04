@@ -59,7 +59,7 @@ Pull copy from `docs/brand-and-content.md`. When writing or editing copy, respec
 
 **Avoid:** synergy, world-class, cutting-edge, disruptive, ninja/rockstar/guru, leverage (as a verb), unique, revolutionary, bleeding-edge, "we believe" filler.
 
-**Tone:** confident, not arrogant. Specific, not vague. Calm, not breathless. Reference concrete numbers (23 years, 7 offices, 80,000+ engineers, 4 GMP partners worldwide) wherever they fit.
+**Tone:** confident, not arrogant. Specific, not vague. Calm, not breathless. Reference concrete numbers (23 years, 7 offices, 80,000+ engineers) wherever they fit. On GMP, Emerge is an **authorized reseller delivering DV360/SA360/CM360 through a top-four full-stack GMP partner** — never claim Emerge is itself "one of four GMP partners" (that is the partner's certification, not Emerge's).
 
 ## File structure conventions
 
