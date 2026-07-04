@@ -1,10 +1,11 @@
 # Emerge Ecosystem — Shared North-Star
 
-This is the single source of truth that all four Emerge Digital sites ladder to:
+This is the single source of truth that all five Emerge Digital sites ladder to:
 the corporate hub (`emergedigital.com`), the Agentforce practice
 (`future.emergedigital.com`), the live ROAI proof site (`roai.emergedigital.ae`),
-and the VaultOS knowledge product (`vault.emergedigital.com`).
-Every headline, subhead, and proof point on any of the four should be traceable back
+the VaultOS knowledge product (`vault.emergedigital.com`), and the Dev Pods
+managed delivery service (`pods.emergedigital.com`).
+Every headline, subhead, and proof point on any of the five should be traceable back
 to the spine below. When in doubt, this document wins.
 
 ## North-star
@@ -36,6 +37,7 @@ Keep each site's one-liner exactly as written below.
 | **Future** | future.emergedigital.com | The Agentforce practice | "Agentforce that earns its keep." | Thread human + governed; tighten ICP to Gulf Gov/BFSI; echo Local Prime + link the hub. |
 | **Vela / ROAI** | roai.emergedigital.ae | Live ROAI proof | "Return on AI Investment, measured." | Add governance + Gulf Gov/BFSI context; keep ROAI lead. |
 | **VaultOS** | vault.emergedigital.com | Knowledge layer | "Knowledge your agents can run on — OKF-compliant, governed, agent-ready." | Ecosystem links landed 2026-06; hub surfaces the enterprise OKF angle only (no personal-tier pricing on the hub). |
+| **Dev Pods** | pods.emergedigital.com | Governed agent delivery service | "An agent dev-team your seniors sign off on — every PR reviewed, every merge earned." | New (2026-07) — landing + demo asset shipping; no Navbar slot until the first paying pod. |
 
 ## Voice
 
@@ -61,3 +63,17 @@ cutting-edge, disruptive, leverage (as a verb), revolutionary, "we believe".
 > "Vela OS runs on VaultOS" and "Agentforce agents run on VaultOS." The hub presents the
 > enterprise OKF Knowledge Graph angle only; personal-tier pricing lives solely on
 > vault.emergedigital.com.
+
+> **Dev Pods truthful-claims note:** Dev Pods is positioned as *the governed agent delivery
+> service* — quote-based, managed, human-gated. Claims that are TRUE and usable: Emerge runs
+> its own delivery on it (an 11-repository orchestration portfolio operated as one daemon,
+> with real merged PRs); every change is developed in an isolated git worktree on its own
+> branch — agents never work on main; every merge passes a human senior-engineer review gate
+> and the repository's own CI, with agents iterating on CI failures before human review; the
+> engine is open-source orchestration infrastructure (MIT, © Composio Inc.) while the managed
+> service, governance model, and review discipline are Emerge's; engagements start with a
+> fixed-scope Pilot Sprint including a repo-readiness and access-posture assessment. Claims
+> that must NEVER appear on any site: "autonomous agents that replace your team" or any
+> unattended/headcount-replacement framing; any throughput, velocity, or cost multiple until
+> verified on a real client engagement; any implication that Emerge built the orchestrator;
+> named client repositories or a claimed live client before one exists.
