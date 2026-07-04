@@ -3,7 +3,7 @@ import Section from '../Section.astro';
 import Container from '../Container.astro';
 import Eyebrow from '../Eyebrow.astro';
 
-// The three named ecosystem properties, each with its own funnel link.
+// The named ecosystem properties, each with its own funnel link.
 // URLs and copy per docs/ecosystem-north-star.md — do NOT claim "runs on VaultOS", no pricing.
 const utm = '?utm_source=vision&utm_medium=cta&utm_campaign=ecosystem';
 
@@ -27,6 +27,13 @@ const tiles = [
     proof: 'Emerge runs its own operations on it: 327+ documents across 6 businesses.',
     href: `https://vault.emergedigital.com${utm}`,
   },
+  {
+    title: 'Emerge Dev Pods',
+    badge: 'Service',
+    body: 'An agent dev-team your seniors sign off on — every PR reviewed, every merge earned.',
+    proof: 'Emerge runs its own delivery on it: 11 repositories under one governed orchestration daemon.',
+    href: `https://pods.emergedigital.com${utm}`,
+  },
 ];
 ---
 
@@ -44,16 +51,17 @@ const tiles = [
     <div class="max-w-3xl">
       <Eyebrow data-reveal>The Ecosystem</Eyebrow>
       <h2 class="mt-4 text-display-lg" data-reveal data-reveal-delay="1">
-        Practice, live proof,
-        <span class="text-gradient-accent">and the knowledge layer.</span>
+        Practice, live proof, knowledge,
+        <span class="text-gradient-accent">and governed delivery.</span>
       </h2>
       <p class="mt-6 max-w-prose text-lead text-platinum/75" data-reveal data-reveal-delay="2">
-        Three connected properties behind our AI delivery — the Agentforce practice, the live ROAI
-        platform, and the governed knowledge layer that keeps enterprise AI accountable.
+        Four connected properties behind our AI delivery — the Agentforce practice, the live ROAI
+        platform, the governed knowledge layer, and the managed agent delivery service that keeps
+        enterprise AI accountable.
       </p>
     </div>
 
-    <ul class="mt-14 grid gap-6 lg:grid-cols-3">
+    <ul class="mt-14 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
       {
         tiles.map((tile, i) => (
           <li data-reveal data-reveal-delay={String(i + 1)}>

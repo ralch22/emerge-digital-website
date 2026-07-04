@@ -1,0 +1,513 @@
+---
+/**
+ * /services/dev-pods/ — service-line page for Emerge Dev Pods.
+ * Claims discipline: every fact on this page traces to Emerge's own operated
+ * orchestration portfolio or to the engagement model itself. No throughput or
+ * cost multiples (none verified on a client engagement yet), no client names,
+ * no implication that the underlying orchestrator is Emerge-built — it is
+ * open-source infrastructure (MIT, © Composio Inc.); the managed service,
+ * governance model, and review discipline are Emerge's. Pricing is quote-based.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Container from '../../components/Container.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import Button from '../../components/Button.astro';
+
+const podsUrl = 'https://pods.emergedigital.com?utm_source=vision&utm_medium=service-page&utm_campaign=dev-pods';
+
+// Verified against Emerge's own operated portfolio, 2026-07.
+const facts = [
+  {
+    figure: '11 repos',
+    title: 'We run our own delivery on it',
+    body: 'Emerge operates its own businesses and sites — commerce, marketing, internal platforms — through the same orchestrated agent portfolio it offers clients. Real issues in, real merged pull requests out.',
+  },
+  {
+    figure: 'Worktree-isolated',
+    title: 'Never on your main branch',
+    body: 'Every change is developed in an isolated git worktree on its own branch. Agents cannot touch main; the only path in is a pull request your seniors approve.',
+  },
+  {
+    figure: 'Human-gated',
+    title: 'Every merge is earned',
+    body: 'A named senior engineer reviews every pull request before it merges. Your CI runs first — and agents iterate on failures before a human ever spends a minute reviewing.',
+  },
+  {
+    figure: 'MIT open core',
+    title: 'No vendor lock-in',
+    body: 'The orchestration engine is open-source infrastructure. What you buy from Emerge is the managed service around it: onboarding, governance, review discipline, and reporting.',
+  },
+];
+
+interface TierRow {
+  label: string;
+  value: string;
+}
+interface Tier {
+  name: string;
+  flagship?: boolean;
+  claim: string;
+  lead: string;
+  rows: TierRow[];
+  fit: string;
+  icon: string;
+}
+
+const tiers: Tier[] = [
+  {
+    name: 'Pilot Sprint',
+    claim: 'Prove it on your backlog.',
+    lead: 'A fixed-scope sprint on one repository — a bounded issue set, delivered through the full governance model, closed with an evidence report.',
+    rows: [
+      { label: 'Shape', value: 'Fixed scope, 2–4 weeks, one repository' },
+      { label: 'Setup', value: 'Repo-readiness and access-posture assessment: CI, branch protection, issue hygiene — plus a written governance charter' },
+      { label: 'Gate', value: 'Senior-engineer review on every pull request' },
+      { label: 'Output', value: 'End-of-sprint report: issues in, pull requests out, merges earned' },
+    ],
+    fit: 'Teams that want evidence before commitment — the natural paid entry point.',
+    icon: `<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/>
+      <path d="M11 6.5V11l3 2"/>
+    </svg>`,
+  },
+  {
+    name: 'Managed Pod',
+    flagship: true,
+    claim: 'Your standing delivery pod.',
+    lead: 'A monthly managed service across one to three repositories: we triage your backlog into agent-ready issues, own the CI-fix loop, and report throughput against the review gate.',
+    rows: [
+      { label: 'Shape', value: 'Monthly managed service, 1–3 repositories' },
+      { label: 'Cadence', value: 'Weekly delivery call; backlog triaged into agent-ready issues with you' },
+      { label: 'Gate', value: 'Senior review on every merge, turnaround SLA on the pod' },
+      { label: 'Output', value: 'Monthly throughput and review-gate report' },
+    ],
+    fit: 'Product teams with a groomed backlog and CI in place, short on hands.',
+    icon: `<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="7" cy="8" r="2.5"/>
+      <circle cx="15" cy="8" r="2.5"/>
+      <path d="M2.5 18c0-2.5 2-4.5 4.5-4.5S11.5 15.5 11.5 18M10.5 18c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5"/>
+    </svg>`,
+  },
+  {
+    name: 'Embedded Program',
+    claim: 'Agent delivery inside your org.',
+    lead: 'A multi-repo program that transfers the capability: your reviewers enabled on the gate, the security posture co-designed, the playbook handed over.',
+    rows: [
+      { label: 'Shape', value: 'Multi-repo program, quarterly review' },
+      { label: 'Transfer', value: 'Client-side reviewer enablement and playbook handover' },
+      { label: 'Posture', value: 'Security and access design co-owned with your platform team' },
+      { label: 'Output', value: 'A governed agent-delivery capability your organisation runs' },
+    ],
+    fit: 'Engineering organisations that want the capability, not just the service.',
+    icon: `<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+      <rect x="12" y="3" width="7" height="7" rx="1.5"/>
+      <rect x="3" y="12" width="7" height="7" rx="1.5"/>
+      <path d="M15.5 12v7M12 15.5h7"/>
+    </svg>`,
+  },
+];
+
+// How a change ships — the governance path every single change takes.
+const shipSteps = [
+  {
+    step: 'Issue',
+    body: 'Work enters as a scoped, agent-ready issue — triaged with your team so the brief is unambiguous before an agent ever starts.',
+  },
+  {
+    step: 'Session',
+    body: 'An agent picks the issue up in an isolated git worktree on its own branch. Your main branch is structurally out of reach.',
+  },
+  {
+    step: 'Pull request',
+    body: 'The change lands as a pull request in your repository, on your platform, with the full diff and reasoning visible.',
+  },
+  {
+    step: 'CI loop',
+    body: 'Your own pipeline is the first gate. If checks fail, the agent iterates on the failures — before a human spends a minute on review.',
+  },
+  {
+    step: 'Senior review',
+    body: 'A named senior engineer reviews the pull request the way they would review any colleague’s work. Agents propose; seniors dispose.',
+  },
+  {
+    step: 'Merge',
+    body: 'Only a human merges. The audit trail — issue to session to branch to review to merge — is complete by construction.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'Do agents ever work on our main branch?',
+    a: 'No — structurally, not just by policy. Every session runs in an isolated git worktree on its own branch, and the only route into main is a pull request that passes your CI and a named senior engineer’s review. There is no unattended path to a merge.',
+  },
+  {
+    q: 'Is this replacing our engineering team?',
+    a: 'No, and we won’t pitch it that way. Agents are the delivery mechanism; the judgment stays human. Your backlog gets converted into reviewable pull requests, and your seniors — or ours, depending on the tier — decide what ships. Teams typically point the pod at the work that never makes the sprint: maintenance, upgrades, test coverage, the long tail.',
+  },
+  {
+    q: 'What do you need from us to start?',
+    a: 'A GitHub repository with CI, branch protection we can verify, and a backlog we can triage together. That is exactly what the Pilot Sprint’s repo-readiness assessment checks — and if your estate lives on another platform today, we say so in scoping rather than discovering it mid-engagement.',
+  },
+  {
+    q: 'Who sees our code, and where does the work run?',
+    a: 'Access posture is designed, in writing, before the first agent session — named individuals, scoped credentials, and the runner location agreed as part of the Pilot Sprint’s access-posture assessment. We would rather settle that in procurement’s language up front than improvise it later.',
+  },
+  {
+    q: 'Did Emerge build the orchestration engine?',
+    a: 'No — it is open-source infrastructure (MIT-licensed, © Composio Inc.), and we say so plainly. What Emerge built, and what you engage us for, is the managed service around it: the governance charter, the review gate, the CI-fix discipline, and the reporting — proven daily on our own eleven-repository portfolio.',
+  },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Service',
+      name: 'Emerge Dev Pods',
+      serviceType: 'Managed AI agent software delivery — governed coding-agent pods',
+      description:
+        'A managed delivery service in which governed AI coding agents work a client’s backlog in isolated git worktrees, iterate against the repository’s own CI, and merge only through a human senior-engineer review gate. Quote-based engagement.',
+      provider: { '@type': 'Organization', name: 'Emerge Digital' },
+      areaServed: ['AE', 'SA', 'QA', 'GCC', 'Middle East & Africa'],
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Emerge Dev Pods — An Agent Dev-Team Your Seniors Sign Off On | Emerge Digital"
+  description="Managed AI coding-agent pods on your repos: every change in an isolated worktree, iterated against your CI, merged only through a human senior review gate. Emerge runs its own 11-repo delivery on the same portfolio. Quote-based."
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <section class="relative isolate overflow-hidden bg-gradient-hero py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 bg-grid bg-grid-fade"></div>
+    <div aria-hidden="true" class="aurora-strong pointer-events-none absolute inset-0 opacity-70" style="animation: aurora-drift 24s ease-in-out infinite;"></div>
+    <div aria-hidden="true" class="noise pointer-events-none absolute inset-0"></div>
+    <div aria-hidden="true" class="beam-scan pointer-events-none absolute inset-0"></div>
+
+    <Container class="relative">
+      <div class="max-w-3xl">
+        <div class="chip-eyebrow-teal mb-6" data-reveal>
+          <span class="pulse-dot" aria-hidden="true"></span>
+          New Service Line · Managed agent delivery
+        </div>
+        <h1 class="text-display-xl text-white" data-reveal data-reveal-delay="1">
+          An agent dev-team<br />
+          <span class="text-gradient-accent">your seniors sign off on.</span>
+        </h1>
+        <p class="mt-6 max-w-2xl text-lead text-platinum/75" data-reveal data-reveal-delay="2">
+          Emerge runs governed AI coding agents on your repositories as a managed service. Every
+          change is developed in an isolated worktree, iterated against your own CI, and merged
+          only through a human senior-engineer review gate. Every PR reviewed, every merge earned.
+        </p>
+        <div class="mt-9 flex flex-wrap gap-4" data-reveal data-reveal-delay="3">
+          <Button href="/contact/" size="lg" class="btn-shimmer">Book a Pilot Sprint briefing</Button>
+          <Button href={podsUrl} variant="ghost" size="lg" target="_blank" rel="noopener noreferrer">Visit pods.emergedigital.com</Button>
+        </div>
+      </div>
+
+      <div class="mt-10 flex flex-wrap gap-x-8 gap-y-3" data-reveal data-reveal-delay="4">
+        {['Run on our own 11-repo portfolio', 'Isolated worktrees — never on main', 'Human review gate on every merge', 'Quote-based engagement'].map((t) => (
+          <div class="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-eyebrow text-cool">
+            <div class="h-1 w-1 rounded-full bg-teal/50"></div>
+            {t}
+          </div>
+        ))}
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── Why now: verified facts as rows ───────────────────── -->
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-ink py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 50% 40% at 85% 30%, rgba(0,194,199,0.05), transparent 70%); filter: blur(60px);"></div>
+
+    <Container class="relative">
+      <div class="grid gap-14 lg:grid-cols-[minmax(0,26rem)_1fr]">
+        <div>
+          <h2 class="text-display-lg text-white" data-reveal>
+            The backlog is real. <span class="text-gradient-accent">The governance was missing.</span>
+          </h2>
+          <p class="mt-5 text-lead-sm text-platinum/70" data-reveal data-reveal-delay="1">
+            AI coding tools arrived in most organisations bottom-up — individually licensed,
+            individually prompted, invisible to the review process. The capability is not in
+            question; the governance is. A Dev Pod is the same capability delivered the way an
+            engineering leader can actually sign off: isolated branches, your CI as the first
+            gate, and a named senior owning every merge.
+          </p>
+          <p class="mt-4 text-sm text-cool" data-reveal data-reveal-delay="2">
+            Every figure on this row is drawn from Emerge’s own operated portfolio — the same
+            orchestration we offer, running our own businesses daily.
+          </p>
+        </div>
+
+        <div role="list">
+          {facts.map((f, i) => (
+            <div
+              role="listitem"
+              class="group grid gap-2 border-t border-white/8 py-6 transition-colors duration-300 first:border-t-0 first:pt-0 last:pb-0 hover:border-teal/20 sm:grid-cols-[10.5rem_1fr] sm:gap-8"
+              data-reveal
+              data-reveal-delay={String(i + 1)}
+            >
+              <div class="font-mono text-lg font-bold tracking-tight text-teal">{f.figure}</div>
+              <div>
+                <h3 class="font-semibold text-white">{f.title}</h3>
+                <p class="mt-1.5 max-w-xl text-sm leading-relaxed text-platinum/65 transition-colors duration-300 group-hover:text-platinum/80">{f.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── How a change ships ────────────────────────────────── -->
+  <section id="how" class="relative isolate overflow-hidden border-t border-white/[0.06] bg-navy py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 60% 45% at 50% 0%, rgba(0,194,199,0.07), transparent 70%); filter: blur(60px);"></div>
+
+    <Container class="relative">
+      <div class="max-w-3xl">
+        <Eyebrow data-reveal>How a change ships</Eyebrow>
+        <h2 class="mt-4 text-display-lg text-white" data-reveal data-reveal-delay="1">
+          Six gates between an issue
+          <span class="text-gradient-accent">and your main branch.</span>
+        </h2>
+        <p class="mt-5 text-lead-sm text-platinum/70" data-reveal data-reveal-delay="2">
+          The path below is not a happy-path diagram — it is the only path. Every change, on
+          every repository, at every tier, ships this way or not at all.
+        </p>
+      </div>
+
+      <div class="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {shipSteps.map((s, i) => (
+          <div
+            class="group relative flex gap-5 rounded-card border border-white/8 p-6 transition-all duration-400 hover:border-teal/30 hover:-translate-y-0.5"
+            style="background: rgba(255,255,255,0.025); backdrop-filter: blur(12px);"
+            data-reveal
+            data-reveal-delay={String((i % 3) + 1)}
+          >
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-accent font-mono text-xs font-bold text-ink shadow-glow">
+              {String(i + 1).padStart(2, '0')}
+            </div>
+            <div>
+              <h3 class="font-mono text-sm font-semibold uppercase tracking-wide text-teal">{s.step}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-platinum/65 transition-colors duration-300 group-hover:text-platinum/85">{s.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── The three rungs ───────────────────────────────────── -->
+  <section id="tiers" class="relative isolate overflow-hidden border-t border-white/[0.06] bg-ink py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 45% 40% at 15% 60%, rgba(61,220,227,0.05), transparent 70%); filter: blur(60px);"></div>
+
+    <Container class="relative">
+      <div class="max-w-3xl">
+        <Eyebrow data-reveal>The engagement ladder</Eyebrow>
+        <h2 class="mt-4 text-display-lg text-white" data-reveal data-reveal-delay="1">
+          One governance model.
+          <span class="text-gradient-accent">Three depths of engagement.</span>
+        </h2>
+        <p class="mt-5 text-lead-sm text-platinum/70" data-reveal data-reveal-delay="2">
+          The delivery architecture is identical at every rung — isolated worktrees, the CI
+          loop, the senior review gate. What changes is cadence and how deeply the capability
+          embeds in your organisation.
+        </p>
+      </div>
+
+      <div class="mt-14 grid gap-5 lg:grid-cols-3 lg:items-stretch">
+        {tiers.map((tier, i) => (
+          <article
+            class:list={[
+              'tier-card group relative flex flex-col overflow-hidden rounded-card-lg border p-7 transition-all duration-400 hover:-translate-y-1',
+              tier.flagship
+                ? 'border-teal/40 bg-teal/[0.06] shadow-glow hover:border-teal/60'
+                : 'border-white/8 bg-white/[0.025] hover:border-teal/25',
+            ]}
+            data-reveal
+            data-reveal-delay={String(i + 1)}
+          >
+            {tier.flagship && (
+              <div aria-hidden="true" class="absolute inset-x-0 top-0 h-[2px] bg-gradient-accent"></div>
+            )}
+
+            <div class="flex items-start justify-between gap-3">
+              <div class="icon-wrap" set:html={tier.icon}></div>
+              {tier.flagship && (
+                <span class="rounded-pill border border-teal/30 bg-teal/[0.12] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-eyebrow text-teal">The headline offer</span>
+              )}
+            </div>
+
+            <h3 class="mt-5 text-display-sm text-white">{tier.name}</h3>
+            <p class:list={['mt-1.5 font-semibold', tier.flagship ? 'text-teal' : 'text-platinum/85']}>{tier.claim}</p>
+            <p class="mt-3 text-sm leading-relaxed text-platinum/65">{tier.lead}</p>
+
+            <dl class="mt-6 space-y-3.5 border-t border-white/8 pt-6">
+              {tier.rows.map((row) => (
+                <div class="grid grid-cols-[5.25rem_1fr] gap-3">
+                  <dt class="pt-px font-mono text-[10px] font-semibold uppercase tracking-wide text-cool">{row.label}</dt>
+                  <dd class="text-[13px] leading-relaxed text-platinum/75">{row.value}</dd>
+                </div>
+              ))}
+            </dl>
+
+            <div class="mt-auto pt-6">
+              <p class="text-[13px] leading-relaxed text-platinum/60"><span class="font-semibold text-platinum/85">Best for:</span> {tier.fit}</p>
+              <div class="mt-5 flex items-center justify-between gap-3 border-t border-white/8 pt-5">
+                <span class="font-mono text-xs font-semibold text-teal">Tailored quote</span>
+                <a href="/contact/" class="inline-flex items-center gap-1 text-[13px] font-semibold text-platinum/75 transition-colors duration-300 hover:text-teal">
+                  Scope it
+                  <span aria-hidden="true" class="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <p class="mt-8 max-w-3xl text-sm leading-relaxed text-cool" data-reveal>
+        Pricing follows the engagement, not a rate card: every rung is scoped and quoted against
+        your repositories, backlog shape, and review posture during the Pilot Sprint assessment.
+      </p>
+    </Container>
+  </section>
+
+  <!-- ── Proof: our own portfolio ──────────────────────────── -->
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-navy py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 55% 45% at 80% 80%, rgba(0,194,199,0.07), transparent 70%); filter: blur(60px);"></div>
+
+    <Container class="relative">
+      <div class="grid gap-14 lg:grid-cols-2 lg:items-center">
+        <div>
+          <Eyebrow data-reveal>Reference implementation</Eyebrow>
+          <h2 class="mt-4 text-display-lg text-white" data-reveal data-reveal-delay="1">
+            We are the <span class="text-gradient-accent">first client.</span>
+          </h2>
+          <p class="mt-5 text-lead-sm text-platinum/70" data-reveal data-reveal-delay="2">
+            Emerge’s own businesses — commerce, marketing sites, internal platforms — run their
+            delivery through the same orchestrated portfolio we offer: eleven repositories under
+            one governed daemon, real issues triaged in, real pull requests reviewed and merged
+            out, daily.
+          </p>
+          <p class="mt-4 text-lead-sm text-platinum/70" data-reveal data-reveal-delay="3">
+            That is the claim we make, because it is the one we can demonstrate on the spot —
+            the audit trail from issue to merge, live. No throughput multiples, no invented
+            benchmarks: production evidence, then a Pilot Sprint on your backlog.
+          </p>
+          <div class="mt-8" data-reveal data-reveal-delay="4">
+            <Button href={podsUrl} target="_blank" rel="noopener noreferrer" class="btn-shimmer">See how a change ships</Button>
+          </div>
+        </div>
+
+        <ul class="space-y-3" role="list">
+          {[
+            'Eleven repositories operated under one governed orchestration daemon',
+            'Isolated git worktree per agent session — main is structurally out of reach',
+            'CI-failure loops handled by agents before human review time is spent',
+            'Named senior sign-off on every merge, with the full audit trail preserved',
+            'Complete traceability: issue → session → branch → PR → review → merge',
+            'Open-source engine (MIT, © Composio Inc.) — the service and governance are Emerge’s',
+          ].map((cap, i) => (
+            <li
+              class="flex items-start gap-3.5 rounded-xl border border-white/8 px-5 py-4 transition-all duration-400 hover:border-teal/25"
+              style="background: rgba(255,255,255,0.02);"
+              data-reveal
+              data-reveal-delay={String((i % 5) + 1)}
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" class="mt-0.5 shrink-0 text-teal">
+                <path d="M2.5 8.5l3.5 3.5 7.5-8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="text-sm leading-relaxed text-platinum/75">{cap}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── FAQ ───────────────────────────────────────────────── -->
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-ink py-section-sm md:py-section">
+    <Container class="relative">
+      <div class="mx-auto max-w-3xl">
+        <h2 class="text-display-lg text-white" data-reveal>
+          The questions engineering leaders <span class="text-gradient-accent">actually ask.</span>
+        </h2>
+
+        <div class="mt-10 space-y-3">
+          {faqs.map((f, i) => (
+            <details
+              class="faq-item group rounded-card border border-white/8 transition-colors duration-300 open:border-teal/25 hover:border-teal/20"
+              style="background: rgba(255,255,255,0.02);"
+              data-reveal
+              data-reveal-delay={String(i + 1)}
+            >
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-5 text-[15px] font-semibold text-white [&::-webkit-details-marker]:hidden">
+                {f.q}
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" class="faq-chevron shrink-0 text-teal transition-transform duration-300">
+                  <path d="M2 5l5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </summary>
+              <p class="px-6 pb-6 text-sm leading-relaxed text-platinum/70">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── Final CTA ─────────────────────────────────────────── -->
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-navy py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 70% 60% at 50% 110%, rgba(0,194,199,0.22), transparent 65%), radial-gradient(ellipse 45% 50% at 18% 0%, rgba(61,220,227,0.12), transparent 60%); filter: blur(60px);"></div>
+
+    <Container class="relative">
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-display-lg text-white" data-reveal>
+          Start with a sprint, not a leap.
+        </h2>
+        <p class="mt-5 text-lead text-platinum/70" data-reveal data-reveal-delay="1">
+          The Pilot Sprint is fixed-scope by design: your repo assessed, the governance charter
+          written, a bounded issue set delivered through the full review gate — and an evidence
+          report your leadership can act on.
+        </p>
+        <div class="mt-10 flex flex-wrap justify-center gap-4" data-reveal data-reveal-delay="2">
+          <Button href="/contact/" size="lg" class="btn-shimmer">Book a Pilot Sprint briefing</Button>
+          <Button href="/services/" variant="ghost" size="lg">See the full capability stack</Button>
+        </div>
+
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3" data-reveal data-reveal-delay="3">
+          {['Run on our own 11-repo portfolio', 'Human review gate on every merge', 'Quote-based engagement'].map((t) => (
+            <div class="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-eyebrow text-cool">
+              <div class="h-1 w-1 rounded-full bg-teal/50"></div>
+              {t}
+            </div>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>
+
+<style>
+  @keyframes aurora-drift {
+    0%, 100% { transform: translate3d(0,0,0) scale(1); opacity: 0.85; }
+    50%       { transform: translate3d(2%,-3%,0) scale(1.06); opacity: 1; }
+  }
+
+  .faq-item[open] .faq-chevron { transform: rotate(180deg); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tier-card, .faq-chevron { transition: none !important; }
+  }
+</style>
