@@ -73,7 +73,7 @@ export const REDIRECTS: Record<string, string> = {
   '/google-analytics-4-training': '/services/',
   '/google-analytics-website-traffic': '/insights/',
   '/google-consent-mode-v2-integration': '/insights/',
-  '/google-marketing-platform': '/services/',
+  '/google-marketing-platform': '/services/google-marketing-platform/',
   '/google-tag-manager-audits': '/services/',
   '/google-tag-manager-vs-google-analytics': '/insights/',
   '/google-tag-monitoring': '/insights/',
