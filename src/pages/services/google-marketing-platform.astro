@@ -1,0 +1,600 @@
+---
+/**
+ * /services/google-marketing-platform/ — service-line page for the Media & AdTech offer.
+ * Claims discipline: Emerge is an AUTHORIZED GMP RESELLER — DV360/SA360/CM360 delivered
+ * through a top-four full-stack GMP partner (never "Emerge is one of four partners").
+ * The only performance figure is Perfetti Van Melle's published 34% CPA reduction.
+ * No partner logos, no invented metrics. Pricing is quote-based.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Container from '../../components/Container.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import Button from '../../components/Button.astro';
+
+const perfettiUrl = '/case-studies/perfetti-van-melle/';
+
+// Fit thresholds — platform economics, mapped to each client in the audit.
+const facts = [
+  {
+    figure: '~$50k/mo',
+    title: 'DV360’s practical floor',
+    body: 'The monthly media commitment programmatic buying is built around. Below it, Google Ads Demand Gen or Performance Max is the right tool — and we say so rather than sell you a seat.',
+  },
+  {
+    figure: '~$200k/mo',
+    title: 'Where SA360 earns its fee',
+    body: 'Cross-engine bidding and portfolio management pay off on large, multi-engine search. A single Google Ads account under that? Native Google Ads does it for free.',
+  },
+  {
+    figure: 'Multi-DSP',
+    title: 'CM360’s job',
+    body: 'Unified, de-duplicated measurement matters once spend spans many publishers and platforms. Single-channel programs are measured perfectly well by GA4.',
+  },
+  {
+    figure: '~600',
+    title: 'GMP partners worldwide',
+    body: 'The platform is gated behind a certified partner seat. We reach it through a top-four full-stack GMP partner — access most agencies simply cannot offer.',
+  },
+];
+
+interface TierRow {
+  label: string;
+  value: string;
+}
+interface Tier {
+  name: string;
+  flagship?: boolean;
+  claim: string;
+  lead: string;
+  rows: TierRow[];
+  fit: string;
+  icon: string;
+}
+
+const tiers: Tier[] = [
+  {
+    name: 'Measure',
+    claim: 'One source of truth for every channel.',
+    lead: 'Campaign Manager 360 unifies ad-serving and de-duplicated measurement across every publisher and DSP — the foundation you set before scaling spend.',
+    rows: [
+      { label: 'Platform', value: 'Campaign Manager 360 + GA4 360, BigQuery' },
+      { label: 'Signals', value: 'Floodlight conversions and cross-channel, de-duplicated attribution' },
+      { label: 'Governance', value: 'Server-side, consent-enforced, PDPL-aligned data layer' },
+      { label: 'When it fits', value: 'Spend spans many publishers and you no longer trust the attribution' },
+    ],
+    fit: 'Any program losing signal across a fragmented media stack — measurement is the fix before more budget is.',
+    icon: `<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 17l4-5 3.5 3 4-7 4.5 4"/>
+      <rect x="2.5" y="2.5" width="17" height="17" rx="2.5"/>
+    </svg>`,
+  },
+  {
+    name: 'Activate',
+    claim: 'Search, run as a portfolio.',
+    lead: 'Search Ads 360 manages large, multi-engine search from one console — Google and Microsoft together — with portfolio bidding and bulk operations native tools can’t match.',
+    rows: [
+      { label: 'Platform', value: 'Search Ads 360' },
+      { label: 'Engines', value: 'Google, Microsoft/Bing and more, managed in one place' },
+      { label: 'Bidding', value: 'Cross-engine portfolio strategies, inventory-driven ads, bulk ops' },
+      { label: 'When it fits', value: '≈$200k+/mo search spend, or campaigns across multiple engines' },
+    ],
+    fit: 'Large or multi-engine search programs that have outgrown a single Google Ads account.',
+    icon: `<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="9.5" cy="9.5" r="6"/>
+      <path d="M14 14l5 5"/>
+      <path d="M7 9.5h5M9.5 7v5" opacity="0.5"/>
+    </svg>`,
+  },
+  {
+    name: 'Scale',
+    flagship: true,
+    claim: 'Reach the audiences search can’t.',
+    lead: 'Display & Video 360 buys programmatic display, video, YouTube and Connected TV — with audience and geo precision, and access to premium private-marketplace inventory.',
+    rows: [
+      { label: 'Platform', value: 'Display & Video 360' },
+      { label: 'Channels', value: 'Programmatic display, video, YouTube, Connected TV, audio, DOOH' },
+      { label: 'Targeting', value: 'Affluent & in-market audiences, geo-fencing, brand-safe PMP deals' },
+      { label: 'When it fits', value: '≈$50k+/mo media, with reach, awareness or CTV goals' },
+    ],
+    fit: 'Reaching high-value or hard-to-find audiences at scale — affluent, geo-fenced, or on the big screen.',
+    icon: `<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2.5" y="4" width="17" height="11" rx="2"/>
+      <path d="M9 7.5l4 2-4 2z" fill="currentColor" stroke="none"/>
+      <path d="M7 18.5h8M11 15v3.5"/>
+    </svg>`,
+  },
+];
+
+// When GMP is the wrong tool — the audit's first job is to say so.
+const qualify = [
+  {
+    code: 'Enterprise scale',
+    place: 'GMP is a genuine edge',
+    verdict: 'We run it for you',
+    detail: '≥~$50k/mo media, CTV or awareness goals, or multi-engine search — this is where DV360, SA360 and CM360 outperform. We provision the seat and operate it.',
+    ok: true,
+  },
+  {
+    code: 'Mid-market / single channel',
+    place: 'Stay self-serve',
+    verdict: 'We set it up, not upsell',
+    detail: 'Under the thresholds, native Google Ads plus Meta and Performance Max does the job better. We build that instead of wrapping a platform you don’t need.',
+    ok: false,
+  },
+  {
+    code: 'High-value reach, small budget',
+    place: 'Demand Gen first',
+    verdict: 'Right-sized proxy',
+    detail: 'Google Ads Demand Gen delivers affluent, geo-fenced reach without the DV360 floor — the sensible step before programmatic, and we start there.',
+    ok: false,
+  },
+  {
+    code: 'Measurement-only need',
+    place: 'CM360 without a DSP',
+    verdict: 'The real win',
+    detail: 'Sometimes the gap is attribution, not media. Server-side tagging, Floodlight and BigQuery, governed for PDPL — no demand-side platform required.',
+    ok: true,
+  },
+];
+
+const gmpCapabilities = [
+  'DV360 — programmatic display, video, YouTube and Connected TV',
+  'SA360 — cross-engine search management and portfolio bidding',
+  'CM360 — unified, de-duplicated cross-channel measurement',
+  'Server-side GTM and consent, aligned to GCC PDPL',
+  'BigQuery attribution and marketing-mix modelling',
+  'Brand-safety, verification and private-marketplace curation',
+];
+
+const phases = [
+  {
+    phase: 'Discovery',
+    name: 'Media & Data Audit',
+    body: 'A fixed-scope diagnostic: where media is wasted, where attribution breaks, and which tool actually fits your spend — up to and including an honest “stay self-serve.” Built so procurement can sign it quickly.',
+    price: 'Tailored quote',
+  },
+  {
+    phase: 'Build',
+    name: 'Onboard & instrument',
+    body: 'Seat provisioning, the measurement and consent layer, and campaign architecture across the platforms you need. Named KPIs and phase gates throughout.',
+    price: 'Tailored quote',
+  },
+  {
+    phase: 'Operate',
+    name: 'Run & optimise',
+    body: 'Managed media, optimisation and reporting on a monthly cadence — a retainer plus a transparent media-management percentage. Your account, your data.',
+    price: 'Tailored monthly quote',
+  },
+];
+
+const faqs = [
+  {
+    q: 'Are you a Google Marketing Platform partner?',
+    a: 'We are an authorized GMP reseller — we deliver DV360, SA360 and CM360 through a top-four full-stack GMP partner, and we contract and lead the work in-region. You get enterprise-platform access and certification without becoming an enterprise-platform buyer yourself.',
+  },
+  {
+    q: 'We already run Google Ads. Why would we need this?',
+    a: 'For most budgets, you wouldn’t — and we’ll tell you so. The Google Marketing Platform earns its keep above roughly $50k/month in media (DV360) or $200k/month in multi-engine search (SA360), or when measurement spans many platforms (CM360). Below that, native Google Ads and Meta are the right tools, and we’ll set those up instead.',
+  },
+  {
+    q: 'What does it cost?',
+    a: 'The platform carries a partner fee on media; our service is a fixed-scope audit, then a build, then a monthly retainer plus a transparent media-management percentage. Every stage is quoted against your actual spend and scope — there is no rate card, and the audit can end with “stay self-serve.”',
+  },
+  {
+    q: 'How do you handle data governance and PDPL?',
+    a: 'Measurement runs through a server-side, consent-enforced layer — the same architecture we deployed for Perfetti Van Melle across the UAE, KSA and Egypt. Consent signals are enforced at the pipeline, and data residency is scoped to your regulatory posture, not assumed.',
+  },
+  {
+    q: 'Can you reach high-net-worth or niche audiences?',
+    a: 'Yes — DV360’s geo-fencing, affluent-audience targeting and premium private-marketplace deals are built for exactly that. If the budget doesn’t yet justify DV360, Google Ads Demand Gen is the right-sized first step, and we’ll start there.',
+  },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Service',
+      name: 'Google Marketing Platform — Managed Media & Measurement',
+      serviceType: 'Programmatic (DV360), cross-engine search (SA360), and cross-channel measurement (CM360)',
+      description:
+        'DV360, SA360 and CM360 delivered as a managed service by an authorized reseller through a top-four full-stack GMP partner. Programmatic, Connected TV, cross-engine search and unified measurement for GCC enterprise. Quote-based engagement.',
+      provider: { '@type': 'Organization', name: 'Emerge Digital' },
+      areaServed: ['AE', 'SA', 'EG', 'QA', 'GCC', 'Middle East & Africa'],
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Google Marketing Platform — Enterprise Programmatic, Search & Measurement | Emerge Digital"
+  description="DV360, SA360 and CM360 run as a managed service — delivered as an authorized reseller through a top-four full-stack GMP partner. Programmatic, Connected TV, cross-engine search and unified measurement for GCC enterprise. Quote-based."
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <section class="relative isolate overflow-hidden bg-gradient-hero py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 bg-grid bg-grid-fade"></div>
+    <div aria-hidden="true" class="aurora-strong pointer-events-none absolute inset-0 opacity-70" style="animation: aurora-drift 24s ease-in-out infinite;"></div>
+    <div aria-hidden="true" class="noise pointer-events-none absolute inset-0"></div>
+    <div aria-hidden="true" class="beam-scan pointer-events-none absolute inset-0"></div>
+
+    <Container class="relative">
+      <div class="max-w-3xl">
+        <div class="chip-eyebrow-teal mb-6" data-reveal>
+          <span class="pulse-dot" aria-hidden="true"></span>
+          Service Line · Media &amp; AdTech
+        </div>
+        <h1 class="text-display-xl text-white" data-reveal data-reveal-delay="1">
+          The Google Marketing Platform,<br />
+          <span class="text-gradient-accent">run as a service.</span>
+        </h1>
+        <p class="mt-6 max-w-2xl text-lead text-platinum/75" data-reveal data-reveal-delay="2">
+          DV360, SA360 and CM360 — programmatic, Connected TV, cross-engine search and unified
+          measurement — delivered as an authorized reseller through a top-four full-stack GMP
+          partner. Contracted and governed in-region, and operated on a discipline that starts
+          by telling you when you don’t need it.
+        </p>
+        <div class="mt-9 flex flex-wrap gap-4" data-reveal data-reveal-delay="3">
+          <Button href="/contact/" size="lg" class="btn-shimmer">Book a Media &amp; Data Audit</Button>
+          <Button href="#fit" variant="ghost" size="lg">See how we qualify it</Button>
+        </div>
+      </div>
+
+      <div class="mt-10 flex flex-wrap gap-x-8 gap-y-3" data-reveal data-reveal-delay="4">
+        {['Authorized GMP reseller', 'DV360 · SA360 · CM360', 'GCC PDPL aligned', 'Quote-based engagement'].map((t) => (
+          <div class="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-eyebrow text-cool">
+            <div class="h-1 w-1 rounded-full bg-teal/50"></div>
+            {t}
+          </div>
+        ))}
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── The thresholds: when GMP fits ─────────────────────── -->
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-ink py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 50% 40% at 85% 30%, rgba(0,194,199,0.05), transparent 70%); filter: blur(60px);"></div>
+
+    <Container class="relative">
+      <div class="grid gap-14 lg:grid-cols-[minmax(0,26rem)_1fr]">
+        <div>
+          <h2 class="text-display-lg text-white" data-reveal>
+            Built for scale. <span class="text-gradient-accent">We qualify for it first.</span>
+          </h2>
+          <p class="mt-5 text-lead-sm text-platinum/70" data-reveal data-reveal-delay="1">
+            The Google Marketing Platform outperforms self-serve tools at enterprise scale — and
+            quietly loses money below it. Before anyone provisions a seat, a fixed-scope audit
+            checks your spend, channels and measurement against where each tool actually pays off.
+          </p>
+          <p class="mt-4 text-sm text-cool" data-reveal data-reveal-delay="2">
+            The thresholds here are platform economics, not a sales gate. We map yours in the
+            audit — and “stay self-serve” is a valid, common outcome.
+          </p>
+        </div>
+
+        <div role="list">
+          {facts.map((f, i) => (
+            <div
+              role="listitem"
+              class="group grid gap-2 border-t border-white/8 py-6 transition-colors duration-300 first:border-t-0 first:pt-0 last:pb-0 hover:border-teal/20 sm:grid-cols-[10.5rem_1fr] sm:gap-8"
+              data-reveal
+              data-reveal-delay={String(i + 1)}
+            >
+              <div class="font-mono text-lg font-bold tracking-tight text-teal">{f.figure}</div>
+              <div>
+                <h3 class="font-semibold text-white">{f.title}</h3>
+                <p class="mt-1.5 max-w-xl text-sm leading-relaxed text-platinum/65 transition-colors duration-300 group-hover:text-platinum/80">{f.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── The stack: three platforms ────────────────────────── -->
+  <section id="stack" class="relative isolate overflow-hidden border-t border-white/[0.06] bg-navy py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 60% 45% at 50% 0%, rgba(0,194,199,0.07), transparent 70%); filter: blur(60px);"></div>
+
+    <Container class="relative">
+      <div class="max-w-3xl">
+        <Eyebrow data-reveal>The stack</Eyebrow>
+        <h2 class="mt-4 text-display-lg text-white" data-reveal data-reveal-delay="1">
+          Three platforms. <span class="text-gradient-accent">One managed operation.</span>
+        </h2>
+        <p class="mt-5 text-lead-sm text-platinum/70" data-reveal data-reveal-delay="2">
+          DV360, SA360 and CM360 solve different problems — reach, search, and measurement.
+          We run the ones your program needs, and only those.
+        </p>
+      </div>
+
+      <div class="mt-14 grid gap-5 lg:grid-cols-3 lg:items-stretch">
+        {tiers.map((tier, i) => (
+          <article
+            class:list={[
+              'tier-card group relative flex flex-col overflow-hidden rounded-card-lg border p-7 transition-all duration-400 hover:-translate-y-1',
+              tier.flagship
+                ? 'border-teal/40 bg-teal/[0.06] shadow-glow hover:border-teal/60'
+                : 'border-white/8 bg-white/[0.025] hover:border-teal/25',
+            ]}
+            data-reveal
+            data-reveal-delay={String(i + 1)}
+          >
+            {tier.flagship && (
+              <div aria-hidden="true" class="absolute inset-x-0 top-0 h-[2px] bg-gradient-accent"></div>
+            )}
+
+            <div class="flex items-start justify-between gap-3">
+              <div class="icon-wrap" set:html={tier.icon}></div>
+              {tier.flagship && (
+                <span class="rounded-pill border border-teal/30 bg-teal/[0.12] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-eyebrow text-teal">The headline capability</span>
+              )}
+            </div>
+
+            <h3 class="mt-5 text-display-sm text-white">{tier.name}</h3>
+            <p class:list={['mt-1.5 font-semibold', tier.flagship ? 'text-teal' : 'text-platinum/85']}>{tier.claim}</p>
+            <p class="mt-3 text-sm leading-relaxed text-platinum/65">{tier.lead}</p>
+
+            <dl class="mt-6 space-y-3.5 border-t border-white/8 pt-6">
+              {tier.rows.map((row) => (
+                <div class="grid grid-cols-[5.75rem_1fr] gap-3">
+                  <dt class="pt-px font-mono text-[10px] font-semibold uppercase tracking-wide text-cool">{row.label}</dt>
+                  <dd class="text-[13px] leading-relaxed text-platinum/75">{row.value}</dd>
+                </div>
+              ))}
+            </dl>
+
+            <div class="mt-auto pt-6">
+              <p class="text-[13px] leading-relaxed text-platinum/60"><span class="font-semibold text-platinum/85">Best for:</span> {tier.fit}</p>
+              <div class="mt-5 flex items-center justify-between gap-3 border-t border-white/8 pt-5">
+                <span class="font-mono text-xs font-semibold text-teal">Tailored quote</span>
+                <a href="/contact/" class="inline-flex items-center gap-1 text-[13px] font-semibold text-platinum/75 transition-colors duration-300 hover:text-teal">
+                  Scope it
+                  <span aria-hidden="true" class="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <p class="mt-8 max-w-3xl text-sm leading-relaxed text-cool" data-reveal>
+        Pricing follows the engagement, not a rate card: the platform’s partner fee, the build, and
+        a monthly retainer plus media-management percentage are all quoted against your actual spend
+        and scope during the audit.
+      </p>
+    </Container>
+  </section>
+
+  <!-- ── When GMP is the wrong tool ────────────────────────── -->
+  <section id="fit" class="relative isolate overflow-hidden border-t border-white/[0.06] bg-ink py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 45% 40% at 15% 60%, rgba(61,220,227,0.05), transparent 70%); filter: blur(60px);"></div>
+
+    <Container class="relative">
+      <div class="grid gap-14 lg:grid-cols-[minmax(0,24rem)_1fr] lg:items-start">
+        <div class="lg:sticky lg:top-28">
+          <h2 class="text-display-lg text-white" data-reveal>
+            The honest part: <span class="text-gradient-accent">when it isn’t the answer.</span>
+          </h2>
+          <p class="mt-5 text-lead-sm text-platinum/70" data-reveal data-reveal-delay="1">
+            The fastest way to lose money on the Google Marketing Platform is to run it below the
+            scale it’s built for. So the audit’s first job is to tell you when to <em>not</em> use
+            it — and what to run instead.
+          </p>
+          <p class="mt-4 text-sm text-cool" data-reveal data-reveal-delay="2">
+            We qualify your spend, channels and measurement needs before anyone provisions a seat.
+            No seat is worth its fees below the line.
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          {qualify.map((r, i) => (
+            <div
+              class="group rounded-card border border-white/8 p-6 transition-all duration-400 hover:border-teal/25 hover:-translate-y-0.5"
+              style="background: rgba(255,255,255,0.02);"
+              data-reveal
+              data-reveal-delay={String(i + 1)}
+            >
+              <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+                <div class="flex items-baseline gap-3">
+                  <span class="font-mono text-[13px] font-bold text-teal">{r.code}</span>
+                  <span class="text-sm font-semibold text-white">{r.place}</span>
+                </div>
+                <span
+                  class:list={[
+                    'inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-wide',
+                    r.ok ? 'text-success' : 'text-cool',
+                  ]}
+                >
+                  <span
+                    aria-hidden="true"
+                    class:list={['h-1.5 w-1.5 rounded-full', r.ok ? 'bg-success' : 'bg-cool/60']}
+                  ></span>
+                  {r.verdict}
+                </span>
+              </div>
+              <p class="mt-3 text-sm leading-relaxed text-platinum/65 transition-colors duration-300 group-hover:text-platinum/80">{r.detail}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── Live proof: Perfetti Van Melle ────────────────────── -->
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-navy py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 55% 45% at 80% 80%, rgba(0,194,199,0.07), transparent 70%); filter: blur(60px);"></div>
+
+    <Container class="relative">
+      <div class="grid gap-14 lg:grid-cols-2 lg:items-center">
+        <div>
+          <Eyebrow data-reveal>Reference engagement</Eyebrow>
+          <h2 class="mt-4 text-display-lg text-white" data-reveal data-reveal-delay="1">
+            A published outcome, <span class="text-gradient-accent">not a slide.</span>
+          </h2>
+          <p class="mt-5 text-lead-sm text-platinum/70" data-reveal data-reveal-delay="2">
+            For <a href={perfettiUrl} class="font-semibold text-teal underline decoration-teal/30 underline-offset-4 transition-colors hover:text-cyan">Perfetti Van Melle</a>,
+            we built a PDPL-resident, server-side data layer that wired DV360 — alongside Meta,
+            TikTok and Snapchat — through a consent-enforced pipeline across the UAE, KSA and Egypt.
+            Programmatic stopped optimising on noisy signals and started optimising on clean,
+            consented ones.
+          </p>
+
+          <div class="mt-8 flex items-baseline gap-4 rounded-card border border-teal/25 bg-teal/[0.06] p-6" data-reveal data-reveal-delay="3">
+            <span class="font-mono text-4xl font-bold text-teal">34%</span>
+            <span class="text-sm leading-relaxed text-platinum/75">lower media cost-per-acquisition — with the largest gains in KSA and Egypt programmatic.</span>
+          </div>
+
+          <p class="mt-6 text-lead-sm text-platinum/70" data-reveal data-reveal-delay="4">
+            The same stack — DV360, SA360, CM360 — is what we bring to your program, contracted and
+            led in-region.
+          </p>
+          <div class="mt-8" data-reveal data-reveal-delay="5">
+            <Button href={perfettiUrl} class="btn-shimmer">Read the Perfetti case study</Button>
+          </div>
+        </div>
+
+        <ul class="space-y-3" role="list">
+          {gmpCapabilities.map((cap, i) => (
+            <li
+              class="flex items-start gap-3.5 rounded-xl border border-white/8 px-5 py-4 transition-all duration-400 hover:border-teal/25"
+              style="background: rgba(255,255,255,0.02);"
+              data-reveal
+              data-reveal-delay={String((i % 5) + 1)}
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" class="mt-0.5 shrink-0 text-teal">
+                <path d="M2.5 8.5l3.5 3.5 7.5-8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="text-sm leading-relaxed text-platinum/75">{cap}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── Engagement: Discovery–Build–Operate ───────────────── -->
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-ink py-section-sm md:py-section">
+    <Container class="relative">
+      <div class="grid gap-14 lg:grid-cols-2 lg:items-center">
+        <div>
+          <Eyebrow data-reveal>How we engage</Eyebrow>
+          <h2 class="mt-4 text-display-lg text-white" data-reveal data-reveal-delay="1">
+            The same <span class="text-gradient-accent">audit-first</span> discipline as every Emerge program.
+          </h2>
+          <p class="mt-5 text-lead-sm text-platinum/70" data-reveal data-reveal-delay="2">
+            Media programs waste money when the platform is chosen before the numbers are read. So
+            the engagement starts with a fixed-scope audit — and every phase after it is gated,
+            named, and quoted before it begins.
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          {phases.map((step, idx) => (
+            <div
+              class="group flex gap-5 rounded-card border border-white/8 p-6 transition-all duration-400 hover:border-teal/30 hover:-translate-y-0.5"
+              style="background: rgba(255,255,255,0.025); backdrop-filter: blur(12px);"
+              data-reveal
+              data-reveal-delay={String(idx + 1)}
+            >
+              <div class="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-accent font-mono text-xs font-bold text-ink shadow-glow">
+                {String(idx + 1).padStart(2, '0')}
+              </div>
+              <div class="flex-1">
+                <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <h3 class="font-semibold text-teal">{step.phase}</h3>
+                  <span class="text-sm font-semibold text-white">{step.name}</span>
+                  <span class="ml-auto rounded-pill border border-white/10 bg-white/5 px-2 py-0.5 font-mono text-[10px] text-cool">{step.price}</span>
+                </div>
+                <p class="mt-2 text-sm leading-relaxed text-platinum/65 transition-colors duration-300 group-hover:text-platinum/85">{step.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── FAQ ───────────────────────────────────────────────── -->
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-navy py-section-sm md:py-section">
+    <Container class="relative">
+      <div class="mx-auto max-w-3xl">
+        <h2 class="text-display-lg text-white" data-reveal>
+          The questions procurement <span class="text-gradient-accent">actually asks.</span>
+        </h2>
+
+        <div class="mt-10 space-y-3">
+          {faqs.map((f, i) => (
+            <details
+              class="faq-item group rounded-card border border-white/8 transition-colors duration-300 open:border-teal/25 hover:border-teal/20"
+              style="background: rgba(255,255,255,0.02);"
+              data-reveal
+              data-reveal-delay={String(i + 1)}
+            >
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-5 text-[15px] font-semibold text-white [&::-webkit-details-marker]:hidden">
+                {f.q}
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" class="faq-chevron shrink-0 text-teal transition-transform duration-300">
+                  <path d="M2 5l5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </summary>
+              <p class="px-6 pb-6 text-sm leading-relaxed text-platinum/70">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── Final CTA ─────────────────────────────────────────── -->
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-ink py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 70% 60% at 50% 110%, rgba(0,194,199,0.22), transparent 65%), radial-gradient(ellipse 45% 50% at 18% 0%, rgba(61,220,227,0.12), transparent 60%); filter: blur(60px);"></div>
+
+    <Container class="relative">
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-display-lg text-white" data-reveal>
+          Start with the audit.
+        </h2>
+        <p class="mt-5 text-lead text-platinum/70" data-reveal data-reveal-delay="1">
+          The Media &amp; Data Audit is a fixed-scope diagnostic: where the waste is, where
+          attribution breaks, and whether the Google Marketing Platform is the right tool for you at
+          all — before you commit to a build.
+        </p>
+        <div class="mt-10 flex flex-wrap justify-center gap-4" data-reveal data-reveal-delay="2">
+          <Button href="/contact/" size="lg" class="btn-shimmer">Book a Media &amp; Data Audit</Button>
+          <Button href="/services/" variant="ghost" size="lg">See the full capability stack</Button>
+        </div>
+
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3" data-reveal data-reveal-delay="3">
+          {['Authorized GMP reseller', 'GCC PDPL aligned', 'Quote-based engagement'].map((t) => (
+            <div class="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-eyebrow text-cool">
+              <div class="h-1 w-1 rounded-full bg-teal/50"></div>
+              {t}
+            </div>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>
+
+<style>
+  @keyframes aurora-drift {
+    0%, 100% { transform: translate3d(0,0,0) scale(1); opacity: 0.85; }
+    50%       { transform: translate3d(2%,-3%,0) scale(1.06); opacity: 1; }
+  }
+
+  .faq-item[open] .faq-chevron { transform: rotate(180deg); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tier-card, .faq-chevron { transition: none !important; }
+  }
+</style>
