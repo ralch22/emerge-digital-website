@@ -12,7 +12,7 @@ Emerge Digital should reposition decisively away from "AI-led digital marketing 
 
 The strategic narrative is built on three reinforcing pillars:
 
-1. **Local Prime, Global Power** — Emerge Digital is a Dubai Mainland entity that owns the commercial relationship, contracting, compliance, and account leadership inside the GCC. Delivery scales through 23 years of regional heritage, 7 MEA offices, standing as one of only four Global Google Marketing Platform Partners worldwide, and a global engineering network of 80,000+ engineers.
+1. **Local Prime, Global Power** — Emerge Digital is a Dubai Mainland entity that owns the commercial relationship, contracting, compliance, and account leadership inside the GCC. Delivery scales through 23 years of regional heritage, 7 MEA offices, full-stack Google Marketing Platform delivery (DV360/SA360/CM360) as an authorized reseller through a top-four GMP partner, and a global engineering network of 80,000+ engineers.
 2. **CX-First Transformation** — You personally lead the CX Division (Customer Experience, MarTech, and Commerce). The website should make this the most visible and credible service line, while the broader Data, AI, and Application Modernization capabilities are positioned as our deep bench.
 3. **Vision 2030 Procurement Window** — The 2026–2027 GCC procurement cycle is the moat. Every CXO, government buyer, and BFSI/Retail leader knows the window. The brand should speak directly to it with a "Crawl–Walk–Run" engagement model and a local-prime contracting advantage.
 
@@ -32,7 +32,7 @@ The remainder of this document delivers the full deliverables in numbered sectio
 
 ### 1.1 Strategic Positioning Statement (Master Statement)
 
-> Emerge Digital is the agile local prime for enterprise Customer Experience, Data, AI, and digital transformation programs across the Middle East and Africa. As the Dubai Mainland commercial engine, we combine in-region speed and accountability with the scale of 23 years of regional heritage, standing as one of only four Google Marketing Platform Partners worldwide, and a global engineering network of 80,000+ engineers — so government, BFSI, and retail leaders can move from Vision 2030 ambition to measurable enterprise outcomes in a single procurement cycle.
+> Emerge Digital is the agile local prime for enterprise Customer Experience, Data, AI, and digital transformation programs across the Middle East and Africa. As the Dubai Mainland commercial engine, we combine in-region speed and accountability with the scale of 23 years of regional heritage, full-stack Google Marketing Platform delivery as an authorized reseller through a top-four GMP partner, and a global engineering network of 80,000+ engineers — so government, BFSI, and retail leaders can move from Vision 2030 ambition to measurable enterprise outcomes in a single procurement cycle.
 
 ### 1.2 Tagline Options (Use one as primary, others as supporting)
 
@@ -231,7 +231,7 @@ Emerge Digital was built for exactly this moment. We are the Dubai Mainland prim
 
 - **23 yrs** Regional consulting heritage
 - **7** MEA offices across UAE, KSA, Egypt and beyond
-- **4** Global Google Marketing Platform Partners worldwide — we are one
+- **3** GMP platforms delivered — DV360, SA360, CM360 (authorized reseller via a top-four GMP partner)
 - **80,000+** Engineers in our global delivery network
 
 ---
@@ -250,7 +250,7 @@ Emerge Digital is the independently registered Dubai Mainland entity that owns t
 
 **Column 2 — The Regional Heritage**
 *23 years. 7 offices. CX & analytics leadership.*
-23 years of leadership in digital analytics, customer experience, and growth across the Middle East, including standing as one of only four Global Google Marketing Platform Partners worldwide. A deep, GCC-native delivery bench across analytics, MarTech, CX strategy, and commerce — already operating across Dubai, Riyadh, Cairo, and beyond.
+23 years of leadership in digital analytics, customer experience, and growth across the Middle East, including full-stack Google Marketing Platform delivery (DV360, SA360, CM360) as an authorized reseller through a top-four GMP partner. A deep, GCC-native delivery bench across analytics, MarTech, CX strategy, and commerce — already operating across Dubai, Riyadh, Cairo, and beyond.
 
 **Column 3 — The Global Engine**
 *US$2B+ revenue. 80,000+ engineers. Worldwide.*
@@ -322,10 +322,10 @@ Emerge Digital is led personally by our founder Rami, who heads the **CX Divisio
 
 **Body (two large, premium cards):**
 
-**Card 1 — Regional Heritage & GMP Partner**
+**Card 1 — Regional Heritage & GMP Delivery**
 - 23 years of operating heritage in the Middle East
 - 7 offices across the MEA region
-- One of only **four Global Google Marketing Platform Partners** worldwide
+- Full **Google Marketing Platform** delivery (DV360/SA360/CM360) — authorized reseller via a top-four GMP partner
 - Deep specializations in Digital Analytics, CX, MarTech, and Commerce
 
 **Card 2 — Global Engineering Network**
@@ -475,7 +475,7 @@ Service cards:
 Service cards:
 1. **Digital Analytics & Data Science** — GA4 / GTM, BigQuery and Snowflake architectures, marketing mix modeling, attribution, predictive analytics, customer lifetime value modeling.
 2. **Data & Tag Governance** — Tag management strategy, server-side tagging, consent frameworks (GDPR, CCPA, GCC PDPL), data lineage, data quality programs.
-3. **Media & AdTech Excellence** — Google Marketing Platform implementations (DV360, SA360, CM360 — leveraging our standing as one of four Global GMP Partners worldwide), trade-desk strategies, retail media networks, MarTech-AdTech integration.
+3. **Media & AdTech Excellence** — Google Marketing Platform implementations (DV360, SA360, CM360 — delivered as an authorized reseller through a top-four full-stack GMP partner), trade-desk strategies, retail media networks, MarTech-AdTech integration.
 
 **Pillar 3 — AI & Generative Solutions**
 *"Built into every engagement, not bolted on."*
@@ -540,9 +540,9 @@ Service cards:
 
 **Section — Customer Data & MarTech Stack**
 - Logo block
-- 1-paragraph intro: 23 years of regional consulting heritage. 7 offices across MEA. One of only four Global Google Marketing Platform Partners worldwide. Vendor-certified across the leading CDP, MarTech, and commerce platforms.
+- 1-paragraph intro: 23 years of regional consulting heritage. 7 offices across MEA. An authorized Google Marketing Platform reseller via a top-four full-stack GMP partner. Vendor-certified across the leading CDP, MarTech, and commerce platforms.
 - Capability summary: Digital Analytics & Data Science · Data & Tag Governance · Customer Data Orchestration · CX Strategy & Design · Commerce & Platform Development · Media & AdTech Excellence.
-- Trust strip: GMP Partner badge · Adobe / Salesforce / Tealium / Snowflake partner logos.
+- Trust strip: Authorized GMP Reseller badge · Adobe / Salesforce / Tealium / Snowflake partner logos.
 - CTA to capability deep-dive page.
 
 **Section — Cloud, AI & Engineering Stack**
