@@ -5,8 +5,6 @@
 // Styles are is:global and scripts is:inline so Astro emits the design byte-faithfully.
 // Booking = ecosystem Cal.com embed (rami-alcheikh/strategy-call), inline + modal triggers.
 // VSL video drops into ONE place: the data-video attribute on #vslFrame (see marker below).
-const CAL_LINK = 'rami-alcheikh/strategy-call';
-const CAL_NS = 'strategy-call';
 const PAGE_URL = 'https://emergedigital.com/demand-generation/';
 // VSL walkthrough (Emerge Digital YouTube). Embed form + params for a clean, distraction-free
 // player; the on-page script appends &autoplay=1 on the user's click.
@@ -220,7 +218,7 @@ const MARK_D = 'M203.6,385.73V327.36c46.58-5.85,92.81-11.64,139-17.49,25.79-3.26
       <a href="#how">How it works</a>
       <a href="#channels">Channels</a>
       <a href="#pricing">Investment</a>
-      <a class="btn navcta" href="#book" data-cal-link={CAL_LINK} data-cal-namespace={CAL_NS} data-cal-config='{"layout":"month_view"}'>Book a strategy call</a>
+      <a class="btn navcta" href="#book">Book a strategy call</a>
     </div>
   </div>
 </nav>
@@ -232,7 +230,7 @@ const MARK_D = 'M203.6,385.73V327.36c46.58-5.85,92.81-11.64,139-17.49,25.79-3.26
     <h1>Qualified meetings on your calendar. <span class="lime">Without building a sales team.</span></h1>
     <p class="sub">We design, run and measure an omni-channel demand engine — cold email, owned-list nurture and LinkedIn — so the right buyers book time with you. You show up and close.</p>
     <div class="cta-row">
-      <a class="btn" href="#book" data-cal-link={CAL_LINK} data-cal-namespace={CAL_NS} data-cal-config='{"layout":"month_view"}'>Book a strategy call</a>
+      <a class="btn" href="#book">Book a strategy call</a>
       <a class="btn ghost" href="#how">See how it works</a>
     </div>
     <div class="microtrust">Deliverability-first infrastructure · Signal-based targeting · Human-reviewed personalisation</div>
