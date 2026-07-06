@@ -17,8 +17,9 @@ export default defineConfig({
     }),
     mdx(),
     sitemap({
-      // /styleguide is an internal component gallery — keep it out of the sitemap.
-      filter: (page) => !page.includes('/styleguide'),
+      // /styleguide is an internal component gallery; /demand-generation is an unlisted
+      // campaign/outreach page — keep both out of the sitemap.
+      filter: (page) => !page.includes('/styleguide') && !page.includes('/demand-generation'),
     }),
   ],
   build: {

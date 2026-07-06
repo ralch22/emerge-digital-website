@@ -1,0 +1,485 @@
+---
+// Standalone demand-generation VSL landing page (Trulux / DFY demand-gen campaign).
+// Deliberately NOT wrapped in BaseLayout: this is a self-contained campaign page with its
+// own identity (lime/navy), nav, and footer — distinct from the corporate teal site.
+// Styles are is:global and scripts is:inline so Astro emits the design byte-faithfully.
+// Booking = ecosystem Cal.com embed (rami-alcheikh/strategy-call), inline + modal triggers.
+// VSL video drops into ONE place: the data-video attribute on #vslFrame (see marker below).
+const CAL_LINK = 'rami-alcheikh/strategy-call';
+const CAL_NS = 'strategy-call';
+const PAGE_URL = 'https://emergedigital.com/demand-generation/';
+// VSL walkthrough (Emerge Digital YouTube). Embed form + params for a clean, distraction-free
+// player; the on-page script appends &autoplay=1 on the user's click.
+const VSL_VIDEO = 'https://www.youtube.com/embed/l-UnVZ87TH8?rel=0&modestbranding=1&playsinline=1';
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Done-For-You Demand Generation | Emerge Digital</title>
+<meta name="description" content="Omni-channel B2B demand generation — cold email, owned email and LinkedIn — that books qualified meetings on your calendar. Designed, piloted and measured by Emerge Digital.">
+<link rel="canonical" href={PAGE_URL}>
+<!-- Unlisted campaign page: client-specific pricing + niche ICP — keep out of search + nav. -->
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:type" content="website">
+<meta property="og:url" content={PAGE_URL}>
+<meta property="og:title" content="Done-For-You Demand Generation | Emerge Digital">
+<meta property="og:description" content="Omni-channel B2B demand generation that books qualified meetings on your calendar. Designed, piloted and measured by Emerge Digital.">
+<meta name="twitter:card" content="summary_large_image">
+<style is:global>
+  :root{
+    --navy:#0A1F3D;
+    --navy-2:#071528;
+    --navy-3:#050E1C;
+    --lime:#C3F53C;
+    --lime-2:#A6D62E;
+    --ink:#EAF1FB;
+    --mut:#9DB0CE;
+    --mut-2:#7C8FAE;
+    --line:rgba(255,255,255,.10);
+    --card:rgba(255,255,255,.035);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Inter','Helvetica Neue',Arial,sans-serif;
+    background:var(--navy-3); color:var(--ink);
+    line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+  .eyebrow{font-size:12px;letter-spacing:2.6px;text-transform:uppercase;color:var(--lime);font-weight:700;}
+  h1,h2,h3{line-height:1.1;font-weight:800;letter-spacing:-.5px;}
+  .lime{color:var(--lime);}
+  .btn{
+    display:inline-block;background:var(--lime);color:#0A1F3D;font-weight:700;
+    padding:15px 30px;border-radius:40px;font-size:15px;letter-spacing:.2px;
+    transition:transform .15s ease, box-shadow .15s ease;
+    box-shadow:0 8px 30px rgba(195,245,60,.22);
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 12px 38px rgba(195,245,60,.34);}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid rgba(255,255,255,.28);box-shadow:none;}
+  .btn.ghost:hover{border-color:var(--lime);color:var(--lime);}
+  .btn:focus-visible,a:focus-visible,button:focus-visible{outline:2px solid var(--lime);outline-offset:3px;}
+
+  /* NAV */
+  nav{position:sticky;top:0;z-index:50;background:rgba(5,14,28,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:66px;}
+  .brand{display:flex;align-items:center;gap:11px;}
+  .mark{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--lime),#7bd63a);}
+  .brand .n{font-weight:800;font-size:16px;}
+  .brand .s{font-size:9.5px;letter-spacing:2.4px;text-transform:uppercase;color:var(--mut);}
+  nav .links{display:flex;gap:26px;align-items:center;font-size:14px;color:var(--mut);}
+  nav .links a:hover{color:var(--ink);}
+  nav .navcta{padding:10px 20px;font-size:13.5px;}
+  @media(max-width:820px){nav .links a:not(.navcta){display:none;}}
+
+  /* HERO */
+  .hero{position:relative;overflow:hidden;padding:80px 0 60px;}
+  .hero::before{content:"";position:absolute;inset:0;background:
+    radial-gradient(1100px 520px at 78% -8%, rgba(195,245,60,.14), transparent 60%),
+    radial-gradient(900px 500px at 8% 12%, rgba(30,90,180,.20), transparent 60%),
+    linear-gradient(180deg,var(--navy) 0%,var(--navy-3) 100%);}
+  .hero .wrap{position:relative;z-index:2;}
+  .hpill{display:inline-flex;align-items:center;gap:9px;border:1px solid rgba(195,245,60,.4);
+    color:var(--lime);font-size:12px;letter-spacing:1.4px;text-transform:uppercase;font-weight:700;
+    padding:7px 15px;border-radius:40px;margin-bottom:26px;}
+  .hpill .dot{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 4px rgba(195,245,60,.18);}
+  .hero h1{font-size:clamp(34px,5.4vw,60px);max-width:15ch;}
+  .hero p.sub{font-size:clamp(16px,2vw,20px);color:var(--mut);max-width:56ch;margin:22px 0 30px;}
+  .hero .cta-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
+  .hero .microtrust{margin-top:20px;font-size:13px;color:var(--mut-2);}
+
+  /* VSL */
+  .vsl{max-width:880px;margin:44px auto 0;position:relative;z-index:2;}
+  .vsl-frame{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line);
+    background:linear-gradient(160deg,#0e274a,#071528);aspect-ratio:16/9;
+    box-shadow:0 40px 90px rgba(0,0,0,.5);}
+  .vsl-frame::after{content:"";position:absolute;inset:0;background:
+    radial-gradient(600px 300px at 50% 40%, rgba(195,245,60,.10), transparent 70%);pointer-events:none;}
+  .vsl-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;cursor:pointer;}
+  .play{width:76px;height:76px;border-radius:50%;background:var(--lime);display:flex;align-items:center;justify-content:center;
+    box-shadow:0 12px 40px rgba(195,245,60,.4);transition:transform .18s ease;}
+  .vsl-inner:hover .play{transform:scale(1.07);}
+  .play svg{margin-left:5px;}
+  .vsl-cap{font-size:13.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--mut);font-weight:600;}
+  .vsl-title{position:absolute;left:22px;bottom:20px;font-size:13px;color:var(--mut);z-index:3;max-width:70%;}
+  .vsl-badge{position:absolute;right:18px;top:16px;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;
+    color:var(--lime);border:1px solid rgba(195,245,60,.35);padding:5px 11px;border-radius:30px;z-index:3;}
+  /* button-reset for the accessible play control + injected media */
+  button.vsl-inner{appearance:none;-webkit-appearance:none;border:0;background:transparent;font:inherit;color:inherit;width:100%;}
+  .vsl-frame video,.vsl-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000;z-index:4;}
+
+  /* logos / stat strip */
+  .strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--navy-2);}
+  .strip .wrap{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;padding:26px 24px;}
+  .stat{flex:1;min-width:180px;text-align:center;}
+  .stat .b{font-size:30px;font-weight:800;color:#fff;letter-spacing:-.5px;}
+  .stat .b em{font-style:normal;color:var(--lime);font-size:19px;}
+  .stat .l{font-size:12.5px;color:var(--mut);margin-top:3px;}
+
+  section.blk{padding:74px 0;}
+  .sec-head{max-width:60ch;margin-bottom:40px;}
+  .sec-head h2{font-size:clamp(26px,3.4vw,40px);margin:12px 0 14px;}
+  .sec-head p{color:var(--mut);font-size:17px;}
+
+  /* problem cards */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  @media(max-width:820px){.cards{grid-template-columns:1fr;}}
+  .c{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px;}
+  .c .ic{width:42px;height:42px;border-radius:11px;background:rgba(195,245,60,.14);display:flex;align-items:center;justify-content:center;margin-bottom:16px;color:var(--lime);font-weight:800;}
+  .c h3{font-size:18px;margin-bottom:8px;}
+  .c p{color:var(--mut);font-size:14.5px;}
+
+  /* channels */
+  .chan{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  @media(max-width:820px){.chan{grid-template-columns:1fr;}}
+  .chan .ch{background:linear-gradient(165deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid var(--line);border-radius:16px;padding:26px;position:relative;overflow:hidden;}
+  .chan .ch .k{font-size:11px;letter-spacing:1.8px;text-transform:uppercase;color:var(--lime);font-weight:700;}
+  .chan .ch h3{font-size:21px;margin:8px 0 10px;}
+  .chan .ch p{color:var(--mut);font-size:14.5px;}
+  .chan .ch .no{position:absolute;right:16px;top:10px;font-size:46px;font-weight:800;color:rgba(255,255,255,.05);}
+
+  /* steps */
+  .flow{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  @media(max-width:820px){.flow{grid-template-columns:1fr;}}
+  .fstep{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--card);}
+  .fstep .h{background:var(--navy);padding:18px 22px;border-bottom:1px solid var(--line);}
+  .fstep .h .st{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--lime);font-weight:700;}
+  .fstep .h .t{font-size:19px;font-weight:800;margin-top:4px;}
+  .fstep .h .d{font-size:12.5px;color:var(--mut);margin-top:2px;}
+  .fstep .b{padding:20px 22px;color:var(--mut);font-size:14.5px;}
+
+  /* what you get list */
+  .getgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px 34px;}
+  @media(max-width:820px){.getgrid{grid-template-columns:1fr;}}
+  .get{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line);}
+  .get .tick{flex:none;width:22px;height:22px;border-radius:6px;background:rgba(195,245,60,.16);color:var(--lime);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;margin-top:1px;}
+  .get span{font-size:15px;}
+
+  /* ICP band */
+  .band{background:linear-gradient(160deg,var(--navy) 0%,var(--navy-2) 100%);border:1px solid var(--line);border-radius:22px;padding:44px;}
+  .band h2{font-size:clamp(24px,3.2vw,34px);max-width:20ch;}
+  .band p{color:var(--mut);font-size:16px;max-width:60ch;margin-top:12px;}
+  .band .tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;}
+  .band .tags span{font-size:13px;border:1px solid var(--line);color:var(--ink);padding:8px 15px;border-radius:30px;background:rgba(255,255,255,.03);}
+
+  /* pricing */
+  .price{display:grid;grid-template-columns:1.15fr 1fr;gap:20px;}
+  @media(max-width:820px){.price{grid-template-columns:1fr;}}
+  .plan{border:1px solid var(--line);border-radius:18px;padding:30px;background:var(--card);position:relative;}
+  .plan.feat{border-color:rgba(195,245,60,.4);background:linear-gradient(165deg,rgba(195,245,60,.06),rgba(255,255,255,.02));}
+  .plan .badge{position:absolute;right:22px;top:22px;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:#0A1F3D;background:var(--lime);padding:5px 12px;border-radius:30px;font-weight:800;}
+  .plan .pk{font-size:12px;letter-spacing:1.8px;text-transform:uppercase;color:var(--mut);font-weight:700;}
+  .plan .pn{font-size:23px;font-weight:800;margin:8px 0 4px;}
+  .plan .amt{font-size:34px;font-weight:800;letter-spacing:-1px;margin:14px 0 2px;}
+  .plan .amt small{font-size:15px;color:var(--mut);font-weight:600;}
+  .plan ul{list-style:none;margin:18px 0 0;}
+  .plan li{padding:9px 0;border-bottom:1px solid var(--line);font-size:14.5px;color:var(--ink);display:flex;gap:10px;}
+  .plan li b{color:#fff;}
+  .plan li::before{content:"→";color:var(--lime);font-weight:800;}
+
+  /* FAQ */
+  details{border:1px solid var(--line);border-radius:14px;padding:6px 22px;margin-bottom:12px;background:var(--card);}
+  details summary{cursor:pointer;list-style:none;padding:15px 0;font-weight:700;font-size:16px;display:flex;justify-content:space-between;align-items:center;}
+  details summary::-webkit-details-marker{display:none;}
+  details summary::after{content:"+";color:var(--lime);font-size:22px;font-weight:400;}
+  details[open] summary::after{content:"–";}
+  details p{color:var(--mut);font-size:14.5px;padding:0 0 16px;}
+
+  /* booking */
+  .book-wrap{max-width:940px;margin:32px auto 0;text-align:left;}
+  #cal-inline{min-height:640px;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--navy-2);}
+  @media(max-width:820px){#cal-inline{min-height:560px;}}
+
+  /* final CTA */
+  .final{text-align:center;padding:84px 0;position:relative;overflow:hidden;}
+  .final::before{content:"";position:absolute;inset:0;background:radial-gradient(700px 360px at 50% 0%,rgba(195,245,60,.14),transparent 65%);}
+  .final .wrap{position:relative;z-index:2;}
+  .final h2{font-size:clamp(28px,4vw,46px);max-width:18ch;margin:14px auto 16px;}
+  .final p{color:var(--mut);font-size:18px;max-width:52ch;margin:0 auto 30px;}
+
+  footer{border-top:1px solid var(--line);padding:34px 0;background:var(--navy-3);}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center;color:var(--mut-2);font-size:13px;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <span class="mark"></span>
+      <div><div class="n">Emerge Digital</div><div class="s">Demand Generation</div></div>
+    </a>
+    <div class="links">
+      <a href="#how">How it works</a>
+      <a href="#channels">Channels</a>
+      <a href="#pricing">Investment</a>
+      <a class="btn navcta" href="#book" data-cal-link={CAL_LINK} data-cal-namespace={CAL_NS} data-cal-config='{"layout":"month_view"}'>Book a strategy call</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <span class="hpill"><span class="dot"></span> Done-for-you outbound · Built for 2026</span>
+    <h1>Qualified meetings on your calendar. <span class="lime">Without building a sales team.</span></h1>
+    <p class="sub">We design, run and measure an omni-channel demand engine — cold email, owned-list nurture and LinkedIn — so the right buyers book time with you. You show up and close.</p>
+    <div class="cta-row">
+      <a class="btn" href="#book" data-cal-link={CAL_LINK} data-cal-namespace={CAL_NS} data-cal-config='{"layout":"month_view"}'>Book a strategy call</a>
+      <a class="btn ghost" href="#how">See how it works</a>
+    </div>
+    <div class="microtrust">Deliverability-first infrastructure · Signal-based targeting · Human-reviewed personalisation</div>
+
+    <!-- VSL -->
+    <div class="vsl">
+      <!-- ▼▼ DROP THE REAL VSL VIDEO URL INTO data-video BELOW ▼▼
+           Supports self-hosted files (.mp4/.webm → <video controls autoplay>) OR
+           an embed URL (YouTube/Vimeo/Cloudflare Stream → autoplay iframe).
+           Leave empty to keep the poster state. -->
+      <div class="vsl-frame" id="vslFrame" data-video={VSL_VIDEO}>
+        <span class="vsl-badge">Watch · 3 min</span>
+        <button type="button" class="vsl-inner" id="vslBtn" aria-label="Play the three-minute walkthrough video">
+          <span class="play">
+            <svg width="24" height="26" viewBox="0 0 24 26" fill="none" aria-hidden="true"><path d="M23 11.27a2 2 0 0 1 0 3.46L3 26.2A2 2 0 0 1 0 24.46V1.54A2 2 0 0 1 3 -0.2z" fill="#0A1F3D"/></svg>
+          </span>
+          <span class="vsl-cap" id="vslCap">Play the 3-minute walkthrough</span>
+        </button>
+        <div class="vsl-title">How the demand engine books qualified meetings — Rami Alcheikh, Emerge Digital</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- STAT STRIP -->
+<div class="strip">
+  <div class="wrap">
+    <div class="stat"><div class="b">3</div><div class="l">Channels, one cadence</div></div>
+    <div class="stat"><div class="b">8&ndash;12</div><div class="l">Target meetings / quarter</div></div>
+    <div class="stat"><div class="b">3&ndash;5<em>×</em></div><div class="l">Reply lift from signal-based outreach*</div></div>
+    <div class="stat"><div class="b">90<em>d</em></div><div class="l">Fixed-scope pilot</div></div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section class="blk" id="problem">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Why most outbound stalls in 2026</span>
+      <h2>The 2024 playbook now lands in spam.</h2>
+      <p>One domain, a bought list and an email blast used to work. Today it burns your domain reputation and gets ignored. Here's what actually breaks — and what we rebuilt.</p>
+    </div>
+    <div class="cards">
+      <div class="c">
+        <div class="ic">!</div>
+        <h3>Deliverability collapsed</h3>
+        <p>Gmail, Yahoo and now Microsoft enforce SPF/DKIM/DMARC and punish spam complaints above ~0.1%. Sending cold from your main domain is a real risk.</p>
+      </div>
+      <div class="c">
+        <div class="ic">≈</div>
+        <h3>Generic lists get ignored</h3>
+        <p>Static, untargeted lists convert worse every quarter. Buyers respond to relevance and timing — a signal, not a spray.</p>
+      </div>
+      <div class="c">
+        <div class="ic">1</div>
+        <h3>Email-only is the weak setup</h3>
+        <p>A single channel gives a single chance. Buyers need to see you in more than one place before they reply.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHANNELS -->
+<section class="blk" id="channels" style="background:var(--navy-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">The engine</span>
+      <h2>Three channels, working as one.</h2>
+      <p>A coordinated cadence so the same prospect sees you in the inbox and on LinkedIn — building the familiarity that turns into a booked meeting.</p>
+    </div>
+    <div class="chan">
+      <div class="ch"><span class="no">01</span><div class="k">Cold email</div><h3>Net-new reach</h3><p>Warmed, dedicated sending domains and signal-triggered, personalised sequences to decision-makers you've never met — at volume, without torching deliverability.</p></div>
+      <div class="ch"><span class="no">02</span><div class="k">Owned email</div><h3>Warm re-activation</h3><p>Nurture and re-engage your existing lists, past enquiries and lapsed leads from your own domain — the fastest wins in any program.</p></div>
+      <div class="ch"><span class="no">03</span><div class="k">LinkedIn</div><h3>Familiarity &amp; trust</h3><p>Automated-but-human connections and DMs to the same targets, so your emails land with someone who already recognises you.</p></div>
+    </div>
+    <p style="margin-top:22px;color:var(--mut-2);font-size:13.5px;">Under the hood: an enrichment workflow pulls firmographics and buying signals from 75+ sources, filters for ICP fit, appends verified contacts and drafts first-touch copy — every message human-reviewed before it ships.</p>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="blk" id="how">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">How we engage</span>
+      <h2>Discovery → Pilot → Scale.</h2>
+      <p>A risk-managed path with a fixed-scope entry and clear gates — you approve everything before a single cold send goes out.</p>
+    </div>
+    <div class="flow">
+      <div class="fstep"><div class="h"><div class="st">Crawl · low risk</div><div class="t">Discovery &amp; Foundation</div><div class="d">Weeks 1–4</div></div><div class="b">ICP validation and list build, sending infrastructure stood up and warming, the data engine and full message library written — and signed off by you.</div></div>
+      <div class="fstep"><div class="h"><div class="st">Walk · defined gates</div><div class="t">90-Day Pilot</div><div class="d">Months 1–3 live</div></div><div class="b">All three channels live against clear KPIs. Weekly optimisation, founder-level oversight, meetings booked to your calendar, cost-per-meeting tracked.</div></div>
+      <div class="fstep"><div class="h"><div class="st">Run · ongoing</div><div class="t">Scale</div><div class="d">Month 4+</div></div><div class="b">Expand segments and geographies, add domains and volume, layer new signals — month-to-month once the pilot proves the numbers.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT YOU GET -->
+<section class="blk" style="background:var(--navy-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Scope</span>
+      <h2>Everything's done for you.</h2>
+    </div>
+    <div class="getgrid">
+      <div class="get"><span class="tick">✓</span><span>Outbound strategy &amp; market research</span></div>
+      <div class="get"><span class="tick">✓</span><span>Dedicated sending infrastructure &amp; warm-up</span></div>
+      <div class="get"><span class="tick">✓</span><span>Enriched, verified lead lists with buying signals</span></div>
+      <div class="get"><span class="tick">✓</span><span>Copywriting &amp; A/B testing across all channels</span></div>
+      <div class="get"><span class="tick">✓</span><span>Multi-channel campaign build &amp; management</span></div>
+      <div class="get"><span class="tick">✓</span><span>Deliverability &amp; reputation monitoring</span></div>
+      <div class="get"><span class="tick">✓</span><span>Inbox &amp; reply management — meetings booked for you</span></div>
+      <div class="get"><span class="tick">✓</span><span>Weekly, monthly &amp; quarterly reporting + a direct line</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ICP BAND -->
+<section class="blk" id="who">
+  <div class="wrap">
+    <div class="band">
+      <span class="eyebrow">Who we put in front of you</span>
+      <h2>Buyers who are ready — not just a bigger list.</h2>
+      <p>We target a sharp, high-intent niche and validate it with firmographic and signal data before launch, so every booked meeting is worth your time.</p>
+      <div class="tags">
+        <span>Clinic &amp; med-spa owners going private-label</span>
+        <span>Skin · cosmetic · derma · aesthetic</span>
+        <span>Emerging indie beauty founders</span>
+        <span>Salon &amp; spa groups</span>
+        <span>Decision-makers with budget</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="blk" id="pricing" style="background:var(--navy-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Investment · 2026 (USD)</span>
+      <h2>Two ways to engage.</h2>
+      <p>Priced for what deliverable, omni-channel outbound actually takes today — a warmed multi-domain estate, a signal/enrichment data engine and three channels in concert.</p>
+    </div>
+    <div class="price">
+      <div class="plan feat">
+        <span class="badge">Recommended</span>
+        <div class="pk">Option A</div>
+        <div class="pn">Managed Retainer</div>
+        <div class="amt">$3,500<small> / mo</small></div>
+        <div style="color:var(--mut);font-size:13.5px;">+ $1,950 one-time foundation · + ~$390/mo tooling at cost · min. 3 months</div>
+        <ul>
+          <li><b>Full setup:</b> infrastructure, warm-up, data engine &amp; message library</li>
+          <li><b>All three channels</b> managed end-to-end</li>
+          <li><b>Deliverability &amp; inbox</b> managed for you</li>
+          <li><b>Weekly reporting</b> + cost-per-meeting</li>
+        </ul>
+      </div>
+      <div class="plan">
+        <div class="pk">Option B</div>
+        <div class="pn">Pay-Per-Meeting</div>
+        <div class="amt">from $250<small> / meeting</small></div>
+        <div style="color:var(--mut);font-size:13.5px;">Prepaid blocks · reduced setup applies</div>
+        <ul>
+          <li><b>10 meetings</b> — $2,900</li>
+          <li><b>20 meetings</b> — $5,400</li>
+          <li><b>30 meetings</b> — $7,500</li>
+          <li>Credit counts only when <b>both sides</b> agree it qualified</li>
+        </ul>
+      </div>
+    </div>
+    <p style="margin-top:18px;color:var(--mut-2);font-size:13px;">Target for the pilot is 8–12 sales-qualified meetings per quarter — an honestly-framed range we manage to weekly, not a hard guarantee.</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="blk">
+  <div class="wrap" style="max-width:820px;">
+    <div class="sec-head"><span class="eyebrow">Questions</span><h2>Good to know.</h2></div>
+    <details open><summary>Will this hurt our main domain's reputation?</summary><p>No — that's the point of the foundation build. We send cold from a separate estate of dedicated, warmed domains and mailboxes, so your primary domain stays protected. Owned-list nurture is the only thing sent from your own domain, and only to warm audiences.</p></details>
+    <details><summary>Why is there a 3–4 week ramp before launch?</summary><p>Deliverability can't be rushed. New domains and mailboxes must be authenticated and warmed gradually to earn inbox placement. Rushing it is the fastest way to land in spam. We use that window to also build your lists, data engine and message library.</p></details>
+    <details><summary>How is a "qualified meeting" defined?</summary><p>A meeting that sits inside the agreed ICP, is with a decision-maker who has budget for a first production run, and is accepted as qualified by both sides in a shared tracker. We report activity metrics (sends, connects, replies) weekly alongside outcomes.</p></details>
+    <details><summary>Do we need our own software and CRM?</summary><p>We handle the whole stack. Tooling (domains, mailboxes, sending platform, enrichment, LinkedIn automation) is billed at cost — around $390/month — and can run on your accounts if you prefer. If you don't have a CRM, we'll provision a lightweight one.</p></details>
+  </div>
+</section>
+
+<!-- FINAL CTA / BOOKING -->
+<section class="final" id="book">
+  <div class="wrap">
+    <span class="eyebrow">Let's talk</span>
+    <h2>Book a 20-minute strategy call.</h2>
+    <p>Bring your target customer. We'll map where the demand is, what a 90-day pilot would look like, and the numbers we'd manage to from day one.</p>
+    <div class="book-wrap">
+      <div id="cal-inline" aria-label="Booking calendar — Emerge Digital strategy call"></div>
+    </div>
+    <div style="margin-top:18px;color:var(--mut-2);font-size:13.5px;">Prefer email? <a class="lime" href="mailto:rami@emergedigital.com?subject=Demand%20Generation%20Strategy%20Call">rami@emergedigital.com</a></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="brand"><span class="mark"></span><div><div class="n" style="font-size:15px;">Emerge Digital</div><div class="s">Demand Generation Practice</div></div></div>
+    <div>© 2026 Emerge Digital. All rights reserved. · *Signal-based reply lift per 2026 industry benchmarks.</div>
+  </div>
+</footer>
+
+<!-- VSL player: reads data-video off #vslFrame; supports files and embeds -->
+<script is:inline>
+  (function(){
+    var f = document.getElementById('vslFrame');
+    var btn = document.getElementById('vslBtn');
+    if(!f || !btn) return;
+    btn.addEventListener('click', function(){
+      var url = (f.getAttribute('data-video') || '').trim();
+      if(!url){
+        var cap = document.getElementById('vslCap');
+        if(cap){ cap.textContent = 'Walkthrough coming shortly — book your call below.'; }
+        return;
+      }
+      var isFile = /\.(mp4|webm|ogv|ogg)(\?|#|$)/i.test(url);
+      var media;
+      if(isFile){
+        media = document.createElement('video');
+        media.src = url; media.controls = true; media.autoplay = true;
+        media.playsInline = true; media.preload = 'metadata';
+      } else {
+        var sep = url.indexOf('?') > -1 ? '&' : '?';
+        media = document.createElement('iframe');
+        media.src = url + sep + 'autoplay=1';
+        media.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; encrypted-media');
+        media.setAttribute('allowfullscreen', '');
+        media.setAttribute('title', 'Demand generation walkthrough video');
+      }
+      f.innerHTML = '';
+      f.appendChild(media);
+    });
+  })();
+</script>
+
+<!-- Cal.com booking (ecosystem embed): inline calendar in #book + modal triggers on CTAs -->
+<script is:inline>
+  (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ["initNamespace", namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+  Cal("init", "strategy-call", { origin: "https://app.cal.com" });
+  Cal.ns["strategy-call"]("inline", {
+    elementOrSelector: "#cal-inline",
+    calLink: "rami-alcheikh/strategy-call",
+    layout: "month_view"
+  });
+  Cal.ns["strategy-call"]("ui", {
+    theme: "dark",
+    hideEventTypeDetails: false,
+    layout: "month_view",
+    cssVarsPerTheme: { dark: { "cal-brand": "#C3F53C" }, light: { "cal-brand": "#0A1F3D" } }
+  });
+</script>
+</body>
+</html>
