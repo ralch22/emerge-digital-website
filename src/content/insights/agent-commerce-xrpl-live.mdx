@@ -1,0 +1,53 @@
+---
+title: "An AI Agent Bought One of Our Products This Week. Here Is the Receipt."
+summary: "On 8 July 2026, t54 Labs — a launch partner of Mastercard's Agent Pay for Machines — opened the XRPL AI Hub, a live index of agent payments on the XRP Ledger. Emerge Digital listed on day one. By 10 July, an AI agent had purchased a Vela OS product twice: once settled in XRP, once in RLUSD at exact dollar parity with our usage-billing rate card. Every step is publicly verifiable, and this is the record."
+author: "Rami — Founder, Emerge Digital"
+publishDate: 2026-07-10
+category: "Capability POV"
+tags: ["Agent Commerce", "x402", "XRPL", "RLUSD", "Mastercard Agent Pay", "Vela OS", "Metronome", "Enterprise AI", "GCC"]
+gated: false
+readingMinutes: 8
+published: true
+---
+
+Last week we wrote about [Agent Commerce landing on Cloudflare](/insights/agent-commerce-cloudflare-gulf/) and argued that the infrastructure for AI agents paying for things had moved from keynote slide to production. This week we can go one better than argument: an AI agent bought one of our products, twice, and every step of both purchases — the offer, the payment, the settlement, the invoice — is on the public record.
+
+The venue is new. On 8 July 2026, t54 Labs — an official launch partner of Mastercard's [Agent Pay for Machines](https://www.businesswire.com/news/home/20260610911796/en/Mastercard-Launches-Agent-Pay-for-Machines-to-Unlock-Super-Fast-Always-On-Payments) initiative — opened the [XRPL AI Hub](https://xrpl-ai.org), a live index of agent payments settling on the XRP Ledger over the same open x402 protocol we covered last week. The ledger had crossed a million agentic payments by launch day. Emerge Digital listed on 9 July as the seventh named service. As of this writing, our listing carries 55 pay-per-call resources, and the two transactions below are settled on XRPL mainnet.
+
+Two things about this matter beyond the novelty.
+
+The first is verifiability. Enterprise AI is saturated with claims that cannot be checked. This one can: the transactions are on a public ledger, the directory listing is on a public index, and the demo endpoints answer to anyone with `curl`. When we say an agent can buy a governed AI work product with no account, no API key, and no prior relationship, the evidence is a transaction hash, not a testimonial.
+
+The second is price integrity. One of the two purchases settled in RLUSD — Ripple's US-dollar stablecoin — at exactly the price our usage-billing system carries for that product. The agent paid 0.25 RLUSD; the billing platform recorded $0.25. When the settlement asset and the rate card agree to the cent, finance does not need a reconciliation layer between "what agents pay on-chain" and "what the billing system says." That is the property that makes this pattern operable inside a real enterprise, and it is worth more than the transactions themselves.
+
+## What actually happened
+
+On 10 July an agent wallet purchased one session of ON.X — the agentic-assistant product in the Vela OS line we deliver with FPT CX Services — through the standard x402 flow. The payment settled on XRPL mainnet for 0.278 XRP: transaction [FCC9A94F…7052F](https://xrpscan.com/tx/FCC9A94FC335AA960BC37B4D41488390D98DA20CB7B6779047ABA10EF327052F). A few hours later the same wallet bought a second session, this time settling in RLUSD for exactly 0.25: transaction [6F9BEE2D…5723](https://xrpscan.com/tx/6F9BEE2DC9ADEC2BE242D67E28BE51638699E70CD5102B26BA375A8978CE5723). Both validated on-ledger; both carry the hub's attribution tag; both delivered a real work product — a structured, governed assistant reply with a claims-to-verify list — in the same request.
+
+The billing followed through without anyone touching it. The paying wallet was created as a customer in Metronome, our usage-billing platform, on its first purchase. Its invoice now reads "ON.X — Agentic Assistant: qty 2, $0.50" — one XRP-settled session and one RLUSD-settled session, billed identically against the same rate card, visible on the Vela OS dashboard next to every other customer.
+
+In the interest of the same verifiability: the paying wallet was ours. These two transactions were our own end-to-end verification purchases, made to prove the loop before writing about it. We are not claiming organic demand — we are claiming, with receipts, that the loop works. The volume story belongs to the ecosystem: the [XRPL AI Hub](https://xrpl-ai.org/directory) indexes over a million agent payments across its listed services, of which the two above are simply the ones we can explain end to end.
+
+## What is listed
+
+Our directory entry, [Emerge Digital Agent Commerce](https://xrpl-ai.org/directory), carries 55 resources. Five of them are API editions of the Vela OS ON.Ecosystem products: ON.Optima (an answer-engine-optimization pass over content you supply), ON.X (one governed assistant exchange), ON.Match (recommendation ranking over a supplied catalogue, by embedding similarity), ON.E (commerce feed validation and structured-data markup), and ON.Browser (a live agent-readiness scan of a URL). Each quotes two settlement options in the same machine-readable offer: XRP at a price that approximates the dollar rate card, and RLUSD at the rate card exactly — from $0.02 per ON.Optima pass to $0.25 per ON.X session.
+
+An API edition is deliberately scoped: it is the per-call artifact described in the listing, not the enterprise deployment of the product line. LLM-generated portions are labeled as such in every response, with a claims-to-verify list wherever factual confirmation belongs with a human. That framing is not a disclaimer; it is the governance model. An agent buying a $0.25 work product should know exactly what it bought and what still needs a human's sign-off.
+
+The other 50 resources are the supporting utilities an agent operating on this ledger actually needs mid-task — payment preflight checks, on-ledger receipt verification, trustline and reserve calculations, live fee and order-book data, x402 developer tooling, and a set of SEO and CX micro-services drawn from the work we already do for clients. They are priced from 0.001 XRP so that calling one is never a decision.
+
+## How a sale works
+
+The mechanics are the same x402 pattern we described for Cloudflare, now settling on the XRP Ledger. The agent requests a product endpoint and receives HTTP 402 with machine-readable terms — price, asset, network, receiving address — in both XRP and RLUSD. It signs an XRP Ledger payment with its own keys and retries the request with the payment attached. A facilitator operated by t54 Labs verifies the signature and settles the payment on-ledger; nobody in the chain holds anyone else's keys. The work product is delivered in the same request — and if the work cannot be completed, the buyer is never charged, because fulfilment happens before settlement. Finally, the settlement writes a usage event into Metronome, and the paying wallet appears as a billed customer on the [Vela OS dashboard](https://roai.emergedigital.ae).
+
+The full flow — offer, payment, verification, delivery, billing — takes a few seconds and involves no account creation, no procurement cycle, and no invoice chasing. The protocol is documented in the [x402 specification for the XRP Ledger](https://github.com/x402-foundation/x402/blob/main/specs/schemes/exact/scheme_exact_xrpl.md), merged into the x402 Foundation's repository on 3 July 2026.
+
+## What a Gulf enterprise should take from this
+
+The argument for why this matters to a GCC CIO — the procurement window, the regulatory posture, the ROI conversation — is in [last week's note](/insights/agent-commerce-cloudflare-gulf/) and has not changed. What this week adds is the proof-shape an enterprise programme should demand before committing: a live listing in a venue with institutional backing, a settlement trail on a public ledger, a stablecoin price that matches the billing system to the cent, and a usage-billing integration that turns paying agents into ordinary customers on an ordinary dashboard.
+
+That last item deserves the boardroom's attention. The hard question about agent payments was never "can a wallet sign a transaction" — it was "how does this reconcile with the systems finance already runs." The answer we can now demonstrate is: the agent's wallet becomes a customer record, its purchases become metered usage, and its invoice looks like every other invoice. If your Agentforce, Copilot, or Bedrock roadmap includes agents that consume paid inputs — or products of yours that agents should be able to buy — that reconciliation pattern is the piece to get right first, and it is now a demonstrated pattern rather than a design proposal.
+
+We publish the working catalogue openly at [agent-commerce.emergedigital.com](https://agent-commerce.emergedigital.com) so your engineering team can inspect the offers during the conversation. The Discovery scope is the same as before — founder-led, two weeks, four artefacts your platform, finance, and compliance teams can act on — now with a settled-on-mainnet reference implementation behind it instead of a testnet demo.
+
+[Book an Agent Commerce Discovery](https://future.emergedigital.com/pricing-contact?utm_campaign=agent-commerce&utm_source=hub&utm_medium=insights) — one conversation, mapped to your existing CX and agent roadmap.
