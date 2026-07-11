@@ -1,0 +1,16 @@
+# emergedigital.com
+
+> Machine-readable index of emergedigital.com (12 pages).
+
+- [Emerge Digital — Local Prime. Global Power. Enterprise Outcomes.](https://emergedigital.com/): The agile Dubai Mainland prime for enterprise Customer Experience, Data, AI, and digital transformation programs across the MEA region — backed by 23 years of regional heritage and a global technology group of 80,000+.
+- [About Emerge Digital — Built in MEA for the Vision 2030 Decade](https://emergedigital.com/about): Emerge Digital is the Dubai Mainland local prime for enterprise CX, Data, AI, and digital transformation across MEA. Founded by Rami, backed by 23 years of regional heritage and a global technology group of 80,000+.
+- [Contact Emerge Digital — Book a Vision 2030 Readiness Briefing](https://emergedigital.com/contact): Book a 30-minute Readiness Briefing with Rami, Founder of Emerge Digital. We'll map your priorities to the 2026–2027 procurement window and show how the local-prime model works.
+- [Insights — Emerge Digital](https://emergedigital.com/insights): Executive POVs, Vision 2030 briefs, and capability deep-dives from Emerge Digital — the Dubai Mainland local prime for enterprise CX, Data, AI, and digital transformation.
+- [Services — Emerge Digital Capability Stack](https://emergedigital.com/services): From CX strategy to enterprise modernisation — Emerge Digital's full capability stack across Customer Experience, Data & Analytics, AI, and Digital Transformation. All under one Dubai Mainland contract.
+- [Investors — Emerge Digital | Human + agentic services](https://emergedigital.com/investors): Emerge Digital is the outcomes-led local prime — human teams + governed AI agents that make enterprise AI pay, proven on a live ROAI dashboard. Backed by FPT, built on Salesforce. Request the full investor brief.
+- [Case Studies — Emerge Digital](https://emergedigital.com/case-studies): Enterprise outcomes delivered across MEA — Government, BFSI, and Retail programs led by Emerge Digital as Dubai Mainland local prime.
+- [Terms of Use — Emerge Digital](https://emergedigital.com/legal/terms): The terms governing your use of emergedigital.com.
+- [Cookies Policy — Emerge Digital](https://emergedigital.com/legal/cookies): How emergedigital.com uses cookies and similar technologies, and how you can control them.
+- [Privacy Policy — Emerge Digital](https://emergedigital.com/legal/privacy): How Emerge Digital IT Solutions LLC collects, uses, and protects personal data, in line with UAE Federal Decree-Law No. 45 of 2021 (PDPL).
+- [Emerge Dev Pods — An Agent Dev-Team Your Seniors Sign Off On | Emerge Digital](https://emergedigital.com/services/dev-pods): Managed AI coding-agent pods on your repos: every change in an isolated worktree, iterated against your CI, merged only through a human senior review gate. Emerge runs its own 11-repo delivery on the same portfolio. Quote-based.
+- [Insights — Emerge Digital](https://emergedigital.com/category/marketing): Executive POVs, Vision 2030 briefs, and capability deep-dives from Emerge Digital — the Dubai Mainland local prime for enterprise CX, Data, AI, and digital transformation.
