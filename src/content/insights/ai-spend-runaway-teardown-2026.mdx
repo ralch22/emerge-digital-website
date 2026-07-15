@@ -1,0 +1,27 @@
+---
+title: "The A$2,000 AI-Spend Runaway — A Teardown"
+summary: "How a bot-driven crawl trap turned one Google Cloud API into 90% of our bill — the SKU-level detection query, the four-layer fix that ended it in a day, and the guardrail stack that now watches every workload we run. A founder-led incident teardown with our own production numbers."
+author: "Rami — Founder, Emerge Digital"
+publishDate: 2026-07-15
+category: "Report"
+tags: ["FinOps", "Google Cloud", "AI Governance & Trust", "Cost Governance", "Enterprise AI"]
+gated: true
+readingMinutes: 8
+published: true
+---
+
+In July 2026 a routine cost check on our own production ecommerce store found one line item — Google's Retail Search API — burning roughly **A$300 every single day, flat, around the clock**. No launch, no traffic spike, no human pattern at all. That flatness was the clue: humans sleep, crawlers don't.
+
+The cause was a bot-driven faceted-navigation crawl trap: every filter combination a unique URL, every URL a paid API call. Nearly a million search calls, ~90% of the monthly bill, a ~A$9,000/month run-rate — on a store whose human traffic justified a fraction of that. Nothing was "broken." Every system did exactly what it was configured to do. That is what makes this failure class so quiet, and why usage-billed AI APIs deserve the same design attention as a security surface.
+
+*The A$2,000 AI-Spend Runaway* is a founder-led teardown of the incident with our own numbers throughout — no composite anecdotes, no borrowed benchmarks.
+
+## What's inside
+
+- **The anatomy of a paid-API crawl trap** — why ecommerce faceted navigation plus per-query pricing is a metered faucet bots hold open.
+- **The one BigQuery billing-export query** that turned a mystery bill into a named SKU in minutes — and the visibility rule we took from it.
+- **The four-layer fix** — facet canonicalization, robots.txt, a backend gate that serves humans the paid AI search and crawlers a free fallback, and caching — shipped in a day, verified in the export.
+- **The guardrail stack that stays on** — budgets that page, a daily SKU-level anomaly scan, pre-launch gates for every usage-billed API, and the hygiene sweep that pays for itself.
+- **The 10-point self-check** we now run on every AI workload — score seven or more confident yeses and you likely don't need anyone's help.
+
+## Get the teardown

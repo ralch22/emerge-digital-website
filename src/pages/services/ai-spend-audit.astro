@@ -1,0 +1,632 @@
+---
+/**
+ * /services/ai-spend-audit/ — service-line page for the AI Spend Guardrail Audit.
+ * Claims discipline: every incident figure (~A$300/day, ~90% of the bill, ~971,762 calls,
+ * ~A$9,000/mo run-rate, fixed in a day) is drawn from Emerge's OWN July 2026 production
+ * incident — no client names, no composite anecdotes, no invented benchmarks. The only
+ * external statistic is the FinOps Foundation's State of FinOps 2026 (98% of practitioners
+ * now manage AI spend), cited as such. Google references are factual ("your Google Cloud
+ * estate"; directory listing as text only) — no endorsement implied. AI Spend Watch is a
+ * report subscription, never an on-call SLA. Pricing is quote-based.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Container from '../../components/Container.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import Button from '../../components/Button.astro';
+
+const teardownUrl = '/insights/ai-spend-runaway-teardown-2026/';
+const bookingUrl = 'https://cal.com/rami-alcheikh/strategy-call';
+
+// The July 2026 incident on our own production store — every figure from our own billing export.
+const incident = [
+  {
+    figure: 'A$300/day',
+    title: 'One API, burning flat, around the clock',
+    body: 'Google’s Retail Search API on our own production ecommerce store — a perfectly flat daily burn with no launch and no traffic spike behind it. Flat was the tell: humans sleep, crawlers don’t.',
+  },
+  {
+    figure: '~90%',
+    title: 'Of the entire monthly bill',
+    body: 'One usage-billed API had quietly become almost the whole invoice — a ~A$9,000/month run-rate on a store whose human traffic justified a fraction of it. Nothing was broken; every system did exactly what it was configured to do.',
+  },
+  {
+    figure: '~971,762',
+    title: 'Search calls, mostly not human',
+    body: 'A bot-driven faceted-navigation crawl trap: every filter combination a unique URL, every URL a paid API call. On a public surface, you don’t control who invokes the meter.',
+  },
+  {
+    figure: '1 day',
+    title: 'From named SKU to fixed',
+    body: 'One BigQuery billing-export query — cost by service and SKU, day over day — named the culprit. A four-layer bot-gate ended it the same day: facet canonicalization, robots.txt, a backend gate serving crawlers a free fallback, and caching. Humans kept AI search; spend fell to noise.',
+  },
+];
+
+// What the audit installs — the five guardrails, in the order they earn their keep.
+const installs = [
+  {
+    name: 'SKU-level visibility',
+    body: 'Billing export to BigQuery, plus the one query that names your top cost SKUs — cost by service and SKU, day over day. The same query that caught our own runaway.',
+  },
+  {
+    name: 'Budgets that page a human',
+    body: 'Budget alerts at 50, 90 and 100 percent, plus forecast alerts that fire before a threshold is breached — routed to a named person who acts on them, not a dead inbox.',
+  },
+  {
+    name: 'Daily anomaly scan',
+    body: 'A day-over-day scan by service and SKU across the estate. A runaway stops being a month-end surprise and becomes a same-day incident.',
+  },
+  {
+    name: 'Pre-launch gates',
+    body: 'Every usage-billed API gets quotas, bot-gating and caching designed before go-live — because AI agents that retry on failure raise the stakes on every public endpoint.',
+  },
+  {
+    name: 'Hygiene sweep',
+    body: 'Scale-to-zero, right-sizing, storage lifecycle rules, registry cleanup — the quick wins are actioned during the audit itself, not left as a recommendations slide.',
+  },
+];
+
+// Fit honesty — who this is built for, and who should not buy it.
+const fit = [
+  {
+    code: 'Usage-billed AI APIs',
+    place: 'Vertex AI, Retail, Maps, per-call anything',
+    verdict: 'The core fit',
+    detail: 'These APIs invert classic cloud waste: the old failure mode was paying for idle capacity; here, cost scales with invocations — and on a public surface you don’t control who invokes. This is exactly the exposure the guardrail stack is built for.',
+    ok: true,
+  },
+  {
+    code: '$5k–50k+/mo GCP spend',
+    place: 'No dedicated FinOps function',
+    verdict: 'Built for you',
+    detail: 'Big enough for a runaway to hurt, not big enough to staff a FinOps team. The audit installs the function as tooling plus habits — and hands it over rather than renting it back to you.',
+    ok: true,
+  },
+  {
+    code: 'Dedicated FinOps team',
+    place: 'Guardrails likely already in place',
+    verdict: 'Run the self-check first',
+    detail: 'The teardown ends with a 10-point self-check. Score seven or more confident yeses and you don’t need us — we’d rather say that here than discover it two weeks into an engagement.',
+    ok: false,
+  },
+  {
+    code: 'Multi-cloud estate',
+    place: 'AWS or Azure carries the spend',
+    verdict: 'GCP-first, honestly',
+    detail: 'The installed stack is Google Cloud-native: billing export, BigQuery, budget and forecast alerts. The methodology ports; the tooling doesn’t. If your spend lives elsewhere, we say so on the scoping call rather than improvise.',
+    ok: false,
+  },
+];
+
+interface TierRow {
+  label: string;
+  value: string;
+}
+interface Tier {
+  name: string;
+  flagship?: boolean;
+  claim: string;
+  lead: string;
+  rows: TierRow[];
+  fit: string;
+  price: string;
+  icon: string;
+}
+
+const tiers: Tier[] = [
+  {
+    name: 'Guardrail Audit',
+    flagship: true,
+    claim: 'The stack, installed and handed over.',
+    lead: 'A fixed-fee, roughly two-week engagement on your Google Cloud estate: name where the money goes SKU by SKU, install the five guardrails, action the quick wins, and walk your team through running it.',
+    rows: [
+      { label: 'Shape', value: 'Fixed fee, ~2 weeks, one Google Cloud billing account' },
+      { label: 'Access', value: 'Read-only IAM — billing viewer plus BigQuery read on the export dataset only' },
+      { label: 'Installs', value: 'SKU visibility, paging budgets, daily anomaly scan, pre-launch gates, hygiene sweep' },
+      { label: 'Output', value: 'Findings doc with named SKUs, the installed stack, a prioritized fix list with quick wins already actioned, handover walkthrough' },
+    ],
+    fit: 'Teams on usage-billed APIs who want the runaway class closed once, with the capability left in-house.',
+    price: 'Quoted on scope',
+    icon: `<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M11 2.5l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9v-5z"/>
+      <path d="M7.5 11l2.5 2.5 4.5-5"/>
+    </svg>`,
+  },
+  {
+    name: 'AI Spend Watch',
+    claim: 'The daily scan, with a human reading it.',
+    lead: 'An optional monthly layer on top of the installed stack: we review the daily anomaly scan, send a monthly trend-and-forecast report, and flag anomalies to a shared channel. A report subscription — not an on-call SLA, and we won’t dress it up as one.',
+    rows: [
+      { label: 'Shape', value: 'Monthly subscription, on top of an installed guardrail stack' },
+      { label: 'Cadence', value: 'Daily scan reviewed by a human; anomalies flagged to a shared channel' },
+      { label: 'Report', value: 'Monthly spend trend and forecast, by service and SKU' },
+      { label: 'Not included', value: 'On-call response. We flag; your team acts. That boundary is the product being honest' },
+    ],
+    fit: 'Teams that want the scan read by someone whose job it is — without pretending it’s a pager rotation.',
+    price: 'Quoted monthly',
+    icon: `<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M2.5 11s3-5.5 8.5-5.5S19.5 11 19.5 11s-3 5.5-8.5 5.5S2.5 11 2.5 11z"/>
+      <circle cx="11" cy="11" r="2.5"/>
+    </svg>`,
+  },
+];
+
+// How it runs — access, the two weeks, the handover.
+const steps = [
+  {
+    phase: 'Access',
+    name: 'Read-only, scoped, in writing',
+    body: 'Billing viewer plus BigQuery read on the billing-export dataset — nothing else. No write access to workloads, no deploy permissions, no service-account keys. The access posture is agreed in writing before anyone looks at a number.',
+  },
+  {
+    phase: 'Audit',
+    name: 'Two weeks on the estate',
+    body: 'Week one names where the money goes, SKU by SKU, and flags anything that looks like our July incident. Week two installs the five guardrails and actions the hygiene quick wins directly — findings you can verify in your own billing export.',
+  },
+  {
+    phase: 'Handover',
+    name: 'Yours to run',
+    body: 'A findings doc with named SKUs, the installed guardrail stack, a prioritized fix list with the quick wins already done, and a walkthrough so your team operates all of it without us. AI Spend Watch is optional after that — never required.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'What access do you actually need?',
+    a: 'Read-only IAM: a billing viewer role plus BigQuery read on the billing-export dataset — and only that dataset. No write access to workloads, no deploy permissions, no production credentials. The scope is agreed in writing before the engagement starts, and you revoke it the day we hand over.',
+  },
+  {
+    q: 'How long does it take?',
+    a: 'About two weeks on a single Google Cloud billing account. Week one establishes SKU-level visibility and names where the money goes; week two installs the guardrails and actions the quick wins. It ends with a handover walkthrough, not a dependency.',
+  },
+  {
+    q: 'What does it cost?',
+    a: 'The audit is a fixed fee, quoted on scope in a 20-minute call — project count, spend level, and how many usage-billed APIs you run. There is no rate card on this page because the honest number depends on those three things. AI Spend Watch is quoted separately as a monthly subscription.',
+  },
+  {
+    q: 'What if our estate is already clean?',
+    a: 'Then the audit’s first finding is that it’s clean, and we say so. The teardown ships with the 10-point self-check we run on our own workloads — score seven or more confident yeses and you don’t need us at all. Run it before you book the call; it’s free and it might end the conversation.',
+  },
+  {
+    q: 'Is AI Spend Watch an on-call service?',
+    a: 'No, and we won’t sell it as one. It is a report subscription: the daily anomaly scan reviewed by a human, a monthly trend-and-forecast report, and flagged anomalies posted to a shared channel. Acting on a flag is your team’s call and your team’s hands — the audit will already have given them the runbook.',
+  },
+  {
+    q: 'We’re on AWS or Azure — does this apply?',
+    a: 'The methodology ports: SKU-level visibility, budgets that page a human, a daily anomaly scan, pre-launch gates on usage-billed APIs. The installed tooling is Google Cloud-native — billing export to BigQuery, budget and forecast alerts — so this offer is GCP-first. If most of your spend lives elsewhere, we say so on the scoping call instead of stretching the fit.',
+  },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Service',
+      name: 'AI Spend Guardrail Audit',
+      serviceType: 'Cloud AI cost governance — FinOps guardrail installation on Google Cloud',
+      description:
+        'A fixed-fee audit that installs SKU-level cost visibility, budgets that page a human, a daily anomaly scan, and pre-launch gates on usage-billed AI APIs across a Google Cloud estate — built from the stack that caught Emerge’s own A$300/day AI-spend runaway. Read-only access. Quote-based engagement.',
+      provider: { '@type': 'Organization', name: 'Emerge Digital' },
+      areaServed: ['AE', 'SA', 'QA', 'GCC', 'AU', 'Middle East & Africa'],
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="AI Spend Guardrail Audit — Catch the Cost Runaway Before Month-End | Emerge Digital"
+  description="A fixed-fee audit that installs SKU-level visibility, budgets that page a human, a daily anomaly scan and pre-launch gates on your Google Cloud estate — the same stack that caught our own A$300/day AI-spend runaway. Read-only access. Quote-based."
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <section class="relative isolate overflow-hidden bg-gradient-hero py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 bg-grid bg-grid-fade"></div>
+    <div aria-hidden="true" class="aurora-strong pointer-events-none absolute inset-0 opacity-70" style="animation: aurora-drift 24s ease-in-out infinite;"></div>
+    <div aria-hidden="true" class="noise pointer-events-none absolute inset-0"></div>
+    <div aria-hidden="true" class="beam-scan pointer-events-none absolute inset-0"></div>
+
+    <Container class="relative">
+      <div class="max-w-3xl">
+        <div class="chip-eyebrow-teal mb-6" data-reveal>
+          <span class="pulse-dot" aria-hidden="true"></span>
+          Service Line · Cloud &amp; AI FinOps
+        </div>
+        <h1 class="text-display-xl text-white" data-reveal data-reveal-delay="1">
+          We caught a A$300-a-day runaway<br />
+          <span class="text-gradient-accent">on our own cloud bill.</span>
+        </h1>
+        <p class="mt-6 max-w-2xl text-lead text-platinum/75" data-reveal data-reveal-delay="2">
+          In July 2026, one usage-billed AI API quietly became ~90% of our own production store’s
+          Google Cloud bill — bots, not customers. One billing-export query found it; one day fixed
+          it. The AI Spend Guardrail Audit installs that exact stack on your estate: SKU-level
+          visibility, budgets that page a human, a daily anomaly scan, and pre-launch gates on
+          every usage-billed API. Fixed fee, quoted on scope in a 20-minute call.
+        </p>
+        <div class="mt-9 flex flex-wrap gap-4" data-reveal data-reveal-delay="3">
+          <Button href={bookingUrl} size="lg" class="btn-shimmer" target="_blank" rel="noopener noreferrer">Book a 20-minute scoping call</Button>
+          <Button href={teardownUrl} variant="ghost" size="lg">Read the full teardown</Button>
+        </div>
+      </div>
+
+      <div class="mt-10 flex flex-wrap gap-x-8 gap-y-3" data-reveal data-reveal-delay="4">
+        {['Our own incident, our own numbers', 'Read-only IAM access', 'Fixed fee · quote-based', 'GCP-first, and we say so'].map((t) => (
+          <div class="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-eyebrow text-cool">
+            <div class="h-1 w-1 rounded-full bg-teal/50"></div>
+            {t}
+          </div>
+        ))}
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── The incident: our own numbers ─────────────────────── -->
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-ink py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 50% 40% at 85% 30%, rgba(0,194,199,0.05), transparent 70%); filter: blur(60px);"></div>
+
+    <Container class="relative">
+      <div class="grid gap-14 lg:grid-cols-[minmax(0,26rem)_1fr]">
+        <div>
+          <h2 class="text-display-lg text-white" data-reveal>
+            The incident <span class="text-gradient-accent">this offer is built from.</span>
+          </h2>
+          <p class="mt-5 text-lead-sm text-platinum/70" data-reveal data-reveal-delay="1">
+            Every figure in this column is from our own July 2026 production incident — our store,
+            our billing export, our fix. No client’s numbers, no composite anecdote. We sell the
+            guardrail stack because we needed it first.
+          </p>
+          <p class="mt-4 text-sm text-cool" data-reveal data-reveal-delay="2">
+            The full anatomy — the detection query, the four-layer bot-gate, the self-check — is
+            published as a gated report:
+            <a href={teardownUrl} class="font-semibold text-teal underline decoration-teal/30 underline-offset-4 transition-colors hover:text-cyan">read the teardown</a>.
+          </p>
+        </div>
+
+        <div role="list">
+          {incident.map((f, i) => (
+            <div
+              role="listitem"
+              class="group grid gap-2 border-t border-white/8 py-6 transition-colors duration-300 first:border-t-0 first:pt-0 last:pb-0 hover:border-teal/20 sm:grid-cols-[10.5rem_1fr] sm:gap-8"
+              data-reveal
+              data-reveal-delay={String(i + 1)}
+            >
+              <div class="font-mono text-lg font-bold tracking-tight text-teal">{f.figure}</div>
+              <div>
+                <h3 class="font-semibold text-white">{f.title}</h3>
+                <p class="mt-1.5 max-w-xl text-sm leading-relaxed text-platinum/65 transition-colors duration-300 group-hover:text-platinum/80">{f.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── What the audit installs ───────────────────────────── -->
+  <section id="installs" class="relative isolate overflow-hidden border-t border-white/[0.06] bg-navy py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 60% 45% at 50% 0%, rgba(0,194,199,0.07), transparent 70%); filter: blur(60px);"></div>
+
+    <Container class="relative">
+      <div class="max-w-3xl">
+        <Eyebrow data-reveal>What the audit installs</Eyebrow>
+        <h2 class="mt-4 text-display-lg text-white" data-reveal data-reveal-delay="1">
+          Five guardrails.
+          <span class="text-gradient-accent">Installed, not recommended.</span>
+        </h2>
+        <p class="mt-5 text-lead-sm text-platinum/70" data-reveal data-reveal-delay="2">
+          Usage-billed AI APIs invert classic cloud waste: the old failure was paying for idle
+          capacity; the new one is cost that scales with invocations on a surface where you don’t
+          control who invokes. The FinOps Foundation’s State of FinOps 2026 found 98% of
+          practitioners now manage AI spend — this stack is how a team without a FinOps function
+          does it.
+        </p>
+      </div>
+
+      <div class="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {installs.map((s, i) => (
+          <div
+            class="group relative flex gap-5 rounded-card border border-white/8 p-6 transition-all duration-400 hover:border-teal/30 hover:-translate-y-0.5"
+            style="background: rgba(255,255,255,0.025); backdrop-filter: blur(12px);"
+            data-reveal
+            data-reveal-delay={String((i % 3) + 1)}
+          >
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-accent font-mono text-xs font-bold text-ink shadow-glow">
+              {String(i + 1).padStart(2, '0')}
+            </div>
+            <div>
+              <h3 class="font-mono text-sm font-semibold uppercase tracking-wide text-teal">{s.name}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-platinum/65 transition-colors duration-300 group-hover:text-platinum/85">{s.body}</p>
+            </div>
+          </div>
+        ))}
+        <div
+          class="flex items-center rounded-card border border-dashed border-white/10 p-6"
+          data-reveal
+          data-reveal-delay="3"
+        >
+          <p class="text-sm leading-relaxed text-cool">
+            Numbers 1–3 caught our runaway. Number 4 would have prevented it. Number 5 pays for the
+            time the audit takes. That order isn’t marketing — it’s the incident timeline.
+          </p>
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── Fit: who it's for, who it isn't ───────────────────── -->
+  <section id="fit" class="relative isolate overflow-hidden border-t border-white/[0.06] bg-ink py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 45% 40% at 15% 60%, rgba(61,220,227,0.05), transparent 70%); filter: blur(60px);"></div>
+
+    <Container class="relative">
+      <div class="grid gap-14 lg:grid-cols-[minmax(0,24rem)_1fr] lg:items-start">
+        <div class="lg:sticky lg:top-28">
+          <h2 class="text-display-lg text-white" data-reveal>
+            The honest part: <span class="text-gradient-accent">who shouldn’t buy this.</span>
+          </h2>
+          <p class="mt-5 text-lead-sm text-platinum/70" data-reveal data-reveal-delay="1">
+            The audit is built for teams running Vertex AI, Retail, Maps, or any per-call API on
+            Google Cloud, spending roughly $5k–50k+ a month, without a dedicated FinOps function.
+            Outside that shape, we’d rather disqualify you here than on an invoice.
+          </p>
+          <p class="mt-4 text-sm text-cool" data-reveal data-reveal-delay="2">
+            Emerge is listed in the Google Cloud partner directory; the work runs on your estate,
+            under your IAM, in your billing export.
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          {fit.map((r, i) => (
+            <div
+              class="group rounded-card border border-white/8 p-6 transition-all duration-400 hover:border-teal/25 hover:-translate-y-0.5"
+              style="background: rgba(255,255,255,0.02);"
+              data-reveal
+              data-reveal-delay={String(i + 1)}
+            >
+              <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+                <div class="flex items-baseline gap-3">
+                  <span class="font-mono text-[13px] font-bold text-teal">{r.code}</span>
+                  <span class="text-sm font-semibold text-white">{r.place}</span>
+                </div>
+                <span
+                  class:list={[
+                    'inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-wide',
+                    r.ok ? 'text-success' : 'text-cool',
+                  ]}
+                >
+                  <span
+                    aria-hidden="true"
+                    class:list={['h-1.5 w-1.5 rounded-full', r.ok ? 'bg-success' : 'bg-cool/60']}
+                  ></span>
+                  {r.verdict}
+                </span>
+              </div>
+              <p class="mt-3 text-sm leading-relaxed text-platinum/65 transition-colors duration-300 group-hover:text-platinum/80">{r.detail}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── The two shapes: Audit + Watch ─────────────────────── -->
+  <section id="tiers" class="relative isolate overflow-hidden border-t border-white/[0.06] bg-navy py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 55% 45% at 80% 80%, rgba(0,194,199,0.07), transparent 70%); filter: blur(60px);"></div>
+
+    <Container class="relative">
+      <div class="max-w-3xl">
+        <Eyebrow data-reveal>The engagement</Eyebrow>
+        <h2 class="mt-4 text-display-lg text-white" data-reveal data-reveal-delay="1">
+          One audit. <span class="text-gradient-accent">One optional layer on top.</span>
+        </h2>
+        <p class="mt-5 text-lead-sm text-platinum/70" data-reveal data-reveal-delay="2">
+          The audit is the product: the guardrail stack installed and handed over in about two
+          weeks. AI Spend Watch exists for teams that want the daily scan read by a human every
+          day — and it is a report subscription, stated plainly, not an on-call service.
+        </p>
+      </div>
+
+      <div class="mt-14 grid gap-5 md:grid-cols-2 lg:items-stretch">
+        {tiers.map((tier, i) => (
+          <article
+            class:list={[
+              'tier-card group relative flex flex-col overflow-hidden rounded-card-lg border p-7 transition-all duration-400 hover:-translate-y-1',
+              tier.flagship
+                ? 'border-teal/40 bg-teal/[0.06] shadow-glow hover:border-teal/60'
+                : 'border-white/8 bg-white/[0.025] hover:border-teal/25',
+            ]}
+            data-reveal
+            data-reveal-delay={String(i + 1)}
+          >
+            {tier.flagship && (
+              <div aria-hidden="true" class="absolute inset-x-0 top-0 h-[2px] bg-gradient-accent"></div>
+            )}
+
+            <div class="flex items-start justify-between gap-3">
+              <div class="icon-wrap" set:html={tier.icon}></div>
+              {tier.flagship && (
+                <span class="rounded-pill border border-teal/30 bg-teal/[0.12] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-eyebrow text-teal">The core engagement</span>
+              )}
+            </div>
+
+            <h3 class="mt-5 text-display-sm text-white">{tier.name}</h3>
+            <p class:list={['mt-1.5 font-semibold', tier.flagship ? 'text-teal' : 'text-platinum/85']}>{tier.claim}</p>
+            <p class="mt-3 text-sm leading-relaxed text-platinum/65">{tier.lead}</p>
+
+            <dl class="mt-6 space-y-3.5 border-t border-white/8 pt-6">
+              {tier.rows.map((row) => (
+                <div class="grid grid-cols-[6.25rem_1fr] gap-3">
+                  <dt class="pt-px font-mono text-[10px] font-semibold uppercase tracking-wide text-cool">{row.label}</dt>
+                  <dd class="text-[13px] leading-relaxed text-platinum/75">{row.value}</dd>
+                </div>
+              ))}
+            </dl>
+
+            <div class="mt-auto pt-6">
+              <p class="text-[13px] leading-relaxed text-platinum/60"><span class="font-semibold text-platinum/85">Best for:</span> {tier.fit}</p>
+              <div class="mt-5 flex items-center justify-between gap-3 border-t border-white/8 pt-5">
+                <span class="font-mono text-xs font-semibold text-teal">{tier.price}</span>
+                <a href={bookingUrl} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-[13px] font-semibold text-platinum/75 transition-colors duration-300 hover:text-teal">
+                  Scope it
+                  <span aria-hidden="true" class="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <p class="mt-8 max-w-3xl text-sm leading-relaxed text-cool" data-reveal>
+        There is no rate card on this page because the honest number depends on your project count,
+        spend level, and how many usage-billed APIs you run. Both shapes are quoted on scope in a
+        20-minute call — and the call can end with “run the self-check, you’re fine.”
+      </p>
+    </Container>
+  </section>
+
+  <!-- ── How it runs ───────────────────────────────────────── -->
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-ink py-section-sm md:py-section">
+    <Container class="relative">
+      <div class="grid gap-14 lg:grid-cols-2 lg:items-center">
+        <div>
+          <Eyebrow data-reveal>How it runs</Eyebrow>
+          <h2 class="mt-4 text-display-lg text-white" data-reveal data-reveal-delay="1">
+            Read-only in. <span class="text-gradient-accent">Capability out.</span>
+          </h2>
+          <p class="mt-5 text-lead-sm text-platinum/70" data-reveal data-reveal-delay="2">
+            The usual objection to a cost audit is access, so that’s settled first and in writing:
+            we read your billing data, and we never touch your workloads. Two weeks later the
+            guardrails are installed, the quick wins are done, and the whole thing is yours.
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          {steps.map((step, idx) => (
+            <div
+              class="group flex gap-5 rounded-card border border-white/8 p-6 transition-all duration-400 hover:border-teal/30 hover:-translate-y-0.5"
+              style="background: rgba(255,255,255,0.025); backdrop-filter: blur(12px);"
+              data-reveal
+              data-reveal-delay={String(idx + 1)}
+            >
+              <div class="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-accent font-mono text-xs font-bold text-ink shadow-glow">
+                {String(idx + 1).padStart(2, '0')}
+              </div>
+              <div class="flex-1">
+                <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <h3 class="font-semibold text-teal">{step.phase}</h3>
+                  <span class="text-sm font-semibold text-white">{step.name}</span>
+                </div>
+                <p class="mt-2 text-sm leading-relaxed text-platinum/65 transition-colors duration-300 group-hover:text-platinum/85">{step.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── The teardown: gated-report cross-link ─────────────── -->
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-navy py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 55% 45% at 20% 80%, rgba(0,194,199,0.07), transparent 70%); filter: blur(60px);"></div>
+
+    <Container class="relative">
+      <div class="mx-auto max-w-3xl rounded-card-lg border border-teal/25 bg-teal/[0.05] p-8 md:p-10" data-reveal>
+        <Eyebrow>The full teardown</Eyebrow>
+        <h2 class="mt-4 text-display-md text-white">
+          The A$2,000 AI-Spend Runaway — <span class="text-gradient-accent">the report behind this page.</span>
+        </h2>
+        <p class="mt-4 text-lead-sm text-platinum/70">
+          The complete incident write-up, with our own production numbers throughout: the anatomy
+          of a paid-API crawl trap, the one BigQuery detection query, the four-layer fix shipped in
+          a day, the guardrail stack that stays on — and the 10-point self-check we now run on
+          every AI workload. If you only take one thing from this page, take the self-check.
+        </p>
+        <div class="mt-7 flex flex-wrap gap-4">
+          <Button href={teardownUrl} class="btn-shimmer">Read the full teardown</Button>
+          <Button href={bookingUrl} variant="ghost" target="_blank" rel="noopener noreferrer">Book the scoping call</Button>
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── FAQ ───────────────────────────────────────────────── -->
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-ink py-section-sm md:py-section">
+    <Container class="relative">
+      <div class="mx-auto max-w-3xl">
+        <h2 class="text-display-lg text-white" data-reveal>
+          The questions a careful buyer <span class="text-gradient-accent">actually asks.</span>
+        </h2>
+
+        <div class="mt-10 space-y-3">
+          {faqs.map((f, i) => (
+            <details
+              class="faq-item group rounded-card border border-white/8 transition-colors duration-300 open:border-teal/25 hover:border-teal/20"
+              style="background: rgba(255,255,255,0.02);"
+              data-reveal
+              data-reveal-delay={String(i + 1)}
+            >
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-5 text-[15px] font-semibold text-white [&::-webkit-details-marker]:hidden">
+                {f.q}
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" class="faq-chevron shrink-0 text-teal transition-transform duration-300">
+                  <path d="M2 5l5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </summary>
+              <p class="px-6 pb-6 text-sm leading-relaxed text-platinum/70">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ── Final CTA ─────────────────────────────────────────── -->
+  <section class="relative isolate overflow-hidden border-t border-white/[0.06] bg-navy py-section-sm md:py-section">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 70% 60% at 50% 110%, rgba(0,194,199,0.22), transparent 65%), radial-gradient(ellipse 45% 50% at 18% 0%, rgba(61,220,227,0.12), transparent 60%); filter: blur(60px);"></div>
+
+    <Container class="relative">
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-display-lg text-white" data-reveal>
+          Twenty minutes to scope it.
+        </h2>
+        <p class="mt-5 text-lead text-platinum/70" data-reveal data-reveal-delay="1">
+          Bring your project list and a rough monthly spend. We’ll tell you what the audit would
+          cover, quote it on scope — or tell you to run the self-check and keep your money. Our
+          own runaway ran for weeks before one query ended it; the point of the call is that yours
+          never gets the chance.
+        </p>
+        <div class="mt-10 flex flex-wrap justify-center gap-4" data-reveal data-reveal-delay="2">
+          <Button href={bookingUrl} size="lg" class="btn-shimmer" target="_blank" rel="noopener noreferrer">Book a 20-minute scoping call</Button>
+          <Button href={teardownUrl} variant="ghost" size="lg">Read the full teardown</Button>
+        </div>
+
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3" data-reveal data-reveal-delay="3">
+          {['Our own incident, our own numbers', 'Read-only IAM access', 'Fixed fee · quote-based'].map((t) => (
+            <div class="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-eyebrow text-cool">
+              <div class="h-1 w-1 rounded-full bg-teal/50"></div>
+              {t}
+            </div>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>
+
+<style>
+  @keyframes aurora-drift {
+    0%, 100% { transform: translate3d(0,0,0) scale(1); opacity: 0.85; }
+    50%       { transform: translate3d(2%,-3%,0) scale(1.06); opacity: 1; }
+  }
+
+  .faq-item[open] .faq-chevron { transform: rotate(180deg); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tier-card, .faq-chevron { transition: none !important; }
+  }
+</style>

@@ -501,6 +501,7 @@ async function handleSubscribe(request: Request, env: Env): Promise<Response> {
 
 const REPORT_ASSETS: Record<string, string> = {
   'agent-trends-mea-retail-cpg-2026': '/reports/emerge-ai-agent-trends-2026-mea-retail-cpg.pdf',
+  'ai-spend-runaway-teardown-2026': '/reports/emerge-ai-spend-runaway-teardown.pdf',
 };
 
 async function handleReportDownload(request: Request, env: Env): Promise<Response> {
