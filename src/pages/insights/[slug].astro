@@ -26,7 +26,7 @@ export async function getStaticPaths() {
 const { article } = Astro.props;
 const { Content } = await article.render();
 
-const { title, summary, author, publishDate, category, tags, gated, readingMinutes, hero } = article.data;
+const { title, summary, author, publishDate, category, tags, gated, readingMinutes, hero, ogImage } = article.data;
 
 function formatDate(d: Date | string) {
   return new Date(d).toLocaleDateString('en-GB', {
@@ -78,7 +78,7 @@ const jsonLd = {
 <BaseLayout
   title={`${title} | Emerge Digital Insights`}
   description={summary}
-  ogImage={hero?.src}
+  ogImage={ogImage ?? hero?.src}
 >
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   <!-- ── Hero ─────────────────────────────────────────────── -->
