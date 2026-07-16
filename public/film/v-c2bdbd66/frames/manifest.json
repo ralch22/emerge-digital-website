@@ -25,6 +25,5 @@
     "height": 1136,
     "pattern": "frame-%04d.webp",
     "poster": "poster-portrait.webp"
-  },
-  "basePath": "/film/v-c2bdbd66"
+  }
 }

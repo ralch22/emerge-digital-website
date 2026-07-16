@@ -15,12 +15,14 @@
  * deploy. public/_headers gives /film/* immutable caching; a re-render ships
  * as a NEW version directory (old one kept one deploy cycle for open tabs).
  *
- * Degradation ladder (see tier() in the script):
- *   Tier 0 full  — desktop fine-pointer: 150 frames, decode window 32
- *   Tier 1 lite  — iPad band / 4-7GB RAM / 3g: every 2nd frame, window 16
- *   Tier 2 static — ≤768px, reduced motion, saveData, 2g, <4GB, no canvas:
- *                   poster + captions as flowing content, zero frame fetches
- * QA override: ?film=full|reduced|poster
+ * Degradation ladder (see the tier selection in the script):
+ *   Tier 0 full     — desktop fine-pointer: landscape 150 frames, window 32
+ *   Tier 1 lite     — iPad band / 4-7GB RAM / 3g: landscape every 2nd, window 16
+ *   Tier 2 portrait — ≤768px with motion OK: 9:16 set, 75 frames @640×1136,
+ *                     window 10, 250vh runway (v2: phones get the real scrub)
+ *   Tier 3 static   — reduced motion, saveData, 2g, <4GB, no canvas:
+ *                     poster + captions as flowing content, zero frame fetches
+ * QA override: ?film=full|reduced|portrait|poster
  */
 import { Image } from 'astro:assets';
 import Container from '../Container.astro';
@@ -29,6 +31,7 @@ import Button from '../Button.astro';
 import manifest from '../../lib/ecosystem-film.manifest.json';
 import { ecosystemProperties } from '../../lib/ecosystem-properties';
 import poster from '../../assets/ecosystem-film-poster.webp';
+import posterPortrait from '../../assets/ecosystem-film-poster-portrait.webp';
 
 // Story beats — progress windows must match the film's storyboard (see the
 // composition project's AGENTS.md). Copy respects docs/ecosystem-north-star.md
@@ -85,9 +88,7 @@ const BEAT_STARTS = beats.map((b) => b.at);
 <section
   id="ecosystem"
   data-film
-  data-frame-base={manifest.basePath}
-  data-frame-count={String(manifest.frameCount)}
-  data-frame-pattern={manifest.pattern}
+  data-manifest={JSON.stringify({ basePath: manifest.basePath, landscape: manifest.landscape, portrait: manifest.portrait })}
   data-beat-starts={JSON.stringify(BEAT_STARTS)}
   class="film-section relative bg-ink text-platinum"
 >
@@ -102,9 +103,19 @@ const BEAT_STARTS = beats.map((b) => b.at);
       loading="lazy"
       decoding="async"
       fetchpriority="low"
-      class="film-poster"
+      class="film-poster film-poster-landscape hidden md:block"
     />
-    <canvas data-film-canvas width={manifest.width} height={manifest.height} aria-hidden="true"></canvas>
+    <Image
+      src={posterPortrait}
+      alt="The Emerge Digital ecosystem journey, portrait cut: the ED hub tile igniting on the teal data thread."
+      widths={[540, 1080]}
+      sizes="100vw"
+      loading="lazy"
+      decoding="async"
+      fetchpriority="low"
+      class="film-poster film-poster-portrait md:hidden"
+    />
+    <canvas data-film-canvas width={manifest.landscape.width} height={manifest.landscape.height} aria-hidden="true"></canvas>
 
     <!-- Legibility scrim under the captions -->
     <div class="film-vignette" aria-hidden="true"></div>
@@ -200,6 +211,8 @@ const BEAT_STARTS = beats.map((b) => b.at);
       .film-captions { position: relative !important; inset: auto !important; padding: 2rem 1.5rem !important; }
       .film-captions li { position: relative !important; opacity: 1 !important; transform: none !important; visibility: visible !important; margin-top: 2.5rem; }
       .film-poster { position: relative !important; height: auto !important; }
+      .film-poster-landscape { display: block !important; }
+      .film-poster-portrait { display: none !important; }
     </style>
   </noscript>
 </section>
@@ -337,8 +350,16 @@ const BEAT_STARTS = beats.map((b) => b.at);
     .film-landing { padding-block-end: theme('spacing.section'); }
   }
 
-  /* ── Static story layout: ≤768px, reduced motion, or a runtime data-static drop ── */
-  @media (max-width: 768px), print {
+  /* ── Mobile pinned adjustments (≤768px runs the PORTRAIT scrub — v2) ── */
+  @media (max-width: 768px) {
+    .film-section { --film-runway: 250vh; }
+    .film-rail { display: none; }
+    .film-captions { bottom: clamp(1.5rem, 6vh, 3rem); }
+    .film-captions li { max-width: 100%; }
+  }
+
+  /* ── Static story layout: print, reduced motion, or a runtime data-static drop ── */
+  @media print {
     .film-runway { height: auto; }
     .film-sticky { position: relative; height: auto; }
     [data-film-canvas], .film-rail { display: none; }
@@ -350,6 +371,8 @@ const BEAT_STARTS = beats.map((b) => b.at);
   }
   @media (prefers-reduced-motion: reduce) {
     .film-runway { height: auto; }
+    .film-poster-landscape { display: block; }
+    .film-poster-portrait { display: none; }
     .film-sticky { position: relative; height: auto; }
     [data-film-canvas], .film-rail { display: none; }
     .film-vignette { display: none; }
@@ -359,6 +382,8 @@ const BEAT_STARTS = beats.map((b) => b.at);
     .film-captions li { position: relative; opacity: 1; transform: none; visibility: visible; margin-top: 2.25rem; transition: none; }
   }
   .film-section[data-static] .film-runway { height: auto; }
+  .film-section[data-static] .film-poster-landscape { display: block; }
+  .film-section[data-static] .film-poster-portrait { display: none; }
   .film-section[data-static] .film-sticky { position: relative; height: auto; }
   .film-section[data-static] [data-film-canvas],
   .film-section[data-static] .film-rail,
@@ -397,31 +422,39 @@ const BEAT_STARTS = beats.map((b) => b.at);
       section.removeAttribute('data-canvas-live');
     };
 
-    let tier: 0 | 1 | 2;
-    if (override === 'poster') tier = 2;
+    // 0 full · 1 lite (landscape) · 2 portrait scrub (phones) · 3 static
+    let tier: 0 | 1 | 2 | 3;
+    if (override === 'poster') tier = 3;
+    else if (override === 'portrait') tier = 2;
     else if (override === 'reduced') tier = 1;
     else if (override === 'full') tier = 0;
     else if (
-      reduced || width() <= 768 || conn?.saveData === true ||
+      reduced || conn?.saveData === true ||
       conn?.effectiveType === '2g' || conn?.effectiveType === 'slow-2g' ||
       (mem !== undefined && mem < 4)
-    ) tier = 2;
+    ) tier = 3;
+    else if (width() <= 768) tier = 2; // v2: phones get the portrait scrub
     else if ((mem !== undefined && mem <= 7) || conn?.effectiveType === '3g' || width() <= 1024 || coarse) tier = 1;
     else tier = 0;
 
     track('film_tier', { tier });
-    if (tier === 2) { dropToStatic(); return; } // zero frame fetches, zero listeners
+    if (tier === 3) { dropToStatic(); return; } // zero frame fetches, zero listeners
 
     const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx || typeof createImageBitmap !== 'function') { dropToStatic(); track('film_abort', { reason: 'no_canvas' }); return; }
 
     /* ── Frame set + manifest data (baked at build — no runtime manifest fetch) ── */
-    const BASE = section.dataset.frameBase!;
-    const TOTAL = Number(section.dataset.frameCount);
+    type FrameSet = { dir: string; frameCount: number; width: number; height: number };
+    const m = JSON.parse(section.dataset.manifest!) as { basePath: string; landscape: FrameSet; portrait: FrameSet };
+    const set = tier === 2 ? m.portrait : m.landscape;
+    const BASE = `${m.basePath}/${set.dir}`;
+    const TOTAL = set.frameCount;
     const BEAT_STARTS: number[] = JSON.parse(section.dataset.beatStarts!);
     const stride = tier === 1 ? 2 : 1; // Tier 1 loads every 2nd frame
-    const WINDOW = tier === 1 ? 16 : 32; // decoded-bitmap cap beyond the spine
+    const WINDOW = tier === 0 ? 32 : tier === 1 ? 16 : 10; // decoded-bitmap cap beyond the spine
     const SPINE = 8; // every 8th frame is permanently resident once loaded
+    canvas.width = set.width; // backing store locked to the chosen set's resolution
+    canvas.height = set.height;
 
     const frameUrl = (i: number) => `${BASE}/frame-${String(i + 1).padStart(4, '0')}.webp`;
     const bitmaps: (ImageBitmap | null)[] = new Array(TOTAL).fill(null);
