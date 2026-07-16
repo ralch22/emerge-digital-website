@@ -30,7 +30,7 @@ export const ecosystemProperties: EcosystemProperty[] = [
     title: 'VaultOS',
     badge: 'Product',
     body: 'Knowledge your agents can run on — OKF-compliant, governed, agent-ready.',
-    proof: 'Emerge runs its own operations on it: 327+ documents across 6 businesses.',
+    proof: 'Emerge runs its own operations on it: 904 documents across 6 businesses, indexed for Gemini Enterprise grounding.',
     href: `https://vault.emergedigital.com${utm}`,
   },
   {
