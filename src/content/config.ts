@@ -55,6 +55,9 @@ const insights = defineCollection({
       category: z.enum(insightCategories),
       tags: z.array(z.string()).default([]),
       hero: image().optional(),
+      // Social card. Defaults to the body hero; set this to give a post its own
+      // 1200x630 card from public/ without forcing a hero image into the article.
+      ogImage: z.string().optional(),
       gated: z.boolean().default(false),
       readingMinutes: z.number().int().optional(),
       published: z.boolean().default(true),
