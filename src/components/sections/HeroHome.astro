@@ -674,10 +674,13 @@ const marqueeChunks = [
       const clamp = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
       let ticking = false;
+      let lastP = -1; // last rendered progress — skip style writes when unchanged
       const render = () => {
         ticking = false;
         const total = heroSection.offsetHeight - window.innerHeight; // scrubbable distance
         const p = total > 0 ? clamp(-heroSection.getBoundingClientRect().top / total) : 0;
+        if (p === lastP) return; // clamped past the hero (or unmoved) — no work
+        lastP = p;
 
         /* O frame expands to fill the viewport */
         oFrame.style.width        = `${lerp(38, 100, p)}vw`;
