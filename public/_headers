@@ -3,3 +3,7 @@
 # and never change for a given URL, so cache them immutably.
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
+
+# Ecosystem film frame sequences — versioned directories, contents never change
+/film/*
+  Cache-Control: public, max-age=31536000, immutable
