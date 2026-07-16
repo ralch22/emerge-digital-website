@@ -1,0 +1,574 @@
+---
+/**
+ * EcosystemFilm — the mid-page pinned scrollytelling chapter.
+ *
+ * A 350vh runway pins a 100svh stage; scroll progress scrubs a 150-frame WebP
+ * sequence (rendered offline from the brand Hyperframes composition in
+ * vela-os-roai/video/emerge-ecosystem-scroll) on a <canvas>, while live DOM
+ * captions crossfade per story beat. Absorbs the former EcosystemStrip: the
+ * four property links live in `.film-landing`, in normal flow after the unpin
+ * (always crawlable, always tabbable).
+ *
+ * ASSET EXCEPTION: the frame sequence lives in public/film/<version>/ ON
+ * PURPOSE — not src/assets/astro:assets. Running 150 WebP frames through the
+ * image pipeline would re-process them every build and re-fingerprint every
+ * deploy. public/_headers gives /film/* immutable caching; a re-render ships
+ * as a NEW version directory (old one kept one deploy cycle for open tabs).
+ *
+ * Degradation ladder (see tier() in the script):
+ *   Tier 0 full  — desktop fine-pointer: 150 frames, decode window 32
+ *   Tier 1 lite  — iPad band / 4-7GB RAM / 3g: every 2nd frame, window 16
+ *   Tier 2 static — ≤768px, reduced motion, saveData, 2g, <4GB, no canvas:
+ *                   poster + captions as flowing content, zero frame fetches
+ * QA override: ?film=full|reduced|poster
+ */
+import { Image } from 'astro:assets';
+import Container from '../Container.astro';
+import Eyebrow from '../Eyebrow.astro';
+import Button from '../Button.astro';
+import manifest from '../../lib/ecosystem-film.manifest.json';
+import { ecosystemProperties } from '../../lib/ecosystem-properties';
+import poster from '../../assets/ecosystem-film-poster.webp';
+
+// Story beats — progress windows must match the film's storyboard (see the
+// composition project's AGENTS.md). Copy respects docs/ecosystem-north-star.md
+// banned words; the ≈4× figure mirrors the published framework example.
+const beats = [
+  {
+    at: 0.0,
+    title: 'Emerge Digital — the hub',
+    body: 'Local Prime. Global Power. Enterprise Outcomes. One Dubai Mainland counterparty, accountable for the whole journey.',
+  },
+  {
+    at: 0.1,
+    title: 'Agentforce practice',
+    body: 'Agentforce that earns its keep — human-led, governed delivery for Gulf Government and BFSI.',
+  },
+  {
+    at: 0.22,
+    title: 'Vela OS — the live proof',
+    body: 'Return on AI Investment, measured. Value delivered against AI cost, on one dashboard.',
+  },
+  {
+    at: 0.35,
+    title: 'VaultOS — the knowledge layer',
+    body: 'Knowledge your agents can run on — OKF-compliant, governed, agent-ready.',
+  },
+  {
+    at: 0.47,
+    title: 'Emerge Dev Pods',
+    body: 'An agent dev-team your seniors sign off on — every PR reviewed, every merge earned.',
+  },
+  {
+    at: 0.59,
+    title: 'One connected ecosystem',
+    body: '',
+    chips: ['+200% click-through · ON.Optima AEO', 'MVP in 2 months vs 10 · KSA PIF', 'First ASEAN Salesforce Data & AI CoE', 'Backed by FPT · $2.47B · 80,000+'],
+  },
+  {
+    at: 0.72,
+    title: 'The return, measured',
+    body: 'Return on AI Investment — the framework example: $4 of value for every $1 of AI spend.',
+    counter: true,
+  },
+  {
+    at: 0.88,
+    title: 'The ecosystem behind every engagement',
+    body: 'Explore the four properties below — or bring the journey to your organisation.',
+    cta: true,
+  },
+];
+
+const BEAT_STARTS = beats.map((b) => b.at);
+---
+
+<section
+  id="ecosystem"
+  data-film
+  data-frame-base={manifest.basePath}
+  data-frame-count={String(manifest.frameCount)}
+  data-frame-pattern={manifest.pattern}
+  data-beat-starts={JSON.stringify(BEAT_STARTS)}
+  class="film-section relative bg-ink text-platinum"
+>
+  <div class="film-runway" data-film-runway>
+  <div class="film-sticky">
+    <!-- Poster underlay: always painted first; the ONLY film asset fetched on static tiers -->
+    <Image
+      src={poster}
+      alt="The Emerge Digital ecosystem visualised as a constellation: the ED hub connected by a teal data thread to the Agentforce practice, Vela OS, VaultOS, and Dev Pods."
+      widths={[960, 1440, 2880]}
+      sizes="100vw"
+      loading="lazy"
+      decoding="async"
+      fetchpriority="low"
+      class="film-poster"
+    />
+    <canvas data-film-canvas width={manifest.width} height={manifest.height} aria-hidden="true"></canvas>
+
+    <!-- Legibility scrim under the captions -->
+    <div class="film-vignette" aria-hidden="true"></div>
+
+    <div class="film-head">
+      <Container>
+        <Eyebrow>The Ecosystem</Eyebrow>
+        <h2 class="mt-3 max-w-2xl text-display-lg">
+          One journey, <span class="text-gradient-accent">five properties.</span>
+        </h2>
+      </Container>
+    </div>
+
+    <!-- Beat captions: real DOM, reading order = story order; no focusables inside -->
+    <ol class="film-captions" aria-label="The ecosystem journey, beat by beat">
+      {
+        beats.map((beat, i) => (
+          <li data-beat={String(i)}>
+            <h3 class="font-display text-display-md text-white">{beat.title}</h3>
+            {beat.counter && (
+              <p class="film-counter font-wide" aria-hidden="true">
+                ≈<span data-roai-counter>4.0</span>×
+              </p>
+            )}
+            {beat.body && <p class="mt-3 max-w-prose text-lead-sm text-platinum/80">{beat.body}</p>}
+            {beat.chips && (
+              <ul class="mt-4 flex max-w-xl flex-wrap gap-2" role="list">
+                {beat.chips.map((chip) => (
+                  <li class="rounded-pill border border-teal/25 bg-ink/60 px-3 py-1.5 font-mono text-[11px] text-platinum/85 backdrop-blur-sm">{chip}</li>
+                ))}
+              </ul>
+            )}
+            {beat.cta && (
+              <div class="film-cta mt-5">
+                <Button href="/contact/" class="btn-shimmer">Book a briefing</Button>
+              </div>
+            )}
+          </li>
+        ))
+      }
+    </ol>
+
+    <!-- Progress rail: purely decorative -->
+    <div class="film-rail" aria-hidden="true">
+      <div class="film-rail-fill"></div>
+      {beats.map((_, i) => <span class="film-rail-dot" data-dot={String(i)}></span>)}
+    </div>
+  </div>
+  </div>
+
+  <!-- Landing: the four property tiles, in normal flow after the unpin.
+       These are the ecosystem's crawlable, always-tabbable links. -->
+  <div class="film-landing">
+    <Container>
+      <ul class="grid gap-6 sm:grid-cols-2 xl:grid-cols-4" role="list">
+        {
+          ecosystemProperties.map((tile) => (
+            <li>
+              <a
+                href={tile.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="group relative flex h-full flex-col rounded-card border border-white/8 p-7 transition-all duration-400 hover:-translate-y-1 hover:border-teal/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
+                style="background: rgba(255,255,255,0.025); backdrop-filter: blur(12px);"
+              >
+                <div class="absolute inset-x-0 top-0 h-[1.5px] origin-left scale-x-0 rounded-t-card bg-gradient-accent transition-transform duration-500 ease-out-quint group-hover:scale-x-100"></div>
+                <div class="flex items-start justify-between gap-3">
+                  <h3 class="text-display-sm text-white transition-colors duration-300 group-hover:text-teal">{tile.title}</h3>
+                  <span class="shrink-0 rounded-pill border border-teal/25 bg-teal/[0.08] px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-teal">{tile.badge}</span>
+                </div>
+                <p class="mt-3 text-sm leading-relaxed text-platinum/65 transition-colors duration-300 group-hover:text-platinum/85">{tile.body}</p>
+                {tile.proof && <p class="mt-4 border-t border-white/8 pt-4 font-mono text-[11px] leading-relaxed text-platinum/55">{tile.proof}</p>}
+                <span class="mt-auto inline-flex items-center gap-1.5 pt-6 font-label text-xs uppercase tracking-wide text-teal/80 transition-colors duration-300 group-hover:text-teal">
+                  Visit
+                  <svg width="11" height="11" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="transition-transform duration-300 group-hover:translate-x-0.5">
+                    <path d="M7 13L13 7M8 7h5v5" />
+                  </svg>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </Container>
+  </div>
+
+  <noscript>
+    <style>
+      /* No JS = no scrub: collapse to the static story layout */
+      .film-runway { height: auto !important; }
+      .film-sticky { position: relative !important; height: auto !important; }
+      [data-film-canvas], .film-rail { display: none !important; }
+      .film-captions { position: relative !important; inset: auto !important; padding: 2rem 1.5rem !important; }
+      .film-captions li { position: relative !important; opacity: 1 !important; transform: none !important; margin-top: 2.5rem; }
+      .film-poster { position: relative !important; height: auto !important; }
+    </style>
+  </noscript>
+</section>
+
+<style>
+  .film-section {
+    --film-runway: 350vh;
+  }
+  .film-runway {
+    height: var(--film-runway);
+  }
+
+  .film-sticky {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  .film-poster,
+  [data-film-canvas] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  [data-film-canvas] {
+    opacity: 0;
+    transition: opacity 0.2s var(--ease-out-quint);
+  }
+  .film-section[data-canvas-live] [data-film-canvas] { opacity: 1; }
+
+  .film-vignette {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(180deg, rgba(3, 8, 26, 0.55) 0%, transparent 22%),
+      linear-gradient(0deg, rgba(3, 8, 26, 0.65) 0%, transparent 38%);
+  }
+
+  .film-head {
+    position: absolute;
+    inset-inline: 0;
+    top: clamp(1.5rem, 5vh, 3.5rem);
+  }
+
+  .film-captions {
+    position: absolute;
+    inset-inline: 0;
+    bottom: clamp(2rem, 9vh, 5rem);
+    padding-inline: max(1.5rem, calc((100vw - 80rem) / 2 + 1.5rem));
+    list-style: none;
+    pointer-events: none;
+  }
+  .film-captions li {
+    position: absolute;
+    bottom: 0;
+    max-width: 44rem;
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.55s var(--ease-out-expo),
+      transform 0.55s var(--ease-out-expo);
+  }
+  .film-captions .film-cta { pointer-events: auto; }
+  /* Active-beat crossfade — one attribute write per beat change drives all eight */
+  .film-section[data-active-beat='0'] li[data-beat='0'],
+  .film-section[data-active-beat='1'] li[data-beat='1'],
+  .film-section[data-active-beat='2'] li[data-beat='2'],
+  .film-section[data-active-beat='3'] li[data-beat='3'],
+  .film-section[data-active-beat='4'] li[data-beat='4'],
+  .film-section[data-active-beat='5'] li[data-beat='5'],
+  .film-section[data-active-beat='6'] li[data-beat='6'],
+  .film-section[data-active-beat='7'] li[data-beat='7'] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .film-counter {
+    margin-top: 0.75rem;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--color-teal, #00c2c7);
+    text-shadow: 0 0 42px rgba(0, 194, 199, 0.45);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .film-rail {
+    position: absolute;
+    right: clamp(0.9rem, 2.5vw, 2.25rem);
+    top: 50%;
+    transform: translateY(-50%);
+    height: min(42vh, 340px);
+    width: 2px;
+    background: rgba(247, 249, 252, 0.12);
+    border-radius: 2px;
+  }
+  .film-rail-fill {
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 100%;
+    transform-origin: top;
+    transform: scaleY(var(--film-progress, 0));
+    background: linear-gradient(180deg, var(--color-teal, #00c2c7), var(--color-cyan, #3ddce3));
+    border-radius: 2px;
+  }
+  .film-rail-dot {
+    position: absolute;
+    left: 50%;
+    width: 7px;
+    height: 7px;
+    transform: translate(-50%, -50%);
+    border-radius: 9999px;
+    background: rgba(247, 249, 252, 0.28);
+  }
+
+  .film-landing {
+    position: relative;
+    background: theme('colors.ink.DEFAULT');
+    padding-block: theme('spacing.section-sm');
+  }
+  @media (min-width: 768px) {
+    .film-landing { padding-block-end: theme('spacing.section'); }
+  }
+
+  /* ── Static story layout: ≤768px, reduced motion, or a runtime data-static drop ── */
+  @media (max-width: 768px), print {
+    .film-runway { height: auto; }
+    .film-sticky { position: relative; height: auto; }
+    [data-film-canvas], .film-rail { display: none; }
+    .film-vignette { display: none; }
+    .film-head { position: relative; top: auto; padding-block: 3rem 0; }
+    .film-poster { position: relative; height: auto; aspect-ratio: 16 / 9; }
+    .film-captions { position: relative; inset: auto; padding-block: 1rem 2rem; pointer-events: auto; }
+    .film-captions li { position: relative; opacity: 1; transform: none; margin-top: 2.25rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .film-runway { height: auto; }
+    .film-sticky { position: relative; height: auto; }
+    [data-film-canvas], .film-rail { display: none; }
+    .film-vignette { display: none; }
+    .film-head { position: relative; top: auto; padding-block: 3rem 0; }
+    .film-poster { position: relative; height: auto; aspect-ratio: 16 / 9; }
+    .film-captions { position: relative; inset: auto; padding-block: 1rem 2rem; pointer-events: auto; }
+    .film-captions li { position: relative; opacity: 1; transform: none; margin-top: 2.25rem; transition: none; }
+  }
+  .film-section[data-static] .film-runway { height: auto; }
+  .film-section[data-static] .film-sticky { position: relative; height: auto; }
+  .film-section[data-static] [data-film-canvas],
+  .film-section[data-static] .film-rail,
+  .film-section[data-static] .film-vignette { display: none; }
+  .film-section[data-static] .film-head { position: relative; top: auto; padding-block: 3rem 0; }
+  .film-section[data-static] .film-poster { position: relative; height: auto; aspect-ratio: 16 / 9; }
+  .film-section[data-static] .film-captions { position: relative; inset: auto; padding-block: 1rem 2rem; pointer-events: auto; }
+  .film-section[data-static] .film-captions li { position: relative; opacity: 1; transform: none; margin-top: 2.25rem; }
+</style>
+
+<script>
+  (() => {
+    const section = document.querySelector<HTMLElement>('[data-film]');
+    const runway = section?.querySelector<HTMLElement>('[data-film-runway]');
+    const canvas = section?.querySelector<HTMLCanvasElement>('[data-film-canvas]');
+    if (!section || !runway || !canvas) return;
+
+    /* ── Tier selection (plan §tier ladder). One-way: can only degrade. ── */
+    const override = new URLSearchParams(location.search).get('film');
+    const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean; effectiveType?: string } };
+    const mem = nav.deviceMemory; // undefined on Safari/Firefox → passes
+    const conn = nav.connection;
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const coarse = matchMedia('(pointer: coarse)').matches;
+    const width = () => window.innerWidth;
+
+    const dropToStatic = () => {
+      section.setAttribute('data-static', '');
+      section.removeAttribute('data-canvas-live');
+    };
+
+    let tier: 0 | 1 | 2;
+    if (override === 'poster') tier = 2;
+    else if (override === 'reduced') tier = 1;
+    else if (override === 'full') tier = 0;
+    else if (
+      reduced || width() <= 768 || conn?.saveData === true ||
+      conn?.effectiveType === '2g' || conn?.effectiveType === 'slow-2g' ||
+      (mem !== undefined && mem < 4)
+    ) tier = 2;
+    else if ((mem !== undefined && mem <= 7) || conn?.effectiveType === '3g' || width() <= 1024 || coarse) tier = 1;
+    else tier = 0;
+
+    if (tier === 2) { dropToStatic(); return; } // zero frame fetches, zero listeners
+
+    const ctx = canvas.getContext('2d', { alpha: false });
+    if (!ctx || typeof createImageBitmap !== 'function') { dropToStatic(); return; }
+
+    /* ── Frame set + manifest data (baked at build — no runtime manifest fetch) ── */
+    const BASE = section.dataset.frameBase!;
+    const TOTAL = Number(section.dataset.frameCount);
+    const BEAT_STARTS: number[] = JSON.parse(section.dataset.beatStarts!);
+    const stride = tier === 1 ? 2 : 1; // Tier 1 loads every 2nd frame
+    const WINDOW = tier === 1 ? 16 : 32; // decoded-bitmap cap beyond the spine
+    const SPINE = 8; // every 8th frame is permanently resident once loaded
+
+    const frameUrl = (i: number) => `${BASE}/frame-${String(i + 1).padStart(4, '0')}.webp`;
+    const bitmaps: (ImageBitmap | null)[] = new Array(TOTAL).fill(null);
+    const inflight = new Set<number>();
+    let failures = 0;
+    let aborted = false;
+    const aborter = new AbortController();
+
+    const evict = (playhead: number) => {
+      let extras = 0;
+      const evictable: number[] = [];
+      for (let i = 0; i < TOTAL; i++) {
+        if (!bitmaps[i] || i % SPINE === 0) continue;
+        extras++;
+        if (Math.abs(i - playhead) > WINDOW) evictable.push(i);
+      }
+      if (extras <= WINDOW) return;
+      evictable
+        .sort((a, b) => Math.abs(b - playhead) - Math.abs(a - playhead))
+        .slice(0, extras - WINDOW)
+        .forEach((i) => { bitmaps[i]!.close(); bitmaps[i] = null; });
+    };
+
+    const load = async (i: number, playhead: number) => {
+      if (aborted || bitmaps[i] || inflight.has(i) || i % stride !== 0) return;
+      inflight.add(i);
+      try {
+        const init: RequestInit & { priority?: string } = { signal: aborter.signal, priority: 'low' };
+        const res = await fetch(frameUrl(i), init);
+        if (!res.ok) throw new Error(String(res.status)); // Worker 404s answer with a page body
+        const bmp = await createImageBitmap(await res.blob());
+        if (aborted) { bmp.close(); return; }
+        bitmaps[i] = bmp;
+        failures = 0;
+        evict(playhead);
+        if (i === nearest(target())) draw(); // first paint may be waiting on us
+      } catch (e) {
+        if (aborted || (e instanceof DOMException && e.name === 'AbortError')) return;
+        if (++failures >= 3) abortToStatic();
+      } finally {
+        inflight.delete(i);
+      }
+    };
+
+    const abortToStatic = () => {
+      aborted = true;
+      aborter.abort();
+      bitmaps.forEach((b, i) => { b?.close(); bitmaps[i] = null; });
+      dropToStatic();
+    };
+    canvas.addEventListener('contextlost', abortToStatic);
+
+    /* Progressive ladder: spine (every 8th) → every 2nd → fill; ±window follows the playhead. */
+    let ladderStarted = false;
+    const startLadder = async () => {
+      if (ladderStarted) return;
+      ladderStarted = true;
+      const passes = tier === 1 ? [SPINE, 2] : [SPINE, 2, 1];
+      for (const step of passes) {
+        const jobs: Promise<void>[] = [];
+        for (let i = 0; i < TOTAL; i += step) {
+          jobs.push(load(i, Math.round(target())));
+          if (jobs.length >= 5) { await Promise.all(jobs); jobs.length = 0; }
+          if (aborted) return;
+        }
+        await Promise.all(jobs);
+      }
+    };
+
+    /* ── Scrub driver (HeroHome pattern: native scroll + rAF + gBCR progress) ── */
+    const clamp = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
+    let progress = 0;
+    const target = () => progress * (TOTAL - 1);
+    const nearest = (t: number) => {
+      const want = Math.round(t);
+      if (bitmaps[want]) return want;
+      for (let d = 1; d < TOTAL; d++) {
+        if (bitmaps[want - d]) return want - d;
+        if (bitmaps[want + d]) return want + d;
+      }
+      return -1;
+    };
+
+    let lastDrawn = -1;
+    let firstDraw = false;
+    const draw = () => {
+      const idx = nearest(target());
+      if (idx < 0 || idx === lastDrawn) return;
+      ctx.drawImage(bitmaps[idx]!, 0, 0);
+      lastDrawn = idx;
+      if (!firstDraw) { firstDraw = true; section.setAttribute('data-canvas-live', ''); }
+    };
+
+    let lastP = -1;
+    let activeBeat = -1;
+    let ticking = false;
+    const render = () => {
+      ticking = false;
+      const total = runway.offsetHeight - window.innerHeight;
+      const p = total > 0 ? clamp(-runway.getBoundingClientRect().top / total) : 0;
+      if (p === lastP) return;
+      lastP = p;
+      progress = p;
+      draw();
+      // decode-ahead around the playhead (biased forward)
+      const ph = Math.round(target());
+      for (let d = 0; d <= 24; d += stride) {
+        if (ph + d < TOTAL) load(ph + d, ph);
+        if (d > 0 && d <= 8 && ph - d >= 0) load(ph - d, ph);
+      }
+      // beat + rail (≤2 DOM writes per change)
+      let beat = 0;
+      for (let i = BEAT_STARTS.length - 1; i >= 0; i--) if (p >= BEAT_STARTS[i]) { beat = i; break; }
+      if (beat !== activeBeat) {
+        activeBeat = beat;
+        section.setAttribute('data-active-beat', String(beat));
+      }
+      section.style.setProperty('--film-progress', p.toFixed(4));
+      const counter = section.querySelector('[data-roai-counter]');
+      if (counter && p >= BEAT_STARTS[6] && p < BEAT_STARTS[7]) {
+        const local = clamp((p - BEAT_STARTS[6]) / (0.84 - BEAT_STARTS[6]));
+        counter.textContent = (local * 4).toFixed(1);
+      }
+    };
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(render); } };
+
+    /* Rail dots at beat positions */
+    section.querySelectorAll<HTMLElement>('.film-rail-dot').forEach((dot, i) => {
+      dot.style.top = `${(BEAT_STARTS[i] * 100).toFixed(1)}%`;
+    });
+
+    /* Activate only near the section; start loading ~2 viewports early, after window load. */
+    let listening = false;
+    const setListening = (on: boolean) => {
+      if (on === listening) return;
+      listening = on;
+      if (on) { window.addEventListener('scroll', onScroll, { passive: true }); render(); }
+      else window.removeEventListener('scroll', onScroll);
+    };
+    const activeIO = new IntersectionObserver((entries) => setListening(entries.some((e) => e.isIntersecting)), { rootMargin: '100% 0px' });
+    activeIO.observe(section);
+
+    const startWhenNear = () => {
+      const loadIO = new IntersectionObserver((entries) => {
+        if (entries.some((e) => e.isIntersecting)) { startLadder(); loadIO.disconnect(); }
+      }, { rootMargin: '200% 0px' });
+      loadIO.observe(section);
+    };
+    if (document.readyState === 'complete') startWhenNear();
+    else window.addEventListener('load', startWhenNear, { once: true });
+
+    /* Memory hygiene: release every decoded bitmap when the tab hides. */
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState !== 'hidden' || aborted) return;
+      bitmaps.forEach((b, i) => { b?.close(); bitmaps[i] = null; });
+      lastDrawn = -1;
+      ladderStarted = false; // rebuild on return
+      const revive = () => { if (!aborted) startLadder(); };
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') revive(); }, { once: true });
+    });
+
+    window.addEventListener('resize', () => { lastP = -1; onScroll(); }, { passive: true });
+    window.addEventListener('pagehide', () => aborter.abort(), { once: true });
+  })();
+</script>
