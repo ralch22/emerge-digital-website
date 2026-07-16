@@ -198,7 +198,7 @@ const BEAT_STARTS = beats.map((b) => b.at);
       .film-sticky { position: relative !important; height: auto !important; }
       [data-film-canvas], .film-rail { display: none !important; }
       .film-captions { position: relative !important; inset: auto !important; padding: 2rem 1.5rem !important; }
-      .film-captions li { position: relative !important; opacity: 1 !important; transform: none !important; margin-top: 2.5rem; }
+      .film-captions li { position: relative !important; opacity: 1 !important; transform: none !important; visibility: visible !important; margin-top: 2.5rem; }
       .film-poster { position: relative !important; height: auto !important; }
     </style>
   </noscript>
@@ -262,9 +262,14 @@ const BEAT_STARTS = beats.map((b) => b.at);
     max-width: 44rem;
     opacity: 0;
     transform: translateY(18px);
+    /* visibility delays until the fade-out finishes, so an outgoing caption stays
+       visible while it fades — but an INACTIVE caption's CTA is out of the tab
+       order and unclickable (it was an invisible focus/click trap otherwise). */
+    visibility: hidden;
     transition:
       opacity 0.55s var(--ease-out-expo),
-      transform 0.55s var(--ease-out-expo);
+      transform 0.55s var(--ease-out-expo),
+      visibility 0s 0.55s;
   }
   .film-captions .film-cta { pointer-events: auto; }
   /* Active-beat crossfade — one attribute write per beat change drives all eight */
@@ -278,6 +283,8 @@ const BEAT_STARTS = beats.map((b) => b.at);
   .film-section[data-active-beat='7'] li[data-beat='7'] {
     opacity: 1;
     transform: translateY(0);
+    visibility: visible;
+    transition-delay: 0s, 0s, 0s; /* visibility flips on immediately when a beat activates */
   }
 
   .film-counter {
@@ -339,7 +346,7 @@ const BEAT_STARTS = beats.map((b) => b.at);
     .film-head { position: relative; top: auto; padding-block: 3rem 0; }
     .film-poster { position: relative; height: auto; aspect-ratio: 16 / 9; }
     .film-captions { position: relative; inset: auto; padding-block: 1rem 2rem; pointer-events: auto; }
-    .film-captions li { position: relative; opacity: 1; transform: none; margin-top: 2.25rem; }
+    .film-captions li { position: relative; opacity: 1; transform: none; visibility: visible; margin-top: 2.25rem; }
   }
   @media (prefers-reduced-motion: reduce) {
     .film-runway { height: auto; }
@@ -349,7 +356,7 @@ const BEAT_STARTS = beats.map((b) => b.at);
     .film-head { position: relative; top: auto; padding-block: 3rem 0; }
     .film-poster { position: relative; height: auto; aspect-ratio: 16 / 9; }
     .film-captions { position: relative; inset: auto; padding-block: 1rem 2rem; pointer-events: auto; }
-    .film-captions li { position: relative; opacity: 1; transform: none; margin-top: 2.25rem; transition: none; }
+    .film-captions li { position: relative; opacity: 1; transform: none; visibility: visible; margin-top: 2.25rem; transition: none; }
   }
   .film-section[data-static] .film-runway { height: auto; }
   .film-section[data-static] .film-sticky { position: relative; height: auto; }
@@ -359,7 +366,7 @@ const BEAT_STARTS = beats.map((b) => b.at);
   .film-section[data-static] .film-head { position: relative; top: auto; padding-block: 3rem 0; }
   .film-section[data-static] .film-poster { position: relative; height: auto; aspect-ratio: 16 / 9; }
   .film-section[data-static] .film-captions { position: relative; inset: auto; padding-block: 1rem 2rem; pointer-events: auto; }
-  .film-section[data-static] .film-captions li { position: relative; opacity: 1; transform: none; margin-top: 2.25rem; }
+  .film-section[data-static] .film-captions li { position: relative; opacity: 1; transform: none; visibility: visible; margin-top: 2.25rem; }
 </style>
 
 <script>
@@ -368,6 +375,13 @@ const BEAT_STARTS = beats.map((b) => b.at);
     const runway = section?.querySelector<HTMLElement>('[data-film-runway]');
     const canvas = section?.querySelector<HTMLCanvasElement>('[data-film-canvas]');
     if (!section || !runway || !canvas) return;
+
+    // GA4 field telemetry (guarded — analytics must never break the film).
+    const track = (name: string, params?: Record<string, unknown>) => {
+      const g = (window as unknown as { gtag?: (...a: unknown[]) => void }).gtag;
+      if (typeof g === 'function') g('event', name, params);
+    };
+    section.querySelector('.film-cta a')?.addEventListener('click', () => track('film_cta_click'));
 
     /* ── Tier selection (plan §tier ladder). One-way: can only degrade. ── */
     const override = new URLSearchParams(location.search).get('film');
@@ -395,10 +409,11 @@ const BEAT_STARTS = beats.map((b) => b.at);
     else if ((mem !== undefined && mem <= 7) || conn?.effectiveType === '3g' || width() <= 1024 || coarse) tier = 1;
     else tier = 0;
 
+    track('film_tier', { tier });
     if (tier === 2) { dropToStatic(); return; } // zero frame fetches, zero listeners
 
     const ctx = canvas.getContext('2d', { alpha: false });
-    if (!ctx || typeof createImageBitmap !== 'function') { dropToStatic(); return; }
+    if (!ctx || typeof createImageBitmap !== 'function') { dropToStatic(); track('film_abort', { reason: 'no_canvas' }); return; }
 
     /* ── Frame set + manifest data (baked at build — no runtime manifest fetch) ── */
     const BASE = section.dataset.frameBase!;
@@ -451,13 +466,14 @@ const BEAT_STARTS = beats.map((b) => b.at);
       }
     };
 
-    const abortToStatic = () => {
+    const abortToStatic = (reason = 'fetch_failures') => {
+      track('film_abort', { reason });
       aborted = true;
       aborter.abort();
       bitmaps.forEach((b, i) => { b?.close(); bitmaps[i] = null; });
       dropToStatic();
     };
-    canvas.addEventListener('contextlost', abortToStatic);
+    canvas.addEventListener('contextlost', () => abortToStatic('contextlost'));
 
     /* Progressive ladder: spine (every 8th) → every 2nd → fill; ±window follows the playhead. */
     let ladderStarted = false;
@@ -502,6 +518,8 @@ const BEAT_STARTS = beats.map((b) => b.at);
 
     let lastP = -1;
     let activeBeat = -1;
+    let maxBeat = -1;
+    let sentDeepest = -1;
     let ticking = false;
     const render = () => {
       ticking = false;
@@ -522,6 +540,7 @@ const BEAT_STARTS = beats.map((b) => b.at);
       for (let i = BEAT_STARTS.length - 1; i >= 0; i--) if (p >= BEAT_STARTS[i]) { beat = i; break; }
       if (beat !== activeBeat) {
         activeBeat = beat;
+        maxBeat = Math.max(maxBeat, beat);
         section.setAttribute('data-active-beat', String(beat));
       }
       section.style.setProperty('--film-progress', p.toFixed(4));
@@ -544,7 +563,10 @@ const BEAT_STARTS = beats.map((b) => b.at);
       if (on === listening) return;
       listening = on;
       if (on) { window.addEventListener('scroll', onScroll, { passive: true }); render(); }
-      else window.removeEventListener('scroll', onScroll);
+      else {
+        window.removeEventListener('scroll', onScroll);
+        if (maxBeat > sentDeepest) { sentDeepest = maxBeat; track('film_deepest_beat', { beat: maxBeat }); }
+      }
     };
     const activeIO = new IntersectionObserver((entries) => setListening(entries.some((e) => e.isIntersecting)), { rootMargin: '100% 0px' });
     activeIO.observe(section);

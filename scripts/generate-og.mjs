@@ -188,7 +188,11 @@ fillRect(60, H-82, W-120, 1, TEAL, 0.30);
 drawText('EMERGEDIGITAL.COM', 80, H-60, COOL, 3, 0.75);
 
 // 9. Right-side stats
-const stats = [['23', 'YRS'], ['80K+', 'ENG'], ['4', 'GMP']];
+// NOTE: never add a "4 GMP" stat here — Emerge is an authorized reseller
+// THROUGH a top-four GMP partner, not itself one of four (CLAUDE.md voice rules).
+// This script is the fallback generator; the live og-default.png is produced
+// from the ecosystem film's money shot (vela-os-roai/video/emerge-ecosystem-scroll/og-capture.mjs).
+const stats = [['23', 'YRS'], ['80K+', 'ENG']];
 let sy = 185;
 for (const [val, lbl] of stats) {
   drawText(val,  W-280, sy,    TEAL, 7, 0.9);
