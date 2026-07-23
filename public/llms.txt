@@ -14,3 +14,7 @@
 - [Privacy Policy — Emerge Digital](https://emergedigital.com/legal/privacy): How Emerge Digital IT Solutions LLC collects, uses, and protects personal data, in line with UAE Federal Decree-Law No. 45 of 2021 (PDPL).
 - [Emerge Dev Pods — An Agent Dev-Team Your Seniors Sign Off On | Emerge Digital](https://emergedigital.com/services/dev-pods): Managed AI coding-agent pods on your repos: every change in an isolated worktree, iterated against your CI, merged only through a human senior review gate. Emerge runs its own 11-repo delivery on the same portfolio. Quote-based.
 - [Insights — Emerge Digital](https://emergedigital.com/category/marketing): Executive POVs, Vision 2030 briefs, and capability deep-dives from Emerge Digital — the Dubai Mainland local prime for enterprise CX, Data, AI, and digital transformation.
+
+## Agent Commerce (live, agent-callable)
+
+- [Emerge Digital Agent Commerce](https://agent-commerce.emergedigital.com/): A live x402-gated commerce endpoint on a separate origin — AI agents pay per call in XRP or RLUSD on the XRP Ledger for a catalog of resources. Discovery: [/.well-known/api-catalog](https://agent-commerce.emergedigital.com/.well-known/api-catalog) (RFC 9727) and [/.well-known/x402](https://agent-commerce.emergedigital.com/.well-known/x402).
