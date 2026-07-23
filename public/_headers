@@ -1,4 +1,11 @@
 # Cloudflare static-asset headers (honoured by the Workers ASSETS binding).
+
+# Agent discovery (RFC 8288). Advertise the two real machine-readable
+# resources: the AI index and the sitemap (note: sitemap-index.xml — the
+# @astrojs/sitemap output; there is no /sitemap.xml).
+/*
+  Link: </llms.txt>; rel="describedby"; type="text/plain", </sitemap-index.xml>; rel="sitemap"; type="application/xml"
+
 # Content-hashed Astro bundles — incl. fingerprinted fonts — live under /_astro/*
 # and never change for a given URL, so cache them immutably.
 /_astro/*

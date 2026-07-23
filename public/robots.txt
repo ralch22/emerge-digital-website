@@ -1,6 +1,10 @@
 User-agent: *
 Allow: /
 
+# Content Signals (contentsignals.org / draft-romm-aipref-contentsignals)
+# Emerge WANTS AI assistants to find, ground on, and cite this site.
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+
 # Unlisted campaign/outreach page — not for search discovery.
 Disallow: /demand-generation
 
